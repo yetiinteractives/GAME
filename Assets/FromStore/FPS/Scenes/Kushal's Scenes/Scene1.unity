@@ -546,8 +546,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 717784047}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.07976697, y: -0.00000003321384, z: 0.0000000026578368, w: 0.99681354}
-  m_LocalPosition: {x: 1.62, y: 1.8130994, z: -0.10005498}
+  m_LocalRotation: {x: 0.15212339, y: -0.000000014941667, z: 0.0000000022997426, w: 0.98836154}
+  m_LocalPosition: {x: 1.62, y: 2.0714116, z: 0.122566104}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -894,8 +894,8 @@ GameObject:
   - component: {fileID: 1166636363}
   - component: {fileID: 1166636366}
   - component: {fileID: 1166636361}
-  - component: {fileID: 1166636360}
   - component: {fileID: 1166636367}
+  - component: {fileID: 1166636360}
   m_Layer: 0
   m_Name: FreeLook Camera
   m_TagString: Untagged
@@ -1000,8 +1000,8 @@ MonoBehaviour:
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
-  OrbitStyle: 1
-  Radius: 5
+  OrbitStyle: 0
+  Radius: 2
   Orbits:
     Top:
       Radius: 0.59
@@ -1012,7 +1012,7 @@ MonoBehaviour:
     Bottom:
       Radius: 1.23
       Height: 0.01
-    SplineCurvature: 0.5
+    SplineCurvature: 0.193
   RecenteringTarget: 2
   HorizontalAxis:
     Value: 0
@@ -1027,7 +1027,7 @@ MonoBehaviour:
   VerticalAxis:
     Value: 17.5
     Center: 17.5
-    Range: {x: 0, y: 45}
+    Range: {x: -70, y: 70}
     Wrap: 0
     Recentering:
       Enabled: 0
@@ -1057,7 +1057,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineCamera
   Priority:
-    Enabled: 0
+    Enabled: 1
     m_Value: 0
   OutputChannel: 1
   StandbyUpdate: 2
@@ -1095,8 +1095,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1166636359}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.07976697, y: -0.00000003321384, z: 0.000000002657836, w: 0.9968136}
-  m_LocalPosition: {x: 1.62, y: 1.8130994, z: -0.10005498}
+  m_LocalRotation: {x: 0.15212339, y: -0.000000014941667, z: 0.0000000022997426, w: 0.98836154}
+  m_LocalPosition: {x: 1.62, y: 2.0714116, z: 0.122566104}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1127,7 +1127,7 @@ MonoBehaviour:
   TargetOffset: {x: 0, y: 0, z: 0}
   Damping: {x: 0.5, y: 0.5}
   Lookahead:
-    Enabled: 0
+    Enabled: 1
     Time: 0
     Smoothing: 0
     IgnoreY: 0
@@ -1145,8 +1145,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FreeLookADS
   cam: {fileID: 1166636364}
   normalFOV: 60
-  adsFOV: 40
-  speed: 10
+  adsFOV: 30
+  fovLerpSpeed: 10
+  normalSensitivity: 1
+  adsSensitivity: 0.5
+  sensitivityLerpSpeed: 10
 --- !u!4 &1401687305 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1455955406657227403, guid: 1065b7837df3b774f9cb7bc79a988cd6,
