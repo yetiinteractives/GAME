@@ -1,0 +1,27 @@
+using System;
+using UnityEngine;
+
+public class Pistol : MonoBehaviour
+{
+    [SerializeField]ParticleSystem muzzleFlash;
+    [SerializeField]AudioSource gunShotAudioSource;
+    [SerializeField]ParticleSystem hitEffect;
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        MousePositoin3D.OnFirePerformed += HandleFirePerformed;
+
+    }
+
+    private void HandleFirePerformed(Transform hitTransform , Transform hitArea) 
+    {
+        muzzleFlash.Play();
+        gunShotAudioSource.Play();
+
+        hitEffect.transform.position = hitArea.position;  //move hit effect to hit position
+        hitEffect.Play();
+    }
+
+    
+}

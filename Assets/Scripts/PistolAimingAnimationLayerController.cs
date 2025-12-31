@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -15,7 +16,7 @@ public class AimLayerController : MonoBehaviour
 
     void Start()
     {
-        aimLayerIndex = animator.GetLayerIndex("PistolAim Layer");
+        aimLayerIndex = animator.GetLayerIndex("Aim Layer");
     }
 
     void Update()
@@ -24,7 +25,7 @@ public class AimLayerController : MonoBehaviour
         if (Input.GetMouseButton(1))
         {
             targetWeight = 0.85f;
-            aimRigWeight = 1f;
+            StartCoroutine(aimRigWeightDelay());
         }
 
 
@@ -44,12 +45,20 @@ public class AimLayerController : MonoBehaviour
 
         animator.SetLayerWeight(aimLayerIndex, newWeight);
 
-
+        
         //for that procedural aim rig   
+        
         aimRig.weight = Mathf.Lerp(
             aimRig.weight,
             aimRigWeight,
             Time.deltaTime * 25f
         );
+        
+    }
+
+    private IEnumerator aimRigWeightDelay()
+    {
+        yield return new WaitForSeconds(0.25f);
+        aimRig.weight = 1f;
     }
 }
