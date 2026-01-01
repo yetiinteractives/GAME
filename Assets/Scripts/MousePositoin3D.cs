@@ -8,7 +8,7 @@ public class MousePositoin3D : MonoBehaviour
     [SerializeField] private LayerMask raycastLayerMask;
 
 
-    public static event Action<Transform , Transform> OnFirePerformed;
+    public static event Action<RaycastHit> OnFirePerformed;
   
     // Update is called once per frame
     void Update()
@@ -26,17 +26,19 @@ public class MousePositoin3D : MonoBehaviour
                     {
                     transform.position = raycastHit.point;
                     hitTransform = raycastHit.transform;
+
+                    if (Input.GetMouseButtonUp(0))  //left click 
+                    {
+                        if (hitTransform != null)
+                        {
+                            Debug.Log("Fire!!");
+                            OnFirePerformed?.Invoke(raycastHit); //passing Transform of hit object
+                        }
                     }
                 }
-
-            if (Input.GetMouseButtonUp(0))
-            {
-                if (hitTransform!= null)
-                {
-                    Debug.Log("Fire!!");
-                    OnFirePerformed?.Invoke(hitTransform,transform); //passing Transform of hit object
                 }
-            }
+
+            
         }
     }
 

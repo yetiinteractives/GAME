@@ -14,7 +14,7 @@ public class Pistol : MonoBehaviour
 
     }
 
-    private void HandleFirePerformed(Transform hitTransform , Transform hitArea) 
+    private void HandleFirePerformed(RaycastHit raycastHitInfo) 
     {
         if(muzzleFlash != null)
             muzzleFlash.Play();
@@ -24,7 +24,7 @@ public class Pistol : MonoBehaviour
 
         if(hitEffect != null)
         {
-            hitEffect.transform.position = hitArea.position;  //move hit effect to hit position
+            hitEffect.transform.position = raycastHitInfo.point;  //move hit effect to hit position
             hitEffect.Play();
         }
            
