@@ -5,7 +5,9 @@ public class MousePositoin3D : MonoBehaviour
 {
 
     [SerializeField] private Camera mainCamera;
-    
+    [SerializeField] private LayerMask raycastLayerMask;
+
+
     public static event Action<Transform , Transform> OnFirePerformed;
   
     // Update is called once per frame
@@ -20,7 +22,7 @@ public class MousePositoin3D : MonoBehaviour
             
                     // Raycast Check
                     Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);  
-                    if (Physics.Raycast(ray, out RaycastHit raycastHit))
+                    if (Physics.Raycast(ray, out RaycastHit raycastHit, Mathf.Infinity, raycastLayerMask))
                     {
                     transform.position = raycastHit.point;
                     hitTransform = raycastHit.transform;
