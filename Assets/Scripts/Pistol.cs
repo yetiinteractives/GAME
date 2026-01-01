@@ -16,11 +16,18 @@ public class Pistol : MonoBehaviour
 
     private void HandleFirePerformed(Transform hitTransform , Transform hitArea) 
     {
-        muzzleFlash.Play();
-        gunShotAudioSource.Play();
+        if(muzzleFlash != null)
+            muzzleFlash.Play();
 
-        hitEffect.transform.position = hitArea.position;  //move hit effect to hit position
-        hitEffect.Play();
+        if(gunShotAudioSource != null)
+            gunShotAudioSource.Play();
+
+        if(hitEffect != null)
+        {
+            hitEffect.transform.position = hitArea.position;  //move hit effect to hit position
+            hitEffect.Play();
+        }
+           
     }
 
     

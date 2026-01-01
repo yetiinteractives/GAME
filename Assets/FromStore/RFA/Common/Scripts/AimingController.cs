@@ -41,16 +41,21 @@ namespace Retro.ThirdPersonCharacter
 
         private void OnStateChanged()
         {
-            if(_isAiming)
+            if(_springArm != null)
             {
-                _springArm.TargetLength = _aimCameraDistance;
-                _aiming.enabled = true;
+                if (_isAiming)
+                {
+                    _springArm.TargetLength = _aimCameraDistance;
+                    _aiming.enabled = true;
+                }
+                else
+                {
+                    _springArm.TargetLength = _regularCameraDistance;
+                    _aiming.enabled = false;
+                }
             }
-            else
-            {
-                _springArm.TargetLength = _regularCameraDistance;
-                _aiming.enabled = false;
-            }
+            
+           
         }
     }
 }

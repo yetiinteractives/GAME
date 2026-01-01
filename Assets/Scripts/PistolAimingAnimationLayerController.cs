@@ -54,6 +54,7 @@ public class AimLayerController : MonoBehaviour
             Time.deltaTime * 25f
         );
         
+        
     }
 
     private IEnumerator aimRigWeightDelay()

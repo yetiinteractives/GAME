@@ -1,6 +1,4 @@
 using System;
-using Unity.FPS.Game;
-using UnityEditor;
 using UnityEngine;
 
 public class MousePositoin3D : MonoBehaviour
