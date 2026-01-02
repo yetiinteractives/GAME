@@ -4,6 +4,7 @@ using UnityEngine;
 public class MousePositoin3D : MonoBehaviour
 {
 
+    [SerializeField] private float smoothSpeed = 5f;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private LayerMask raycastLayerMask;
 
@@ -24,7 +25,7 @@ public class MousePositoin3D : MonoBehaviour
                     Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);  
                     if (Physics.Raycast(ray, out RaycastHit raycastHit, Mathf.Infinity, raycastLayerMask))
                     {
-                    transform.position = raycastHit.point;
+                    transform.position = Vector3.Lerp(transform.position, raycastHit.point, Time.deltaTime * smoothSpeed);
                     hitTransform = raycastHit.transform;
 
                     if (Input.GetMouseButtonUp(0))  //left click 

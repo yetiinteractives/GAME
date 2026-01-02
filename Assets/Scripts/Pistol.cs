@@ -30,5 +30,10 @@ public class Pistol : MonoBehaviour
            
     }
 
-    
+    private void OnDestroy()   // to prevent memory leaks
+    {
+        MousePositoin3D.OnFirePerformed -= HandleFirePerformed;
+    }
+
+
 }
