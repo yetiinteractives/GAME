@@ -115,7 +115,7 @@ public class AimLayerController : MonoBehaviour
                     ));
 
                 // Rig Weights
-                shotgunAimRigWeight = 1f;
+                shotgunAimRigWeight = 0.75f;
                 shotgunIdleRigWeight = 0f;
             }
             else
@@ -159,7 +159,7 @@ public class AimLayerController : MonoBehaviour
     private IEnumerator AimRigWeightDelay()
     {
         yield return new WaitForSeconds(0.25f);
-        aimRigWeight = 1f;
+        aimRigWeight = 0.75f;
     }
 
     private void OnDestroy()
