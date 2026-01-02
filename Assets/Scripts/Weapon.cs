@@ -5,159 +5,151 @@ using UnityEngine;
 public abstract class Weapon : MonoBehaviour
 {
     [Header("Weapon Stats")]
-    [SerializeField] protected float baseDamage = 10f;
+    [SerializeField] protected float damage = 10f;
     [SerializeField] protected int magazineSize = 10;
     [SerializeField] protected float reloadTime = 1.5f;
-    [SerializeField] protected float fireRate = 0.5f;
-    [SerializeField] protected float effectiveRange = 50f;
-    [SerializeField] protected float maxRange = 100f;
+    [SerializeField] protected float fireRate = 0.3f;
 
-    [Header("Visual/Audio")]
-    [SerializeField] protected GameObject bulletPrefab;
-    [SerializeField] protected Transform muzzleTransform;
-    [SerializeField] protected AudioClip fireSound;
+    [Header("Effects")]
+    [SerializeField] protected ParticleSystem muzzleFlash;
+    [SerializeField] protected ParticleSystem bulletImpact;
+
+    [Header("Audio")]
+    [SerializeField] protected AudioClip shootSound;
     [SerializeField] protected AudioClip reloadSound;
-    [SerializeField] protected AudioClip emptySound;
-    [SerializeField] protected AudioSource audioSource;
+    protected AudioSource audioSource;
 
-    // C# Events (instead of UnityEvents)
-    public event Action OnWeaponFired;
-    public event Action OnReloadStarted;
-    public event Action OnReloadCompleted;
-    public event Action<int> OnAmmoChanged; // Pass current ammo count
+    // Events
+    public event Action<int> OnAmmoChanged;
+    public event Action<string> OnWeaponStatusChanged;
 
-    // Protected variables
+    // Variables
     protected int currentAmmo;
     protected bool isReloading = false;
     protected float nextFireTime = 0f;
-    protected int weaponIndex;
 
     // Properties
     public bool CanShoot => currentAmmo > 0 && !isReloading && Time.time >= nextFireTime;
     public bool IsReloading => isReloading;
     public int CurrentAmmo => currentAmmo;
     public int MagazineSize => magazineSize;
-    public float Damage => baseDamage;
-    public float EffectiveRange => effectiveRange;
-    public float MaxRange => maxRange;
 
     protected virtual void Awake()
     {
         currentAmmo = magazineSize;
+        audioSource = GetComponent<AudioSource>();
+
         if (audioSource == null)
-            audioSource = GetComponent<AudioSource>();
+        {
+            Debug.LogError($"No AudioSource found on {gameObject.name}");
+        }
+
+        // Stop muzzle flash on start
+        if (muzzleFlash != null)
+        {
+            muzzleFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
     }
 
     protected virtual void OnEnable()
     {
-        // Subscribe to events
-        SwitchWeapons.OnWeaponSwitch += HandleWeaponSwitch;
-        MousePosition3D.OnFirePerformed += HandleFire;
+        MousePosition3D.OnFirePerformed += OnFireInput;
+        UpdateStatus("Ready");
     }
 
     protected virtual void OnDisable()
     {
-        // Unsubscribe from events
-        SwitchWeapons.OnWeaponSwitch -= HandleWeaponSwitch;
-        MousePosition3D.OnFirePerformed -= HandleFire;
+        MousePosition3D.OnFirePerformed -= OnFireInput;
 
-        // Stop any reload in progress
         if (isReloading)
         {
             StopAllCoroutines();
             isReloading = false;
         }
+
+        // Stop muzzle flash
+        StopMuzzleFlash();
     }
 
-    private void HandleWeaponSwitch(int switchedIndex)
+    private void OnFireInput(RaycastHit hit)
     {
-        // This weapon is active if its index matches the switched index
-        bool isActive = (switchedIndex == weaponIndex);
-
-        // Auto-reload if empty when switching to this weapon
-        if (isActive && !isReloading && currentAmmo <= 0)
-        {
-            StartReload();
-        }
-    }
-
-    private void HandleFire(RaycastHit hit)
-    {
-        // Only process if this weapon is active
         if (!gameObject.activeInHierarchy) return;
 
-        // Check for shooting input (left click)
+        // SHOOT on left click
         if (Input.GetMouseButtonDown(0))
         {
             if (CanShoot)
             {
-                // Calculate damage based on distance
-                float damage = CalculateDamageBasedOnDistance(hit.distance);
-                ProcessShot(hit, damage);
+                Shoot(hit);
             }
-            else if (currentAmmo <= 0 && !isReloading)
+            else if (currentAmmo == 0 && !isReloading)
             {
-                // Play empty sound
-                PlaySound(emptySound);
-                TryAutoReload();
+                Debug.Log("Out of ammo!");
+                UpdateStatus("Out of Ammo!");
+                StartReload();
             }
         }
 
-        // Check for reload input (R key)
+        // RELOAD on R key
         if (Input.GetKeyDown(KeyCode.R) && !isReloading && currentAmmo < magazineSize)
         {
             StartReload();
         }
     }
 
-    protected virtual void ProcessShot(RaycastHit hit, float calculatedDamage)
+    protected virtual void Shoot(RaycastHit hit)
     {
-        // Reduce ammo and set cooldown
+        // Reduce ammo
         currentAmmo--;
         nextFireTime = Time.time + fireRate;
 
-        // Invoke ammo changed event
+        // Update ammo UI
         OnAmmoChanged?.Invoke(currentAmmo);
 
-        // Play fire sound
-        PlaySound(fireSound);
+        // Muzzle flash with coroutine
+        StartCoroutine(PlayMuzzleFlash());
 
-        // Create visual bullet effect (optional)
-        if (bulletPrefab && muzzleTransform)
+        // Play shoot sound
+        if (audioSource != null && shootSound != null)
         {
-            CreateBulletEffect(hit.point);
+            audioSource.PlayOneShot(shootSound);
         }
 
-        // Apply damage to target if it has a Health component
-        if (hit.collider != null)
+        // Show bullet impact
+        if (bulletImpact != null)
         {
-            Health targetHealth = hit.collider.GetComponent<Health>();
-            if (targetHealth != null)
-            {
-                targetHealth.TakeDamage(calculatedDamage);
-            }
+            bulletImpact.transform.position = hit.point;
+            bulletImpact.Play();
         }
 
-        // Invoke weapon fired event
-        OnWeaponFired?.Invoke();
-    }
-
-    protected virtual float CalculateDamageBasedOnDistance(float hitDistance)
-    {
-        // Base implementation: linear damage falloff
-        if (hitDistance <= effectiveRange)
+        // Check ammo
+        if (currentAmmo <= 0)
         {
-            return baseDamage;
-        }
-        else if (hitDistance >= maxRange)
-        {
-            return baseDamage * 0.1f; // 10% damage at max range
+            UpdateStatus("Out of Ammo!");
         }
         else
         {
-            // Linear falloff between effective range and max range
-            float falloffPercent = (hitDistance - effectiveRange) / (maxRange - effectiveRange);
-            return baseDamage * Mathf.Lerp(1f, 0.1f, falloffPercent);
+            UpdateStatus("Ready");
+        }
+
+        Debug.Log($"{gameObject.name} fired! Ammo: {currentAmmo}/{magazineSize}");
+    }
+
+    protected IEnumerator PlayMuzzleFlash()
+    {
+        if (muzzleFlash != null)
+        {
+            muzzleFlash.Play();
+            yield return new WaitForSeconds(0.1f); // Flash duration
+            StopMuzzleFlash();
+        }
+    }
+
+    protected void StopMuzzleFlash()
+    {
+        if (muzzleFlash != null)
+        {
+            muzzleFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
     }
 
@@ -165,76 +157,35 @@ public abstract class Weapon : MonoBehaviour
     {
         if (!isReloading && currentAmmo < magazineSize)
         {
-            StartCoroutine(ReloadCoroutine());
+            StartCoroutine(Reload());
         }
     }
 
-    protected virtual IEnumerator ReloadCoroutine()
+    protected virtual IEnumerator Reload()
     {
         isReloading = true;
-        OnReloadStarted?.Invoke();
+        UpdateStatus("Reloading...");
 
         // Play reload sound
-        PlaySound(reloadSound);
-
-        float elapsedTime = 0f;
-
-        while (elapsedTime < reloadTime)
+        if (audioSource != null && reloadSound != null)
         {
-            elapsedTime += Time.deltaTime;
-            yield return null;
+            audioSource.PlayOneShot(reloadSound);
         }
 
+        yield return new WaitForSeconds(reloadTime);
+
+        // Refill ammo
         currentAmmo = magazineSize;
         isReloading = false;
         OnAmmoChanged?.Invoke(currentAmmo);
-        OnReloadCompleted?.Invoke();
+        UpdateStatus("Ready");
+
+        Debug.Log($"{gameObject.name} reloaded!");
     }
 
-    protected void TryAutoReload()
+    protected void UpdateStatus(string status)
     {
-        // Auto-reload after a short delay when trying to fire empty weapon
-        if (!isReloading && currentAmmo == 0)
-        {
-            Invoke(nameof(StartReload), 0.2f);
-        }
-    }
-
-    protected virtual void CreateBulletEffect(Vector3 hitPoint)
-    {
-        // Instantiate bullet visual that travels to hit point
-        GameObject bullet = Instantiate(bulletPrefab, muzzleTransform.position, Quaternion.identity);
-        StartCoroutine(MoveBulletTowardsTarget(bullet, hitPoint));
-    }
-
-    protected IEnumerator MoveBulletTowardsTarget(GameObject bullet, Vector3 targetPosition)
-    {
-        float travelTime = 0.1f; // Bullet travel time
-        float elapsedTime = 0f;
-        Vector3 startPosition = bullet.transform.position;
-
-        while (elapsedTime < travelTime)
-        {
-            elapsedTime += Time.deltaTime;
-            float t = elapsedTime / travelTime;
-            bullet.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
-            yield return null;
-        }
-
-        Destroy(bullet);
-    }
-
-    protected void PlaySound(AudioClip clip)
-    {
-        if (audioSource && clip)
-        {
-            audioSource.PlayOneShot(clip);
-        }
-    }
-
-    // Called by child classes to set their index
-    protected void SetWeaponIndex(int index)
-    {
-        weaponIndex = index;
+        OnWeaponStatusChanged?.Invoke(status);
+        Debug.Log($"Weapon Status: {status}");
     }
 }
