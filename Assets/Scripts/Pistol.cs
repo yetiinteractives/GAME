@@ -1,39 +1,46 @@
-using System;
 using UnityEngine;
 
-public class Pistol : MonoBehaviour
+public class Pistol : Weapon
 {
-    [SerializeField]ParticleSystem muzzleFlash;
-    [SerializeField]AudioSource gunShotAudioSource;
-    [SerializeField]ParticleSystem hitEffect;
+    [Header("Pistol Specific")]
+    [SerializeField] private float headshotMultiplier = 2f;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    protected override void Awake()
     {
-        MousePositoin3D.OnFirePerformed += HandleFirePerformed;
-
+        base.Awake();
+        SetWeaponIndex(1); // Pistol is weapon 1
     }
 
-    private void HandleFirePerformed(RaycastHit raycastHitInfo) 
+    protected override void ProcessShot(RaycastHit hit, float calculatedDamage)
     {
-        if(muzzleFlash != null)
-            muzzleFlash.Play();
+        
+        bool isHeadshot = hit.collider.CompareTag("Head");
+        float finalDamage = isHeadshot ? calculatedDamage * headshotMultiplier : calculatedDamage;
 
-        if(gunShotAudioSource != null)
-            gunShotAudioSource.Play();
+        // Call base processing with final damage
+        base.ProcessShot(hit, finalDamage);
 
-        if(hitEffect != null)
+        Debug.Log($"Pistol shot! Distance: {hit.distance:F1}m, " +
+                 $"Base Damage: {baseDamage}, " +
+                 $"Final Damage: {finalDamage:F1}, " +
+                 $"Headshot: {isHeadshot}");
+    }
+
+    protected override float CalculateDamageBasedOnDistance(float hitDistance)
+    {
+        // Pistol: accurate with moderate range falloff
+        if (hitDistance <= effectiveRange)
         {
-            hitEffect.transform.position = raycastHitInfo.point;  //move hit effect to hit position
-            hitEffect.Play();
+            return baseDamage;
         }
-           
+        else if (hitDistance >= maxRange)
+        {
+            return baseDamage * 0.3f; // 30% damage at max range for pistol
+        }
+        else
+        {
+            float falloffPercent = (hitDistance - effectiveRange) / (maxRange - effectiveRange);
+            return baseDamage * Mathf.Lerp(1f, 0.3f, falloffPercent);
+        }
     }
-
-    private void OnDestroy()   // to prevent memory leaks
-    {
-        MousePositoin3D.OnFirePerformed -= HandleFirePerformed;
-    }
-
-
 }

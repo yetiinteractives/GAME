@@ -49,8 +49,6 @@ public class SwitchWeapons : MonoBehaviour
             pistol.SetActive(false);
             shotGun.SetActive(true);
 
-           
-
         }
 
     }
