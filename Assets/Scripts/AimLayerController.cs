@@ -93,7 +93,7 @@ public class AimLayerController : MonoBehaviour
                 Time.deltaTime * 25f
             );
         }
-        else if (currentWeaponIndex == 2) // Shotgun
+        else if (currentWeaponIndex == 2 || currentWeaponIndex == 3) // Shotgun or Sniper
         {
             // Right Mouse Button
             if (Input.GetMouseButton(1))

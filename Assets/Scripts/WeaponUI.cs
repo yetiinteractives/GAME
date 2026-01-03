@@ -62,9 +62,10 @@ public class WeaponsUI : MonoBehaviour
         // Update UI immediately
         if (currentWeapon != null)
         {
-            UpdateAmmoDisplay(currentWeapon.CurrentAmmo);
+            // UPDATED PROPERTY NAMES HERE:
+            UpdateAmmoDisplay(currentWeapon.BulletOnMag, currentWeapon.TotalBullet);
             UpdateWeaponStatus(currentWeapon.IsReloading ? "Reloading..." :
-                              currentWeapon.CurrentAmmo == 0 ? "Out of Ammo!" : "Ready");
+                              currentWeapon.BulletOnMag == 0 ? "Out of Ammo!" : "Ready");
         }
     }
 
@@ -86,11 +87,12 @@ public class WeaponsUI : MonoBehaviour
         }
     }
 
-    private void UpdateAmmoDisplay(int currentAmmo)
+    private void UpdateAmmoDisplay(int bulletOnMag, int totalBullet)
     {
         if (ammoText != null && currentWeapon != null)
         {
-            ammoText.text = $"{currentAmmo}/{currentWeapon.MagazineSize}";
+            // Format: [bullets in magazine] / [bullets in reserve]
+            ammoText.text = $"{bulletOnMag} / {totalBullet}";
         }
     }
 
@@ -101,7 +103,7 @@ public class WeaponsUI : MonoBehaviour
             weaponStatusText.text = status;
 
             // Color code
-            if (status == "Ready") weaponStatusText.color = Color.green;
+            if (status == "Ready" || status == "Aiming") weaponStatusText.color = Color.green;
             else if (status == "Reloading...") weaponStatusText.color = Color.yellow;
             else if (status == "Out of Ammo!") weaponStatusText.color = Color.red;
             else weaponStatusText.color = Color.white;
