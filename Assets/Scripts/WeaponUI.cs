@@ -6,12 +6,14 @@ public class WeaponsUI : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private GameObject pistolIcon;
     [SerializeField] private GameObject shotgunIcon;
+    [SerializeField] private GameObject sniperIcon;
     [SerializeField] private TMP_Text ammoText;
     [SerializeField] private TMP_Text weaponStatusText;
 
     [Header("Weapon References")]
     [SerializeField] private Weapon pistolWeapon;
     [SerializeField] private Weapon shotgunWeapon;
+    [SerializeField] private Weapon sniperWeapon;
 
     private Weapon currentWeapon;
 
@@ -42,18 +44,29 @@ public class WeaponsUI : MonoBehaviour
         // Unsubscribe from old weapon
         UnsubscribeFromWeapon();
 
-        // Switch weapon
-        if (weaponIndex == 1)
+        // Deactivate all icons first
+        pistolIcon.SetActive(false);
+        shotgunIcon.SetActive(false);
+        sniperIcon.SetActive(false);
+
+        // Switch weapon based on index
+        switch (weaponIndex)
         {
-            currentWeapon = pistolWeapon;
-            pistolIcon.SetActive(true);
-            shotgunIcon.SetActive(false);
-        }
-        else if (weaponIndex == 2)
-        {
-            currentWeapon = shotgunWeapon;
-            pistolIcon.SetActive(false);
-            shotgunIcon.SetActive(true);
+            case 1:
+                currentWeapon = pistolWeapon;
+                pistolIcon.SetActive(true);
+                break;
+            case 2:
+                currentWeapon = shotgunWeapon;
+                shotgunIcon.SetActive(true);
+                break;
+            case 3:
+                currentWeapon = sniperWeapon;
+                sniperIcon.SetActive(true);
+                break;
+            default:
+                Debug.LogWarning($"Unknown weapon index: {weaponIndex}");
+                return;
         }
 
         // Subscribe to new weapon
@@ -62,7 +75,6 @@ public class WeaponsUI : MonoBehaviour
         // Update UI immediately
         if (currentWeapon != null)
         {
-            // UPDATED PROPERTY NAMES HERE:
             UpdateAmmoDisplay(currentWeapon.BulletOnMag, currentWeapon.TotalBullet);
             UpdateWeaponStatus(currentWeapon.IsReloading ? "Reloading..." :
                               currentWeapon.BulletOnMag == 0 ? "Out of Ammo!" : "Ready");
@@ -91,7 +103,6 @@ public class WeaponsUI : MonoBehaviour
     {
         if (ammoText != null && currentWeapon != null)
         {
-            // Format: [bullets in magazine] / [bullets in reserve]
             ammoText.text = $"{bulletOnMag} / {totalBullet}";
         }
     }
