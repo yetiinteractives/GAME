@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
+
 
 public abstract class Weapon : MonoBehaviour
 {
@@ -10,6 +12,8 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField] protected int totalBullet = 100;    // Total bullets in pocket/reserve
     [SerializeField] protected float reloadTime = 1.5f;
     [SerializeField] protected float fireRate = 0.3f;
+    [SerializeField] protected float recoilIntensity= 1.5f;
+    [SerializeField] protected float recoilDuration= 0.5f;
 
     [Header("Audio and Visuals")]
     [SerializeField] protected AudioClip shootSound;
@@ -18,6 +22,7 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField] protected GameObject bulletImpactPrefab;
     [SerializeField] protected GameObject bulleteHolePrefab;
     protected AudioSource audioSource;
+    protected CinemachineImpulseSource impulseSource; 
 
     // Events
     public event Action<int, int> OnAmmoChanged; // bulletOnMag, totalBullet
@@ -63,6 +68,8 @@ public abstract class Weapon : MonoBehaviour
         {
             muzzleFlash.Stop();
         }
+
+        impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     protected virtual void OnDisable()
@@ -158,6 +165,13 @@ public abstract class Weapon : MonoBehaviour
             GameObject hole = Instantiate(bulleteHolePrefab, hit.point + hit.normal * 0.01f, Quaternion.LookRotation(-hit.normal));
             Destroy(hole, 30f);
         }
+        /*
+        if (impulseSource != null)
+        { 
+            impulseSource.GenerateImpulse();  //for camera shake
+        }
+        */
+        CinemachineShake.Instance.Shake(recoilIntensity, recoilDuration); // Camera shake
 
 
         // Call derived class shooting logic
