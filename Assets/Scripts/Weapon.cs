@@ -21,8 +21,7 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField] protected ParticleSystem muzzleFlash;
     [SerializeField] protected GameObject bulletImpactPrefab;
     [SerializeField] protected GameObject bulleteHolePrefab;
-    protected AudioSource audioSource;
-    protected CinemachineImpulseSource impulseSource; 
+    protected AudioSource audioSource; 
 
     // Events
     public event Action<int, int> OnAmmoChanged; // bulletOnMag, totalBullet
@@ -69,7 +68,7 @@ public abstract class Weapon : MonoBehaviour
             muzzleFlash.Stop();
         }
 
-        impulseSource = GetComponent<CinemachineImpulseSource>();
+        
     }
 
     protected virtual void OnDisable()
@@ -121,6 +120,8 @@ public abstract class Weapon : MonoBehaviour
         {
             StartReload();
         }
+
+        ScopeCheck();
     }
 
     protected virtual void StartAiming()
@@ -165,13 +166,9 @@ public abstract class Weapon : MonoBehaviour
             GameObject hole = Instantiate(bulleteHolePrefab, hit.point + hit.normal * 0.01f, Quaternion.LookRotation(-hit.normal));
             Destroy(hole, 30f);
         }
-        /*
-        if (impulseSource != null)
-        { 
-            impulseSource.GenerateImpulse();  //for camera shake
-        }
-        */
+        
         CinemachineShake.Instance.Shake(recoilIntensity, recoilDuration); // Camera shake
+
 
 
         // Call derived class shooting logic
@@ -262,4 +259,14 @@ public abstract class Weapon : MonoBehaviour
         totalBullet += amount;
         OnAmmoChanged?.Invoke(bulletOnMag, totalBullet);
     }
+
+    protected virtual void ScopeCheck()
+    {
+        //to override in sniper class
+    }
+
+
+
+
+
 }
