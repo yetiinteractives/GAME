@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class SwitchWeapons : MonoBehaviour
 {
@@ -9,10 +10,30 @@ public class SwitchWeapons : MonoBehaviour
     [SerializeField] private GameObject shotgun;
     [SerializeField] private GameObject sniper;
 
+    [SerializeField] private GameObject switchWeaponUI;
+
     private int currentWeaponIndex = 1;
 
     void Update()
-    {
+    {   
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+           
+            UnityEngine.Cursor.lockState = CursorLockMode.None;
+            UnityEngine.Cursor.visible = true;
+            Time.timeScale = 0f;
+            switchWeaponUI.SetActive(true);
+        }
+        if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            Time.timeScale = 1f;
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+            UnityEngine.Cursor.visible = false;
+
+            switchWeaponUI.SetActive(false);
+        }
+
+
         if (Input.GetKeyDown(KeyCode.Alpha1) && currentWeaponIndex != 1)
         {
             OnWeaponSwitch?.Invoke(1);

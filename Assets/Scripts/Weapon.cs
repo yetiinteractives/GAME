@@ -121,7 +121,10 @@ public abstract class Weapon : MonoBehaviour
             StartReload();
         }
 
-        ScopeCheck();
+        if(isAiming)
+        {
+            ScopeCheck();
+        }
     }
 
     protected virtual void StartAiming()

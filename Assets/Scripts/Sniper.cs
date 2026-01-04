@@ -7,8 +7,10 @@ public class Sniper : Weapon
     [SerializeField] private GameObject sniperScopeUI;
     [SerializeField] private FreeLookADS cameraController;
 
+    // Body parts to hide when scoped 
     [SerializeField] private GameObject playerBody;
     [SerializeField] private GameObject sniperBody;
+    [SerializeField] private GameObject sniperStock;
 
     private bool isScopeActive = false;
 
@@ -30,6 +32,10 @@ public class Sniper : Weapon
                 Debug.LogError("FreeLookADS controller not found in scene!");
             }
         }
+
+        // Ensure bodies are visible by default
+        if (playerBody != null) playerBody.SetActive(true);
+        if (sniperBody != null) sniperBody.SetActive(true);
     }
 
     protected override void ScopeCheck()
@@ -65,8 +71,9 @@ public class Sniper : Weapon
         sniperScopeUI.SetActive(true);
         cameraController.SetScopedState();
 
-       playerBody.SetActive(false);
-       sniperBody.SetActive(false);
+        // Hide bodies when scoped
+        if (playerBody != null) playerBody.SetActive(false);
+        if (sniperBody != null) sniperBody.SetActive(false);
     }
 
     private void DisableScope()
@@ -76,11 +83,19 @@ public class Sniper : Weapon
         isScopeActive = false;
         sniperScopeUI.SetActive(false);
 
-        // Go back to ADS state (not fully normal)
-        cameraController.SetADSState();
+        // Show bodies when not scoped
+        if (playerBody != null) playerBody.SetActive(true);
+        if (sniperBody != null) sniperBody.SetActive(true);
 
-        playerBody.SetActive(true);
-        sniperBody.SetActive(true);
+        // Only go to ADS state if we're still aiming
+        if (isAiming)
+        {
+            cameraController.SetADSState();
+        }
+        else
+        {
+            cameraController.SetNormalState();
+        }
     }
 
     protected override void Update()
@@ -92,6 +107,9 @@ public class Sniper : Weapon
         {
             DisableScope();
         }
+
+
+
     }
 
     protected override void OnDisable()
@@ -104,7 +122,7 @@ public class Sniper : Weapon
             DisableScope();
         }
 
-        // Let camera controller know we're done with ADS
+        // Always reset to normal state when weapon is disabled
         if (cameraController != null)
         {
             cameraController.SetNormalState();
@@ -120,15 +138,24 @@ public class Sniper : Weapon
         {
             cameraController.SetADSState();
         }
+
+        sniperStock.SetActive(false); //avoid clipping
     }
 
     protected override void StopAiming()
     {
         base.StopAiming();
 
-        if (cameraController != null)
+        // Disable scope first if it's active
+        if (isScopeActive)
+        {
+            DisableScope();
+        }
+        else if (cameraController != null)
         {
             cameraController.SetNormalState();
         }
+
+        sniperStock.SetActive(true); //restore stock visibility
     }
 }
