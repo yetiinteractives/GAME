@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Sniper : Weapon
 {
+    [Header("Sniper Specifics")]
     [SerializeField] private GameObject sniperScopeUI;
     [SerializeField] private FreeLookADS cameraController;
 

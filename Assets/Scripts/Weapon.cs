@@ -18,6 +18,7 @@ public abstract class Weapon : MonoBehaviour
     [Header("Audio and Visuals")]
     [SerializeField] protected AudioClip shootSound;
     [SerializeField] protected AudioClip reloadSound;
+    [SerializeField] protected AudioClip emptyMagSound;
     [SerializeField] protected ParticleSystem muzzleFlash;
     [SerializeField] protected GameObject bulletImpactPrefab;
     [SerializeField] protected GameObject bulleteHolePrefab;
@@ -97,7 +98,7 @@ public abstract class Weapon : MonoBehaviour
         else if (isAiming && bulletOnMag == 0 && !isReloading)
         {
             UpdateStatus("Out of Ammo!");
-            StartReload();
+            audioSource.PlayOneShot(emptyMagSound);
         }
     }
 
