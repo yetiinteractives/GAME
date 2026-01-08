@@ -24,6 +24,8 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField] protected GameObject bulleteHolePrefab;
     protected AudioSource audioSource; 
 
+    protected FreeLookADS freeLookAds;
+
     // Events
     public event Action<int, int> OnAmmoChanged; // bulletOnMag, totalBullet
     public event Action<string> OnWeaponStatusChanged;
@@ -56,6 +58,8 @@ public abstract class Weapon : MonoBehaviour
         {
             muzzleFlash.Stop();
         }
+
+        freeLookAds = FindFirstObjectByType<FreeLookADS>();
     }
 
     protected virtual void OnEnable()
@@ -132,12 +136,15 @@ public abstract class Weapon : MonoBehaviour
     {
         isAiming = true;
         UpdateStatus("Aiming");
+        freeLookAds.SetADSState();  // Adjust FOV and sensitivity for aiming
+
     }
 
     protected virtual void StopAiming()
     {
         isAiming = false;
         UpdateStatus("Ready");
+        freeLookAds.SetNormalState(); // Reset FOV and sensitivity
     }
 
     protected virtual void Shoot(RaycastHit hit)
