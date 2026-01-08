@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -18,6 +19,8 @@ public class SwitchWeapons : MonoBehaviour
 
     private int currentWeaponIndex = 1;
     private bool isWheelOpen = false;
+
+    [SerializeField] PlayerHealth playerHealth;
 
     private void Start()
     {
@@ -117,9 +120,6 @@ public class SwitchWeapons : MonoBehaviour
     }
     public void OnHealingSelected()
     {
-        CloseWheel();
-
-  
-        
+        playerHealth.HealPlayer(25); // Heal player 
     }
 }
