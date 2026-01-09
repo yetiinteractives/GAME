@@ -15,6 +15,13 @@ public class CrossHairVisiliblity : MonoBehaviour
     {
         SwitchWeapons.OnToggleWeaponSwitchUI += HandleWeaponSwitchUI;
         SwitchWeapons.OnWeaponSwitch += HandleWeaponSwitch;
+        MousePosition3D.OnFirePerformed += HandleFirePerformed;
+    }
+
+    private void HandleFirePerformed(RaycastHit hit)
+    {
+        _shotgunCrossHair.gameObject.SetActive(false);
+        _crossHair.gameObject.SetActive(false);
     }
 
     private void HandleWeaponSwitch(int weaponIndex)
