@@ -3,12 +3,12 @@ using UnityEngine;
 public class EnemyHealth : MonoBehaviour
 {
     [Header("Enemy Health Settings")]
-    public int maxHealth = 100;
+    public int enemy_maxHealth = 100;
     private int currentHealth;
 
     void Start()
     {
-        currentHealth = maxHealth;
+        currentHealth = enemy_maxHealth;
 
     }
     void OnTriggerEnter(Collider other)
