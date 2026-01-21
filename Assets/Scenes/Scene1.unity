@@ -1956,12 +1956,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
   m_SerializedVersion: 0
   m_AgentTypeID: 0
-  m_CollectObjects: 3
+  m_CollectObjects: 0
   m_Size: {x: 10, y: 10, z: 10}
   m_Center: {x: 0, y: 2, z: 0}
   m_LayerMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 1
   m_UseGeometry: 0
   m_DefaultArea: 0
   m_GenerateLinks: 0
@@ -2093,7 +2093,7 @@ GameObject:
   - component: {fileID: 625687034}
   - component: {fileID: 625687033}
   - component: {fileID: 625687032}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2504,7 +2504,7 @@ Transform:
   m_GameObject: {fileID: 717784047}
   serializedVersion: 2
   m_LocalRotation: {x: 0.15212339, y: -0.000000014941667, z: 0.0000000022997426, w: 0.98836154}
-  m_LocalPosition: {x: -93.03, y: 3.0714116, z: -52.9}
+  m_LocalPosition: {x: -77.26, y: 3.0714116, z: -47.357433}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3197,7 +3197,7 @@ GameObject:
   - component: {fileID: 856840094}
   - component: {fileID: 856840093}
   - component: {fileID: 856840092}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3459,16 +3459,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cop_Zombie
       objectReference: {fileID: 0}
+    - target: {fileID: 5686782205424112930, guid: 1479a30e47afd6449ad41fdb08140afa,
+        type: 3}
+      propertyPath: m_Mass
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 6968614624366206757, guid: 1479a30e47afd6449ad41fdb08140afa,
         type: 3}
       propertyPath: state
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6968614624366206757, guid: 1479a30e47afd6449ad41fdb08140afa,
         type: 3}
       propertyPath: player
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1722869278}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4884,7 +4889,7 @@ Transform:
   m_GameObject: {fileID: 1166636359}
   serializedVersion: 2
   m_LocalRotation: {x: 0.15212339, y: -0.000000014941667, z: 0.0000000022997426, w: 0.98836154}
-  m_LocalPosition: {x: -93.03, y: 3.0714116, z: -52.9}
+  m_LocalPosition: {x: -77.26, y: 3.0714116, z: -47.357433}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9171,6 +9176,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 161180788178164672, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
+      propertyPath: useRootMotion
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 161180788178164672, guid: 1065b7837df3b774f9cb7bc79a988cd6,
+        type: 3}
+      propertyPath: groundLayer.m_Bits
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 161180788178164672, guid: 1065b7837df3b774f9cb7bc79a988cd6,
+        type: 3}
       propertyPath: freeSpeed.walkByDefault
       value: 0
       objectReference: {fileID: 0}
@@ -9934,6 +9949,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 5255145639538871528, guid: 1065b7837df3b774f9cb7bc79a988cd6,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5262003166763115505, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
       propertyPath: m_Layer
@@ -10123,6 +10143,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6375793318645230314, guid: 1065b7837df3b774f9cb7bc79a988cd6,
+        type: 3}
+      propertyPath: m_Mass
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 6467217358339342299, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
@@ -10372,7 +10397,7 @@ PrefabInstance:
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -93.5
+      value: -77.73
       objectReference: {fileID: 0}
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
@@ -10382,7 +10407,7 @@ PrefabInstance:
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -50.99257
+      value: -45.45
       objectReference: {fileID: 0}
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
