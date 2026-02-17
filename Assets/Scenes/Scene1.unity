@@ -3462,7 +3462,7 @@ PrefabInstance:
     - target: {fileID: 5686782205424112930, guid: 1479a30e47afd6449ad41fdb08140afa,
         type: 3}
       propertyPath: m_Mass
-      value: 100
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 6968614624366206757, guid: 1479a30e47afd6449ad41fdb08140afa,
         type: 3}
@@ -3474,6 +3474,21 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1722869278}
+    - target: {fileID: 6968614624366206757, guid: 1479a30e47afd6449ad41fdb08140afa,
+        type: 3}
+      propertyPath: WalkSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6968614624366206757, guid: 1479a30e47afd6449ad41fdb08140afa,
+        type: 3}
+      propertyPath: attackRange
+      value: 1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8280287271003771868, guid: 1479a30e47afd6449ad41fdb08140afa,
+        type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8040,6 +8055,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: MegaspikanLarva
+      objectReference: {fileID: 0}
+    - target: {fileID: 4656870534971168035, guid: 9ace73a3730f56841b7e798e9897375e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5545640440511269328, guid: 9ace73a3730f56841b7e798e9897375e,
         type: 3}
