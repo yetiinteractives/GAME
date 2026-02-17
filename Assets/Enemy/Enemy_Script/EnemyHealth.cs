@@ -15,7 +15,7 @@ public class EnemyHealth : MonoBehaviour
     {
         if (other.CompareTag("Bullet"))
         {
-            TakeDamage(90);
+            TakeDamage(20);
         }
       
 
