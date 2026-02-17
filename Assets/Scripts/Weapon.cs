@@ -149,16 +149,8 @@ public abstract class Weapon : MonoBehaviour
 
     protected virtual void Shoot(RaycastHit hit)
     {
-
-        // Apply damage to target if it has IDamageable
-        IDamageable damageable = hit.collider.GetComponent<IDamageable>();
-
-        if (damageable != null)
-        {
-            damageable.TakeDamage(damage);
-        }
-
-
+        // apply damage to target if it has a health component
+        ApplyDamage(hit , damage);
 
         // Reduce bullet in magazine
         bulletOnMag--;
@@ -209,6 +201,19 @@ public abstract class Weapon : MonoBehaviour
 
         Debug.Log($"{gameObject.name} fired! Mag: {bulletOnMag}/{magCapacity}, Total: {totalBullet}");
     }
+
+
+    protected void ApplyDamage(RaycastHit hit, int damageAmount)
+    {
+        IDamageable damageable = hit.collider.GetComponentInParent<IDamageable>();
+
+        if (damageable != null)
+        {
+            damageable.TakeDamage(damageAmount);
+        }
+    }
+
+
 
     // Coroutine to play muzzle flash
     protected virtual IEnumerator PlayMuzzleFlash()

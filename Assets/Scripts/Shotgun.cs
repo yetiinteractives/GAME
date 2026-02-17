@@ -5,7 +5,7 @@ public class Shotgun : Weapon
     [Header("Shotgun Specific")]
     [SerializeField] private int pelletCount = 8;
     [SerializeField] private float spreadAngle = 3f;
-    [SerializeField] private float pelletDamage = 5f; // Each pellet does less damage
+    [SerializeField] private int pelletDamage = 5; // Each pellet does less damage
 
     protected override void OnShoot(RaycastHit hit)
     {
@@ -71,8 +71,8 @@ public class Shotgun : Weapon
         return !collider.CompareTag("Player") && !collider.CompareTag("Enemy");
     }
 
-    private void DamageTarget(RaycastHit hit, float damageAmount)
+    private void DamageTarget(RaycastHit hit, int damageAmount)
     {
-        
+        ApplyDamage(hit, damageAmount);
     }
 }
