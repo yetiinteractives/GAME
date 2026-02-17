@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
+using static ImpactManager;
 
 
 public abstract class Weapon : MonoBehaviour
@@ -20,8 +21,7 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField] protected AudioClip reloadSound;
     [SerializeField] protected AudioClip emptyMagSound;
     [SerializeField] protected ParticleSystem muzzleFlash;
-    [SerializeField] protected GameObject bulletImpactPrefab;
-    [SerializeField] protected GameObject bulleteHolePrefab;
+   
     protected AudioSource audioSource;
 
     protected FreeLookADS freeLookAds;
@@ -43,14 +43,7 @@ public abstract class Weapon : MonoBehaviour
     public int MagCapacity => magCapacity;
     public int TotalBullet => totalBullet;
 
-    [System.Serializable]
-    public struct SurfaceImpact
-    {
-        public SurfaceTypeEnum surfaceType;
-        public GameObject impactPrefab;
-    }
-
-    [SerializeField] private SurfaceImpact[] surfaceImpacts;
+   protected GunTypeEnum gunType;
 
 
 
@@ -187,7 +180,11 @@ public abstract class Weapon : MonoBehaviour
             Destroy(impact, 2f);
         }
         */
-        CreateBulletImpact(hit);
+        if (ImpactManager.Instance != null)
+        {
+            ImpactManager.Instance.SpawnImpact(gunType, hit);
+        }
+
 
         // Instantiate bullet tracer effect
         /*if (bulleteHolePrefab != null)
@@ -310,42 +307,7 @@ public abstract class Weapon : MonoBehaviour
     }
 
 
-    protected GameObject GetImpactPrefab(SurfaceTypeEnum surfaceType)
-    {
-        foreach (var impact in surfaceImpacts)
-        {
-            if (impact.surfaceType == surfaceType)
-                return impact.impactPrefab;
-        }
-
-        return null; // fallback
-    }
-
-    void CreateBulletImpact(RaycastHit hit)
-    {
-        Surface surface = hit.collider.GetComponentInParent<Surface>();
-
-        SurfaceTypeEnum type = SurfaceTypeEnum.Default;
-
-        if (surface != null)
-            type = surface.surfaceType;
-
-        GameObject impactPrefab = GetImpactPrefab(type);
-
-        if (impactPrefab != null)
-        {
-            GameObject impact = Instantiate(
-                impactPrefab,
-                hit.point,
-                Quaternion.LookRotation(hit.normal)
-            );
-
-            Destroy(impact, 2f);
-        }
-
-    }
-
-
+  
 
 
 }

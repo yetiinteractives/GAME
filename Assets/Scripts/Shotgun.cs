@@ -23,8 +23,11 @@ public class Shotgun : Weapon
             Ray pelletRay = new Ray(shotOrigin, spreadDirection);
             if (Physics.Raycast(pelletRay, out RaycastHit pelletHit, Mathf.Infinity))
             {
-                // Create pellet impact effects (smaller than main bullet)
-                CreatePelletImpact(pelletHit);
+                if (ImpactManager.Instance != null)
+                {
+                    ImpactManager.Instance.SpawnImpact(gunType, pelletHit);
+                }
+
 
                 // Apply damage if target has health component
                 DamageTarget(pelletHit, pelletDamage);
@@ -43,33 +46,9 @@ public class Shotgun : Weapon
         return spreadRotation * baseDirection;
     }
 
-    private void CreatePelletImpact(RaycastHit hit)
-    {
-        // Smaller impact effect for pellets
-        if (bulletImpactPrefab != null)
-        {
-            GameObject impact = Instantiate(bulletImpactPrefab, hit.point,
-                Quaternion.LookRotation(hit.normal));
-            impact.transform.localScale *= .75f; // Smaller scale for pellets
-            Destroy(impact, 1f);
-        }
+   
 
-        // Smaller bullet hole for pellets
-        if (bulleteHolePrefab != null && ShouldCreateBulletHole(hit.collider))
-        {
-            GameObject hole = Instantiate(bulleteHolePrefab,
-                hit.point + hit.normal * 0.01f,
-                Quaternion.LookRotation(-hit.normal));
-            hole.transform.localScale *= 0.75f;
-            Destroy(hole, 15f);
-        }
-    }
-
-    private bool ShouldCreateBulletHole(Collider collider)
-    {
-        // Don't create bullet holes on characters
-        return !collider.CompareTag("Player") && !collider.CompareTag("Enemy");
-    }
+    
 
     private void DamageTarget(RaycastHit hit, int damageAmount)
     {
