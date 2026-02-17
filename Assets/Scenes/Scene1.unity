@@ -5422,6 +5422,7 @@ MonoBehaviour:
   reloadSound: {fileID: 8300000, guid: 441748727bcdaaf4c9f2d5b8e018ed51, type: 3}
   emptyMagSound: {fileID: 8300000, guid: a4672d65990a0d04284070cf2739d019, type: 3}
   muzzleFlash: {fileID: 161721421}
+  gunType: 1
   pelletCount: 8
   spreadAngle: 3
   pelletDamage: 7
@@ -5483,6 +5484,7 @@ MonoBehaviour:
   reloadSound: {fileID: 8300000, guid: 5e6103c2b7b948f4e93fd96cefc11c9a, type: 3}
   emptyMagSound: {fileID: 8300000, guid: f4c5e8ca4f169b941a9e9b1c5e7fae4a, type: 3}
   muzzleFlash: {fileID: 1149548492}
+  gunType: 2
   sniperScopeUI: {fileID: 731460890}
   cameraController: {fileID: 1166636367}
   playerBody: {fileID: 427029173}
@@ -7465,6 +7467,7 @@ MonoBehaviour:
   reloadSound: {fileID: 8300000, guid: eb206fa6679a072488be952f5ccee6dc, type: 3}
   emptyMagSound: {fileID: 8300000, guid: 168f6ab6bbc94c5489e393fc2457d77a, type: 3}
   muzzleFlash: {fileID: 1765941129}
+  gunType: 0
 --- !u!4 &1650748127 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 419947569530888172, guid: 1065b7837df3b774f9cb7bc79a988cd6,

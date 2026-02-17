@@ -43,7 +43,7 @@ public abstract class Weapon : MonoBehaviour
     public int MagCapacity => magCapacity;
     public int TotalBullet => totalBullet;
 
-   protected GunTypeEnum gunType;
+   [SerializeField]protected GunTypeEnum gunType;
 
 
 

@@ -15,24 +15,18 @@ public class ImpactManager : MonoBehaviour
         Instance = this;
     }
 
-    
-   
-
- 
     [Header("PISTOL IMPACTS")]
     public GameObject pistolConcrete;
     public GameObject pistolMetal;
     public GameObject pistolWood;
     public GameObject pistolFlesh;
 
-  
     [Header("SHOTGUN IMPACTS")]
     public GameObject shotgunConcrete;
     public GameObject shotgunMetal;
     public GameObject shotgunWood;
     public GameObject shotgunFlesh;
 
-    
     [Header("SNIPER IMPACTS")]
     public GameObject sniperConcrete;
     public GameObject sniperMetal;
@@ -50,17 +44,41 @@ public class ImpactManager : MonoBehaviour
             ? surface.surfaceType
             : SurfaceTypeEnum.Default;
 
+        // 🔥 If Default, do NOT instantiate anything
+        if (surfaceType == SurfaceTypeEnum.Default)
+            return;
+
         GameObject prefab = GetImpactPrefab(gunType, surfaceType);
 
-        // SAFETY CHECK
         if (prefab == null)
         {
             Debug.LogWarning($"No impact prefab found for GunType: {gunType} and SurfaceType: {surfaceType}");
             return;
         }
-           
 
-        Instantiate(prefab, hit.point, Quaternion.LookRotation(hit.normal));
+        GameObject impact = Instantiate(prefab, hit.point, Quaternion.LookRotation(hit.normal));
+
+        // Apply size variation per gun
+        float sizeMultiplier = GetSizeMultiplier(gunType);
+        impact.transform.localScale *= sizeMultiplier;
+
+        // Handle lifetime
+        float lifetime = GetLifetime(gunType, surfaceType);
+
+        // Special handling for flesh (blood burst style)
+        if (surfaceType == SurfaceTypeEnum.Flesh)
+        {
+            ParticleSystem ps = impact.GetComponentInChildren<ParticleSystem>();
+
+            if (ps != null)
+            {
+                float totalDuration = ps.main.duration + ps.main.startLifetime.constantMax;
+                Destroy(impact, totalDuration);
+                return;
+            }
+        }
+
+        Destroy(impact, lifetime);
     }
 
 
@@ -90,7 +108,7 @@ public class ImpactManager : MonoBehaviour
             case SurfaceTypeEnum.Metal: return pistolMetal;
             case SurfaceTypeEnum.Wood: return pistolWood;
             case SurfaceTypeEnum.Flesh: return pistolFlesh;
-            default: return pistolConcrete;
+            default: return null; // Default = no impact
         }
     }
 
@@ -102,7 +120,7 @@ public class ImpactManager : MonoBehaviour
             case SurfaceTypeEnum.Metal: return shotgunMetal;
             case SurfaceTypeEnum.Wood: return shotgunWood;
             case SurfaceTypeEnum.Flesh: return shotgunFlesh;
-            default: return shotgunConcrete;
+            default: return null;
         }
     }
 
@@ -114,7 +132,34 @@ public class ImpactManager : MonoBehaviour
             case SurfaceTypeEnum.Metal: return sniperMetal;
             case SurfaceTypeEnum.Wood: return sniperWood;
             case SurfaceTypeEnum.Flesh: return sniperFlesh;
-            default: return sniperConcrete;
+            default: return null;
+        }
+    }
+
+
+    private float GetSizeMultiplier(GunTypeEnum gunType)
+    {
+        switch (gunType)
+        {
+            case GunTypeEnum.Pistol: return 1f;
+            case GunTypeEnum.Shotgun: return 0.6f;
+            case GunTypeEnum.Sniper: return 1.8f;
+            default: return 1f;
+        }
+    }
+
+
+    private float GetLifetime(GunTypeEnum gunType, SurfaceTypeEnum surfaceType)
+    {
+        if (surfaceType == SurfaceTypeEnum.Flesh)
+            return 1.2f;
+
+        switch (gunType)
+        {
+            case GunTypeEnum.Pistol: return 10f;
+            case GunTypeEnum.Shotgun: return 20f;
+            case GunTypeEnum.Sniper: return 25f;
+            default: return 10f;
         }
     }
 }
