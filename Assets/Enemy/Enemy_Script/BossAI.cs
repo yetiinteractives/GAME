@@ -19,7 +19,7 @@ public class BossAI : UniversalEnemyAi
     public float attackRange = 2f;
     public int attackDamage = 10;
     public float attackCooldown = 1.2f;
-    float attackTimer = 0f;
+    float attackTimer = 1f;
     protected override void OnEnemyAwake()
     {
         state = BossState.Idle;
