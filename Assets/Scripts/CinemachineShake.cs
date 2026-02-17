@@ -48,7 +48,8 @@ public class CinemachineShake : MonoBehaviour
         }
     }
 
-    
+      
+
     public void Shake(float intensity, float shakeDuration)
     {
         startAmplitude = intensity;

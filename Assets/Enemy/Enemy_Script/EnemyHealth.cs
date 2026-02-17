@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyHealth : MonoBehaviour
+public class EnemyHealth : MonoBehaviour , IDamageable
 {
     [Header("Enemy Health Settings")]
     public int enemy_maxHealth = 100;
@@ -21,7 +21,7 @@ public class EnemyHealth : MonoBehaviour
 
     }
 
-void TakeDamage(int damage)
+public void TakeDamage(int damage)
 {
     currentHealth -= damage;
     Debug.Log("Enemy Health:" + currentHealth);

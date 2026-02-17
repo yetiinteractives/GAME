@@ -7,7 +7,7 @@ using UnityEngine;
 public abstract class Weapon : MonoBehaviour
 {
     [Header("Weapon Stats")]
-    [SerializeField] protected float damage = 10f;
+    [SerializeField] protected int damage = 10;
     [SerializeField] protected int magCapacity = 10;     // Magazine capacity
     [SerializeField] protected int totalBullet = 100;    // Total bullets in pocket/reserve
     [SerializeField] protected float reloadTime = 1.5f;
@@ -149,6 +149,17 @@ public abstract class Weapon : MonoBehaviour
 
     protected virtual void Shoot(RaycastHit hit)
     {
+
+        // Apply damage to target if it has IDamageable
+        IDamageable damageable = hit.collider.GetComponent<IDamageable>();
+
+        if (damageable != null)
+        {
+            damageable.TakeDamage(damage);
+        }
+
+
+
         // Reduce bullet in magazine
         bulletOnMag--;
         nextFireTime = Time.time + fireRate;
@@ -181,6 +192,7 @@ public abstract class Weapon : MonoBehaviour
         CinemachineShake.Instance.Shake(recoilIntensity, recoilDuration); // Camera shake
 
 
+        
 
         // Call derived class shooting logic
         OnShoot(hit);
