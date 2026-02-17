@@ -12,8 +12,8 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField] protected int totalBullet = 100;    // Total bullets in pocket/reserve
     [SerializeField] protected float reloadTime = 1.5f;
     [SerializeField] protected float fireRate = 0.3f;
-    [SerializeField] protected float recoilIntensity= 1.5f;
-    [SerializeField] protected float recoilDuration= 0.5f;
+    [SerializeField] protected float recoilIntensity = 1.5f;
+    [SerializeField] protected float recoilDuration = 0.5f;
 
     [Header("Audio and Visuals")]
     [SerializeField] protected AudioClip shootSound;
@@ -22,7 +22,7 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField] protected ParticleSystem muzzleFlash;
     [SerializeField] protected GameObject bulletImpactPrefab;
     [SerializeField] protected GameObject bulleteHolePrefab;
-    protected AudioSource audioSource; 
+    protected AudioSource audioSource;
 
     protected FreeLookADS freeLookAds;
 
@@ -42,6 +42,18 @@ public abstract class Weapon : MonoBehaviour
     public int BulletOnMag => bulletOnMag;
     public int MagCapacity => magCapacity;
     public int TotalBullet => totalBullet;
+
+    [System.Serializable]
+    public struct SurfaceImpact
+    {
+        public SurfaceTypeEnum surfaceType;
+        public GameObject impactPrefab;
+    }
+
+    [SerializeField] private SurfaceImpact[] surfaceImpacts;
+
+
+
 
     protected virtual void Awake()
     {
@@ -73,7 +85,7 @@ public abstract class Weapon : MonoBehaviour
             muzzleFlash.Stop();
         }
 
-        
+
     }
 
     protected virtual void OnDisable()
@@ -126,7 +138,7 @@ public abstract class Weapon : MonoBehaviour
             StartReload();
         }
 
-        if(isAiming)
+        if (isAiming)
         {
             ScopeCheck();
         }
@@ -150,7 +162,7 @@ public abstract class Weapon : MonoBehaviour
     protected virtual void Shoot(RaycastHit hit)
     {
         // apply damage to target if it has a health component
-        ApplyDamage(hit , damage);
+        ApplyDamage(hit, damage);
 
         // Reduce bullet in magazine
         bulletOnMag--;
@@ -169,22 +181,26 @@ public abstract class Weapon : MonoBehaviour
         StartCoroutine(PlayMuzzleFlash());
 
         // Instantiate bullet impact effect at hit point
-        if (bulletImpactPrefab != null)
+        /*if (bulletImpactPrefab != null)
         {
             GameObject impact = Instantiate(bulletImpactPrefab, hit.point, Quaternion.LookRotation(hit.normal));
             Destroy(impact, 2f);
         }
+        */
+        CreateBulletImpact(hit);
+
         // Instantiate bullet tracer effect
-        if (bulleteHolePrefab != null)
+        /*if (bulleteHolePrefab != null)
         {
             GameObject hole = Instantiate(bulleteHolePrefab, hit.point + hit.normal * 0.01f, Quaternion.LookRotation(-hit.normal));
             Destroy(hole, 30f);
         }
-        
+        */
+
         CinemachineShake.Instance.Shake(recoilIntensity, recoilDuration); // Camera shake
 
 
-        
+
 
         // Call derived class shooting logic
         OnShoot(hit);
@@ -293,6 +309,41 @@ public abstract class Weapon : MonoBehaviour
         //to override in sniper class
     }
 
+
+    protected GameObject GetImpactPrefab(SurfaceTypeEnum surfaceType)
+    {
+        foreach (var impact in surfaceImpacts)
+        {
+            if (impact.surfaceType == surfaceType)
+                return impact.impactPrefab;
+        }
+
+        return null; // fallback
+    }
+
+    void CreateBulletImpact(RaycastHit hit)
+    {
+        Surface surface = hit.collider.GetComponentInParent<Surface>();
+
+        SurfaceTypeEnum type = SurfaceTypeEnum.Default;
+
+        if (surface != null)
+            type = surface.surfaceType;
+
+        GameObject impactPrefab = GetImpactPrefab(type);
+
+        if (impactPrefab != null)
+        {
+            GameObject impact = Instantiate(
+                impactPrefab,
+                hit.point,
+                Quaternion.LookRotation(hit.normal)
+            );
+
+            Destroy(impact, 2f);
+        }
+
+    }
 
 
 

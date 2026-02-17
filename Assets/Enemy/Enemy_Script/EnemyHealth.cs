@@ -1,7 +1,10 @@
+using System;
 using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour , IDamageable
 {
+    public event Action  OnEnemyDeath; // Event to notify when the enemy dies
+
     [Header("Enemy Health Settings")]
     public int enemy_maxHealth = 100;
     private int currentHealth;
@@ -21,8 +24,8 @@ public class EnemyHealth : MonoBehaviour , IDamageable
 
     }
 
-public void TakeDamage(int damage)
-{
+public void TakeDamage(int damage)  //override from interface.
+    {
     currentHealth -= damage;
     Debug.Log("Enemy Health:" + currentHealth);
     if (currentHealth <= 0)
@@ -32,6 +35,7 @@ public void TakeDamage(int damage)
 }
 void Die()
 {
+    OnEnemyDeath?.Invoke();
     Debug.Log("Enemy died");
     Destroy(gameObject);
 }
