@@ -3485,7 +3485,7 @@ PrefabInstance:
     - target: {fileID: 1456233069419591875, guid: 1479a30e47afd6449ad41fdb08140afa,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.6
+      value: -48.663
       objectReference: {fileID: 0}
     - target: {fileID: 1456233069419591875, guid: 1479a30e47afd6449ad41fdb08140afa,
         type: 3}
@@ -3560,7 +3560,7 @@ PrefabInstance:
     - target: {fileID: 6968614624366206757, guid: 1479a30e47afd6449ad41fdb08140afa,
         type: 3}
       propertyPath: WalkSpeed
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6968614624366206757, guid: 1479a30e47afd6449ad41fdb08140afa,
         type: 3}
@@ -3580,15 +3580,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2269327052414788217, guid: 1479a30e47afd6449ad41fdb08140afa,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1348316526}
-    - targetCorrespondingSourceObject: {fileID: 2269327052414788217, guid: 1479a30e47afd6449ad41fdb08140afa,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1348316532}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1479a30e47afd6449ad41fdb08140afa, type: 3}
 --- !u!4 &908000358 stripped
 Transform:
@@ -5725,47 +5717,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6730892630650226741}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1348316525 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2269327052414788217, guid: 1479a30e47afd6449ad41fdb08140afa,
-    type: 3}
-  m_PrefabInstance: {fileID: 907079814}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1348316526
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1348316525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: acff6ad5448945046b4c5c98ecb9f0dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ZombieDeathHandler
-  numberOfDeathAnimations: 9
---- !u!64 &1348316532
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1348316525}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
 --- !u!4 &1348665245 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3524990602426791925, guid: 1065b7837df3b774f9cb7bc79a988cd6,
@@ -8242,7 +8193,7 @@ PrefabInstance:
     - target: {fileID: 4656870534971168035, guid: 9ace73a3730f56841b7e798e9897375e,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5545640440511269328, guid: 9ace73a3730f56841b7e798e9897375e,
         type: 3}
