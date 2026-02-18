@@ -1,7 +1,8 @@
+
 using UnityEngine;
 using UnityEngine.AI;
 
-public class AlienZombieBrain : UniversalEnemyAi
+public class AlienZombieBrain : UniversalEnemyAi, IDamageable
 {
     public enum AlienZombieState { Idle, Chase, Attack}
     public AlienZombieState state;
@@ -14,6 +15,7 @@ public class AlienZombieBrain : UniversalEnemyAi
     public float WalkSpeed = 2f;
 
     [Header("Detection & Combat")]
+    public float teleportRange = 20f;
     public float lookRadius = 30f;
     public float attackRange = 2f;
     public int attackDamage = 10;
@@ -110,12 +112,44 @@ public class AlienZombieBrain : UniversalEnemyAi
 
     }
 
-
-    protected override void OnDamageTaken(int damage)
+    void OnTriggerEnter(Collider other)
     {
+        if (other.CompareTag("Bullet"))
+        {
+            TakeDamage(20);
+        }
+      
 
+    }
 
+    public void TakeDamage(int damage)
+    {
+         if (isDead) return;
+        currentHealth -= damage;
+         
+        if (currentHealth < 0)
+        {
+              Die(); 
+        }
+        else
+        {
+            Teleport();
+        }
+         
 
+         
+    }
+     public void Teleport()
+    {
+        Vector3 randomDirection = Random.insideUnitSphere * teleportRange;
+        randomDirection += transform.position;
+
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(randomDirection, out hit, teleportRange, NavMesh.AllAreas))
+        {
+            agent.Warp(hit.position);
+            Debug.Log("EnderSoldier teleported to: " + hit.position);
+        }
     }
 
     protected override void OnEnemyDeath()

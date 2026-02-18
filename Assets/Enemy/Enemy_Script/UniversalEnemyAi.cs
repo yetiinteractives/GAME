@@ -28,21 +28,7 @@ public abstract class UniversalEnemyAi : MonoBehaviour
 
     }
     protected abstract void OnEnemyAwake();
-    public virtual void TakeDamage(int damage)
-    {
-        if (isDead) return;
 
-        currentHealth -= damage;
-        if (damage > 30)
-        {
-            PlayHitAnimation();
-
-        }
-        OnDamageTaken(damage);
-
-        if (currentHealth < 0)
-            Die();
-    }
 
     protected virtual void Die()
     {
@@ -53,7 +39,7 @@ public abstract class UniversalEnemyAi : MonoBehaviour
         Destroy(gameObject, 5f);
 
     }
-    protected abstract void OnDamageTaken(int damage);
+   
     protected abstract void OnEnemyDeath();
     protected abstract void HandleAI();
     protected virtual void Update()

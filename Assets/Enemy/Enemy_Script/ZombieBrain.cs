@@ -111,12 +111,7 @@ public class ZombieBrain : UniversalEnemyAi
     }
 
 
-    protected override void OnDamageTaken(int damage)
-    {
-
-
-
-    }
+ 
 
     protected override void OnEnemyDeath()
     {

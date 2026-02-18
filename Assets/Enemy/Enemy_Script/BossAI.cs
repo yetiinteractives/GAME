@@ -92,7 +92,7 @@ public class BossAI : UniversalEnemyAi
     
 
 
-    protected override void OnDamageTaken(int damage)
+   /* protected override void OnDamageTaken(int damage)
     {
         if (!phase2 && currentHealth <= maxhealth * 0.5f)
         {
@@ -102,7 +102,7 @@ public class BossAI : UniversalEnemyAi
 
 
     }
-
+    */
     protected override void OnEnemyDeath()
     {
        //for loot and some items
