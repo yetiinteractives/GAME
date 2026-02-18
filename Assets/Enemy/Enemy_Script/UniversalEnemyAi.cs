@@ -48,11 +48,13 @@ public abstract class UniversalEnemyAi : MonoBehaviour
     {
         isDead = true;
         agent.isStopped = true;
-        PlayDieAnimation();
-        OnEnemyDeath();
-        Destroy(gameObject, 5f);
+        agent.enabled = false; 
 
+        OnEnemyDeath(); // Let child choose animation
+
+        Destroy(gameObject, 15f);
     }
+
     protected abstract void OnDamageTaken(int damage);
     protected abstract void OnEnemyDeath();
     protected abstract void HandleAI();
@@ -89,7 +91,11 @@ public abstract class UniversalEnemyAi : MonoBehaviour
     protected void PlayAttack2Animation() => anim.SetTrigger("Attack2");
     protected void PlayRageAnimation() => anim.SetTrigger("Roar");
     protected void PlayHitAnimation() => anim.SetTrigger("GetHitBack");
-    protected void PlayDieAnimation() => anim.SetTrigger("Death");
+    protected void PlayDieAnimation()
+    {
+        anim.SetBool("IsDead", true);
+    }
+
 
 
 

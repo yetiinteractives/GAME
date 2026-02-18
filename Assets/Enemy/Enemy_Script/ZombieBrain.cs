@@ -22,10 +22,14 @@ public class ZombieBrain : UniversalEnemyAi
     public float rageCooldown = 2;
     float attackTimer = 0f;
     float rageTimer = 0f;
+
+    ZombieDeathHandler deathHandler;
+
     protected override void OnEnemyAwake()
     {
         state = ZombieState.Idle;
-       
+        deathHandler = GetComponent<ZombieDeathHandler>();
+
 
     }
 
@@ -118,6 +122,7 @@ public class ZombieBrain : UniversalEnemyAi
     protected override void OnEnemyDeath()
     {
         //for loot and some items
+        deathHandler.PlayRandomDeath();
     }
 
 }
