@@ -8,7 +8,6 @@ public class ZombieBrain : UniversalEnemyAi
 
   
     bool attackInProgress = false;
-    bool StartChase = false;
     
 
     [Header("Movement")]
@@ -37,15 +36,9 @@ public class ZombieBrain : UniversalEnemyAi
             state = ZombieState.Attack;
         else if (dist <= lookRadius)
         {    
-           
-            if (StartChase) {
-                state = ZombieState.Chase;
-            }
-            else
-            {
-                state = ZombieState.Rage;
-            }
-                
+          state = ZombieState.Chase;
+            
+   
 
         }
         else
@@ -65,8 +58,8 @@ public class ZombieBrain : UniversalEnemyAi
 
             case ZombieState.Chase:
 
-                MoveAgent(WalkSpeed);
                 PlayWalkAnimation();
+                MoveAgent(WalkSpeed);
                 attackInProgress = false;
                 agent.SetDestination(player.position);
 
@@ -75,13 +68,12 @@ public class ZombieBrain : UniversalEnemyAi
 
             case ZombieState.Attack:
                 StopAgent();
-
                 if (!attackInProgress)
                 {
+                    anim.SetBool("Walk", false);
                     attackInProgress = true;
                     PlayAttackAnimation();
                     attackTimer = 0f;
-
                 }
 
                 attackTimer += Time.deltaTime;
@@ -91,20 +83,8 @@ public class ZombieBrain : UniversalEnemyAi
                     //appy damage to player yeta
                 }
                 break;
-
-            case ZombieState.Rage:
-                StopAgent();
-                PlayRageAnimation();
-                attackInProgress = false;
-                rageTimer += Time.deltaTime;
-                if(rageTimer >= rageCooldown)
-                {
-                    StartChase = true;
-                    rageTimer = 0;
-                }
-                
-                break;
         }
+
     }
 
     private void FacePlayer()
