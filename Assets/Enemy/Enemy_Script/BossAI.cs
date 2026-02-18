@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BossAI : UniversalEnemyAi
+public class BossAI : UniversalEnemyAi,IDamageable
 {
     public enum BossState { Idle, Chase, Attack, Rage }
     public BossState state;
@@ -42,12 +42,14 @@ public class BossAI : UniversalEnemyAi
         switch (state)
         {
             case BossState.Idle:
+            if(isDead) break;
                 agent.isStopped = true;
                 PlayIdleAnimation();
                 attackInProgress = false; // reset attack when leaving attack range
                 break;
 
             case BossState.Chase:
+            if(isDead) break;
                 agent.isStopped = false;
                 agent.speed = WalkSpeed;
                 agent.SetDestination(player.position);
@@ -63,6 +65,7 @@ public class BossAI : UniversalEnemyAi
                 break;
 
             case BossState.Attack:
+            if(isDead) break;
                 agent.isStopped = true;
                 if (!attackInProgress)
                 {
@@ -83,6 +86,7 @@ public class BossAI : UniversalEnemyAi
                 break;
 
             case BossState.Rage:
+            if(isDead) break;
                 agent.isStopped = true;
                 PlayRageAnimation();
                 attackInProgress = false;

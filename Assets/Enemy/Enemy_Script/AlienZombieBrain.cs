@@ -9,6 +9,7 @@ public class AlienZombieBrain : UniversalEnemyAi, IDamageable
 
   
     bool attackInProgress = false;
+   
      
 
     [Header("Movement")]

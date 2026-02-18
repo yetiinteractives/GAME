@@ -1,14 +1,14 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ZombieBrain : UniversalEnemyAi
+public class ZombieBrain : UniversalEnemyAi, IDamageable
 {
     public enum ZombieState { Idle, Chase, Attack, Rage }
     public ZombieState state;
 
   
     bool attackInProgress = false;
-    
+
 
     [Header("Movement")]
     public float WalkSpeed = 3f;
@@ -51,12 +51,14 @@ public class ZombieBrain : UniversalEnemyAi
         switch (state)
         {
             case ZombieState.Idle:
+                if (isDead) break;
                StopAgent();
                 PlayIdleAnimation();
                 attackInProgress = false;
                 break;
 
             case ZombieState.Chase:
+                if(isDead) break;
 
                 PlayWalkAnimation();
                 MoveAgent(WalkSpeed);
@@ -67,6 +69,7 @@ public class ZombieBrain : UniversalEnemyAi
                 break;
 
             case ZombieState.Attack:
+                if(isDead) break;
                 StopAgent();
                 if (!attackInProgress)
                 {
@@ -117,6 +120,7 @@ public class ZombieBrain : UniversalEnemyAi
          
         if (currentHealth <= 0)
         {
+
               Die(); 
         }
 
@@ -128,6 +132,7 @@ public class ZombieBrain : UniversalEnemyAi
 
     protected override void OnEnemyDeath()
     {
+
         //for loot and some items
     }
 

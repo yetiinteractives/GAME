@@ -1,7 +1,11 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 public abstract class UniversalEnemyAi : MonoBehaviour
 {
+    [SerializeField] protected int deathDecayTime = 5;
+
+     public event Action OnEnemyDeathEvent;
     [Header("core stats")]
     public int maxhealth = 100;
     [HideInInspector] public int currentHealth;
@@ -35,8 +39,8 @@ public abstract class UniversalEnemyAi : MonoBehaviour
         isDead = true;
         agent.isStopped = true;
         PlayDieAnimation();
-        OnEnemyDeath();
-        Destroy(gameObject, 5f);
+        OnEnemyDeathEvent?.Invoke();
+        Destroy(gameObject, deathDecayTime);
 
     }
    
