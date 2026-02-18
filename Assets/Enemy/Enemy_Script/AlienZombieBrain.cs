@@ -112,22 +112,14 @@ public class AlienZombieBrain : UniversalEnemyAi, IDamageable
 
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Bullet"))
-        {
-            TakeDamage(20);
-        }
-      
 
-    }
 
     public void TakeDamage(int damage)
     {
          if (isDead) return;
         currentHealth -= damage;
          
-        if (currentHealth < 0)
+        if (currentHealth <= 0)
         {
               Die(); 
         }

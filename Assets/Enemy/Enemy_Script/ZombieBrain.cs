@@ -110,7 +110,20 @@ public class ZombieBrain : UniversalEnemyAi
 
     }
 
+     public void TakeDamage(int damage)
+    {
+         if (isDead) return;
+        currentHealth -= damage;
+         
+        if (currentHealth <= 0)
+        {
+              Die(); 
+        }
 
+         
+
+         
+    }
  
 
     protected override void OnEnemyDeath()

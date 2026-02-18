@@ -7176,8 +7176,9 @@ MonoBehaviour:
   player: {fileID: 1722869278}
   state: 0
   WalkSpeed: 2
+  teleportRange: 20
   lookRadius: 20
-  attackRange: 2
+  attackRange: 1
   attackDamage: 100
   attackCooldown: 2
 --- !u!95 &1639762790
@@ -7190,10 +7191,10 @@ Animator:
   m_GameObject: {fileID: 1639762786}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a497568075da9644590f3c7e9f83f97a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
@@ -7777,19 +7778,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1832683981}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1691863857
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1691863850}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d088a0ae145aae41a87ba11d834a8ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  enemy_maxHealth: 100
 --- !u!114 &1691863864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8239,10 +8227,6 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4656870534971168035, guid: 9ace73a3730f56841b7e798e9897375e,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1691863857}
     - targetCorrespondingSourceObject: {fileID: 4656870534971168035, guid: 9ace73a3730f56841b7e798e9897375e,
         type: 3}
       insertIndex: -1
