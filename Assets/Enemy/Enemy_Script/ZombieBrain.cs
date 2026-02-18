@@ -36,7 +36,7 @@ public class ZombieBrain : UniversalEnemyAi
     protected override void HandleAI()
     {
         if (player == null) return;
-            float dist = distanceToPlayer;
+        float dist = distanceToPlayer;
         if (dist <= attackRange)
             state = ZombieState.Attack;
         else if (dist <= lookRadius)
@@ -55,61 +55,84 @@ public class ZombieBrain : UniversalEnemyAi
         else
             state = ZombieState.Idle;
 
+        if(state == ZombieState.Chase || state == ZombieState.Attack)
+            FacePlayer();
+
 
         switch (state)
         {
             case ZombieState.Idle:
-                agent.isStopped = true;
+               StopAgent();
                 PlayIdleAnimation();
                 attackInProgress = false;
                 break;
 
             case ZombieState.Chase:
-                anim.SetBool("Idle", false);
-                agent.isStopped = false;
-                    PlayWalkAnimation();
-                agent.speed = WalkSpeed;
+
+                MoveAgent(WalkSpeed);
+                PlayWalkAnimation();
+                attackInProgress = false;
                 agent.SetDestination(player.position);
 
-                attackInProgress = false;
+               
                 break;
 
             case ZombieState.Attack:
-                agent.isStopped = true;
-                agent.speed = 0;
-                anim.SetBool("Walk", false);
+                StopAgent();
+
                 if (!attackInProgress)
                 {
                     attackInProgress = true;
-                    
+                    PlayAttackAnimation();
                     attackTimer = 0f;
 
-                    PlayAttackAnimation();
                 }
 
                 attackTimer += Time.deltaTime;
                 if (attackTimer >= attackCooldown)
                 {
                     attackInProgress = false;
-                    
+                    //appy damage to player yeta
                 }
                 break;
 
             case ZombieState.Rage:
-                agent.isStopped = true;
-                agent.speed = 0;
+                StopAgent();
                 PlayRageAnimation();
                 attackInProgress = false;
                 rageTimer += Time.deltaTime;
                 if(rageTimer >= rageCooldown)
                 {
                     StartChase = true;
+                    rageTimer = 0;
                 }
                 
                 break;
         }
     }
 
+    private void FacePlayer()
+    {
+        if (player == null) return;
+
+        Vector3 direction = (player.position - transform.position).normalized;
+        direction.y = 0; // keep only horizontal rotation
+        if (direction == Vector3.zero) return;
+
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 5f * Time.deltaTime);
+    }
+    private void StopAgent()
+    {
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
+    }
+    private void MoveAgent(float speed)
+    {
+        agent.isStopped = false;
+        agent.speed = speed;
+
+    }
 
 
     protected override void OnDamageTaken(int damage)
