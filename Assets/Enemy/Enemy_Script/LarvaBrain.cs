@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BossAI : UniversalEnemyAi,IDamageable
+public class LarvaBrain : UniversalEnemyAi,IDamageable
 {
     public enum BossState { Idle, Chase, Attack, Rage }
     public BossState state;
