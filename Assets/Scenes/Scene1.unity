@@ -3017,17 +3017,17 @@ PrefabInstance:
     - target: {fileID: 2195877369005427879, guid: 9f547c76a5f7400408a230e40b7f93a1,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.1
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 2195877369005427879, guid: 9f547c76a5f7400408a230e40b7f93a1,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.1
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 2195877369005427879, guid: 9f547c76a5f7400408a230e40b7f93a1,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.1
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 2195877369005427879, guid: 9f547c76a5f7400408a230e40b7f93a1,
         type: 3}
@@ -3096,6 +3096,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 947816607}
+    - targetCorrespondingSourceObject: {fileID: 1527426682776131101, guid: 9f547c76a5f7400408a230e40b7f93a1,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 947816610}
   m_SourcePrefab: {fileID: 100100000, guid: 9f547c76a5f7400408a230e40b7f93a1, type: 3}
 --- !u!1 &806598255
 GameObject:
@@ -3662,8 +3666,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88316227000bdbd44964c8f40d384769, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProfactorBrain
-  deathDecayTime: 5
-  maxhealth: 500
+  deathDecayTime: 12
+  maxhealth: 100
   currentHealth: 0
   player: {fileID: 1722869278}
   state: 0
@@ -3697,6 +3701,28 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!64 &947816610
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947816603}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -9133736109645843055, guid: 724747c06f42dec43843339e1a7675b4, type: 3}
 --- !u!1 &965710748
 GameObject:
   m_ObjectHideFlags: 0
