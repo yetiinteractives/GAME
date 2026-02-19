@@ -54,6 +54,10 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
         else
             state = BossState.Idle;
 
+        if(state == BossState.Chase || state == BossState.Attack)
+            FacePlayer();
+
+
       
         switch (state)
         {
@@ -179,6 +183,17 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
 
     }
     */
+       private void FacePlayer()
+    {
+        if (player == null) return;
+
+        Vector3 direction = (player.position - transform.position).normalized;
+        direction.y = 0; // keep only horizontal rotation
+        if (direction == Vector3.zero) return;
+
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 5f * Time.deltaTime);
+    }
     protected override void OnEnemyDeath()
     {
        //for loot and some items
