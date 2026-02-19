@@ -1,12 +1,13 @@
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.ProBuilder.MeshOperations;
 
 public class ProfactorBrain: UniversalEnemyAi, IDamageable
 {
         public enum BossState { Idle, Chase, Attack, Spit,SpawnLarva ,Roar }
     public BossState state;
-
+      
     bool attackchanger = true;
     bool attackInProgress = false;
     bool larvaSpawned = false;
@@ -22,6 +23,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
     public float attackRange = 10f;
     public int attackDamage = 100;
     public float attackCooldown = 7f;
+    public float playerTOOCloseRange = 10f;
     float attackTimer = 0f;
 
     [Header("Boss will enter rage mode at 50% health and spit its larva")]
@@ -41,7 +43,12 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
     {
         if (player == null) return;
         float dist = distanceToPlayer;
-        if (dist <= attackRange){
+        if(dist <= playerTOOCloseRange)
+        {
+            larvaSpawned=false;
+           state = BossState.SpawnLarva;
+        }
+        else if (dist <= attackRange){
            if(currentHealth==maxhealth* 0.5f && !larvaSpawned){
             larvaSpawned=true;
            state = BossState.SpawnLarva;
@@ -54,7 +61,8 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
         else
             state = BossState.Idle;
 
-        if(state == BossState.Chase || state == BossState.Attack)
+        if((state == BossState.Chase || state == BossState.Attack ) && dist> playerTOOCloseRange)
+             FacePlayer();
             FacePlayer();
 
 
