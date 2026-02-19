@@ -59,7 +59,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
 
         if((state == BossState.Chase || state == BossState.Attack ) && dist> playerTOOCloseRange)
              FacePlayer();
-            FacePlayer();
+            
 
 
       
