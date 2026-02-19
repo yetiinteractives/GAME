@@ -23,7 +23,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
     public float attackRange = 10f;
     public int attackDamage = 100;
     public float attackCooldown = 7f;
-    public float playerTOOCloseRange = 10f;
+    public float playerTOOCloseRange = 7f;
     float attackTimer = 0f;
 
     [Header("Boss will enter rage mode at 50% health and spit its larva")]
@@ -60,6 +60,8 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
         if((state == BossState.Chase || state == BossState.Attack ) && dist> playerTOOCloseRange)
              FacePlayer();
             
+
+        
 
 
       
