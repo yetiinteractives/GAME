@@ -127,6 +127,12 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
 
               Die(); 
         }
+        else
+        {
+            EnemyShotKnockback.Instance.TriggerKnockback();
+             
+
+        }
 
          
 
