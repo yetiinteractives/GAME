@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BossAI : UniversalEnemyAi
+public class LarvaBrain : UniversalEnemyAi,IDamageable
 {
     public enum BossState { Idle, Chase, Attack, Rage }
     public BossState state;
@@ -42,12 +42,14 @@ public class BossAI : UniversalEnemyAi
         switch (state)
         {
             case BossState.Idle:
+            if(isDead) break;
                 agent.isStopped = true;
                 PlayIdleAnimation();
                 attackInProgress = false; // reset attack when leaving attack range
                 break;
 
             case BossState.Chase:
+            if(isDead) break;
                 agent.isStopped = false;
                 agent.speed = WalkSpeed;
                 agent.SetDestination(player.position);
@@ -63,6 +65,7 @@ public class BossAI : UniversalEnemyAi
                 break;
 
             case BossState.Attack:
+            if(isDead) break;
                 agent.isStopped = true;
                 if (!attackInProgress)
                 {
@@ -83,6 +86,7 @@ public class BossAI : UniversalEnemyAi
                 break;
 
             case BossState.Rage:
+            if(isDead) break;
                 agent.isStopped = true;
                 PlayRageAnimation();
                 attackInProgress = false;
@@ -91,8 +95,20 @@ public class BossAI : UniversalEnemyAi
     }
     
 
+    public void TakeDamage(int damage)
+    {
+         if (isDead) return;
+        currentHealth -= damage;
+         
+        if (currentHealth <= 0)
+        {
+              Die(); 
+        }
+  
+         
+    }
 
-    protected override void OnDamageTaken(int damage)
+   /* protected override void OnDamageTaken(int damage)
     {
         if (!phase2 && currentHealth <= maxhealth * 0.5f)
         {
@@ -102,7 +118,7 @@ public class BossAI : UniversalEnemyAi
 
 
     }
-
+    */
     protected override void OnEnemyDeath()
     {
        //for loot and some items

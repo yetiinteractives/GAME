@@ -1,7 +1,11 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 public abstract class UniversalEnemyAi : MonoBehaviour
 {
+    [SerializeField] protected int deathDecayTime = 5;
+
+     public event Action OnEnemyDeathEvent;
     [Header("core stats")]
     public int maxhealth = 100;
     [HideInInspector] public int currentHealth;
@@ -28,34 +32,18 @@ public abstract class UniversalEnemyAi : MonoBehaviour
 
     }
     protected abstract void OnEnemyAwake();
-    public virtual void TakeDamage(int damage)
-    {
-        if (isDead) return;
 
-        currentHealth -= damage;
-        if (damage > 30)
-        {
-            PlayHitAnimation();
-
-        }
-        OnDamageTaken(damage);
-
-        if (currentHealth < 0)
-            Die();
-    }
 
     protected virtual void Die()
     {
         isDead = true;
         agent.isStopped = true;
-        agent.enabled = false; 
+        PlayDieAnimation();
+        OnEnemyDeathEvent?.Invoke();
+        Destroy(gameObject, deathDecayTime);
 
-        OnEnemyDeath(); // Let child choose animation
-
-        Destroy(gameObject, 15f);
     }
-
-    protected abstract void OnDamageTaken(int damage);
+   
     protected abstract void OnEnemyDeath();
     protected abstract void HandleAI();
     protected virtual void Update()
@@ -91,11 +79,7 @@ public abstract class UniversalEnemyAi : MonoBehaviour
     protected void PlayAttack2Animation() => anim.SetTrigger("Attack2");
     protected void PlayRageAnimation() => anim.SetTrigger("Roar");
     protected void PlayHitAnimation() => anim.SetTrigger("GetHitBack");
-    protected void PlayDieAnimation()
-    {
-        anim.SetBool("IsDead", true);
-    }
-
+    protected void PlayDieAnimation() => anim.SetTrigger("Death");
 
 
 

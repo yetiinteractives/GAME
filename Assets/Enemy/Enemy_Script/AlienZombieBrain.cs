@@ -1,34 +1,32 @@
+
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ZombieBrain : UniversalEnemyAi, IDamageable
+public class AlienZombieBrain : UniversalEnemyAi, IDamageable
 {
-    public enum ZombieState { Idle, Chase, Attack, Rage }
-    public ZombieState state;
+    public enum AlienZombieState { Idle, Chase, Attack}
+    public AlienZombieState state;
 
   
     bool attackInProgress = false;
-
+   
+     
 
     [Header("Movement")]
-    public float WalkSpeed = 3f;
+    public float WalkSpeed = 2f;
 
     [Header("Detection & Combat")]
-    public float lookRadius = 8f;
+    public float teleportRange = 20f;
+    public float lookRadius = 30f;
     public float attackRange = 2f;
     public int attackDamage = 10;
     public float attackCooldown = 2;
-    public float rageCooldown = 2;
     float attackTimer = 0f;
-    float rageTimer = 0f;
-
-    ZombieDeathHandler deathHandler;
 
     protected override void OnEnemyAwake()
     {
-        state = ZombieState.Idle;
-        deathHandler = GetComponent<ZombieDeathHandler>();
-
+        state = AlienZombieState.Idle;
+       
 
     }
 
@@ -37,32 +35,30 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         if (player == null) return;
         float dist = distanceToPlayer;
         if (dist <= attackRange)
-            state = ZombieState.Attack;
+            state = AlienZombieState.Attack;
         else if (dist <= lookRadius)
         {    
-          state = ZombieState.Chase;
+          state = AlienZombieState.Chase;
             
    
 
         }
         else
-            state = ZombieState.Idle;
+            state = AlienZombieState.Idle;
 
-        if(state == ZombieState.Chase || state == ZombieState.Attack)
+        if(state == AlienZombieState.Chase || state == AlienZombieState.Attack)
             FacePlayer();
 
 
         switch (state)
         {
-            case ZombieState.Idle:
-                if (isDead) break;
+            case AlienZombieState.Idle:
                StopAgent();
                 PlayIdleAnimation();
                 attackInProgress = false;
                 break;
 
-            case ZombieState.Chase:
-                if(isDead) break;
+            case AlienZombieState.Chase:
 
                 PlayWalkAnimation();
                 MoveAgent(WalkSpeed);
@@ -72,8 +68,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
                
                 break;
 
-            case ZombieState.Attack:
-                if(isDead) break;
+            case AlienZombieState.Attack:
                 StopAgent();
                 if (!attackInProgress)
                 {
@@ -90,6 +85,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
                     //appy damage to player yeta
                 }
                 break;
+ 
         }
 
     }
@@ -117,28 +113,41 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
 
     }
 
-     public void TakeDamage(int damage)
+
+
+    public void TakeDamage(int damage)
     {
          if (isDead) return;
         currentHealth -= damage;
          
         if (currentHealth <= 0)
         {
-
               Die(); 
         }
-
+        else
+        {
+            Teleport();
+        }
          
 
          
     }
- 
+     public void Teleport()
+    {
+        Vector3 randomDirection = Random.insideUnitSphere * teleportRange;
+        randomDirection += transform.position;
+
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(randomDirection, out hit, teleportRange, NavMesh.AllAreas))
+        {
+            agent.Warp(hit.position);
+            Debug.Log("EnderSoldier teleported to: " + hit.position);
+        }
+    }
 
     protected override void OnEnemyDeath()
     {
-
         //for loot and some items
-        deathHandler.PlayRandomDeath();
     }
 
 }
