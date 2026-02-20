@@ -250,6 +250,7 @@ public abstract class Weapon : MonoBehaviour
         if (!isReloading && bulletOnMag < magCapacity && totalBullet > 0)
         {
             StartCoroutine(Reload());
+            ReloadHandler.Instance.HandleReload(); // Trigger reload animation
         }
     }
 
