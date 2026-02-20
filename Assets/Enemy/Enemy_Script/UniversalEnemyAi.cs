@@ -40,6 +40,7 @@ public abstract class UniversalEnemyAi : MonoBehaviour
         agent.isStopped = true;
         PlayDieAnimation();
         OnEnemyDeathEvent?.Invoke();
+        
         Destroy(gameObject, deathDecayTime);
 
     }

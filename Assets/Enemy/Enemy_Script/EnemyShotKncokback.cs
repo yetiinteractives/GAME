@@ -1,5 +1,3 @@
-
-using System.Collections;
 using UnityEngine;
 
 public class EnemyShotKnockback : MonoBehaviour
@@ -9,32 +7,62 @@ public class EnemyShotKnockback : MonoBehaviour
 
     public static EnemyShotKnockback Instance { get; private set; }
 
-    [SerializeField]private float knockbackTime = 2f;
+    [SerializeField] private float knockbackDuration = 3f;
+    [SerializeField] private float blendSpeed = 8f;
+    [SerializeField] private float targetWeight = 0.9f;
 
+    float knockbackTimer;
+    bool isKnockbackActive;
 
+    float currentWeight;
 
     private void Awake()
     {
         Instance = this;
     }
-    private void  Start()
+
+    private void Start()
     {
         animator = GetComponent<Animator>();
         knockbackLayerIndex = animator.GetLayerIndex("Knockback Layer");
+        currentWeight = animator.GetLayerWeight(knockbackLayerIndex);
+    }
 
+    private void Update()
+    {
+        HandleKnockbackTimer();
+        HandleLayerBlending();
     }
 
     public void TriggerKnockback()
     {
-        StartCoroutine(Knockback());
+        
+        knockbackTimer = knockbackDuration;
+        isKnockbackActive = true;
+
+        animator.ResetTrigger("Knockback");
+        animator.SetTrigger("Knockback");
     }
 
-    IEnumerator Knockback()
+    void HandleKnockbackTimer()
     {
-        animator.SetLayerWeight(knockbackLayerIndex, 1f);
-        animator.SetTrigger("Knockback");
+        if (!isKnockbackActive)
+            return;
 
-        yield return new WaitForSeconds(knockbackTime);
-        animator.SetLayerWeight(knockbackLayerIndex, 0f);
+        knockbackTimer -= Time.deltaTime;
+
+        if (knockbackTimer <= 0f)
+        {
+            isKnockbackActive = false;
+        }
+    }
+
+    void HandleLayerBlending()
+    {
+        float desiredWeight = isKnockbackActive ? targetWeight : 0f;
+
+        currentWeight = Mathf.Lerp(currentWeight, desiredWeight, Time.deltaTime * blendSpeed);
+
+        animator.SetLayerWeight(knockbackLayerIndex, currentWeight);
     }
 }
