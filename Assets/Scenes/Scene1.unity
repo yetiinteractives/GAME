@@ -4385,7 +4385,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 60.697, y: 60.697}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1092594668
 MonoBehaviour:
@@ -4407,7 +4407,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: afca794870d6ba044977a42d18049272, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bf33f42e862e37d44a0f3e6e01807ae7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7192,13 +7192,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1608964905}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.5403852, y: -0.54317415, z: 0.630172, w: -0.12581313}
-  m_LocalPosition: {x: 0.4415, y: -0.2559, z: 0.078}
+  m_LocalRotation: {x: 0.051317416, y: -0.89850914, z: -0.21574017, w: 0.37881935}
+  m_LocalPosition: {x: 0.371, y: -0.231, z: 0.066}
   m_LocalScale: {x: 0.106796555, y: 0.10679656, z: 0.106796585}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1358624267}
-  m_LocalEulerAnglesHint: {x: 146.728, y: 1362.02, z: 1143.1}
+  m_LocalEulerAnglesHint: {x: 200.414, y: 1488.59, z: 1244.169}
 --- !u!1001 &1617044910
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8595,6 +8595,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ReloadHandler
   animator: {fileID: 1722869277}
+  aimLayerController: {fileID: 0}
 --- !u!1 &1879319764
 GameObject:
   m_ObjectHideFlags: 0
@@ -9396,7 +9397,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f779f92e3df58ce4d85e1d60f2aac666,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9830,7 +9831,7 @@ PrefabInstance:
     - target: {fileID: 4407072370426327486, guid: 19df000e55745ca4fbf58c3f55f518fd,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9923,7 +9924,7 @@ PrefabInstance:
     - target: {fileID: 5653139559116416225, guid: 27225dddf91546c49be438769f8e0a22,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

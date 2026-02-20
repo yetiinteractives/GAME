@@ -14,6 +14,9 @@ public class ReloadHandler : MonoBehaviour
     private int reloadLayerIndex;
     private Coroutine reloadCoroutine;
 
+    // NEW: reference to AimLayerController (assign in inspector or auto-find)
+    [SerializeField] private AimLayerController aimLayerController;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -30,11 +33,11 @@ public class ReloadHandler : MonoBehaviour
         animator = GetComponent<Animator>();
         reloadLayerIndex = animator.GetLayerIndex("Reload Layer");
 
-        
+        if (aimLayerController == null)
+            aimLayerController = FindFirstObjectByType<AimLayerController>();
+
         SwitchWeapons.OnWeaponSwitch += WeaponSwitch;
     }
-
-    
 
     public void HandleReload()
     {
@@ -46,10 +49,13 @@ public class ReloadHandler : MonoBehaviour
 
     IEnumerator ReloadAnimation()
     {
+        // NEW: disable idle shotgun rig during reload when using shotgun/sniper
+        if ((currentWeaponIndex == 2 || currentWeaponIndex == 3) && aimLayerController != null)
+            aimLayerController.SetReloading(true);
+
         float lerpTime = 0.2f;
         float t = 0f;
 
-        // Smooth IN
         while (t < lerpTime)
         {
             t += Time.deltaTime;
@@ -64,7 +70,6 @@ public class ReloadHandler : MonoBehaviour
 
         t = 0f;
 
-        // Smooth OUT
         while (t < lerpTime)
         {
             t += Time.deltaTime;
@@ -74,6 +79,10 @@ public class ReloadHandler : MonoBehaviour
 
         animator.SetLayerWeight(reloadLayerIndex, 0f);
         reloadCoroutine = null;
+
+        // NEW: restore rig control after reload
+        if ((currentWeaponIndex == 2 || currentWeaponIndex == 3) && aimLayerController != null)
+            aimLayerController.SetReloading(false);
     }
 
     public void InterruptReload()
@@ -85,13 +94,14 @@ public class ReloadHandler : MonoBehaviour
         }
 
         animator.SetLayerWeight(reloadLayerIndex, 0f);
+
+        // NEW: restore rig control if reload was interrupted
+        if ((currentWeaponIndex == 2 || currentWeaponIndex == 3) && aimLayerController != null)
+            aimLayerController.SetReloading(false);
     }
-
-
 
     private void WeaponSwitch(int weaponIndex)
     {
         currentWeaponIndex = weaponIndex;
-
     }
 }
