@@ -4,18 +4,29 @@ using UnityEngine.UI;
 
 public class CrossHairVisiliblity : MonoBehaviour
 {
-    public Image _crossHair;
-    public Image _shotgunCrossHair;
+    [SerializeField] private Image _crossHair;
+    [SerializeField] private Image _shotgunCrossHair;
+    [SerializeField] private Image _sniperCrossHair;
 
     bool isWeaponSwtichUIActive = false;
     bool isAiming = false;
+    bool isScoped = false;
     int currentWeaponIndex = 1;
+
 
     private void Start()
     {
         SwitchWeapons.OnToggleWeaponSwitchUI += HandleWeaponSwitchUI;
         SwitchWeapons.OnWeaponSwitch += HandleWeaponSwitch;
         MousePosition3D.OnFirePerformed += HandleFirePerformed;
+        Sniper.OnSniperStatusUpdate += HandleSniperStatusUpdate;
+
+
+    }
+
+    private void HandleSniperStatusUpdate(bool isScopeOn)
+    {
+        isScoped = isScopeOn;
     }
 
     private void HandleFirePerformed(RaycastHit hit)
@@ -47,9 +58,10 @@ public class CrossHairVisiliblity : MonoBehaviour
         }
 
         // Crosshair visibility logic
+        _sniperCrossHair.gameObject.SetActive(((currentWeaponIndex == 3)) && isAiming && !isScoped);
         _shotgunCrossHair.gameObject.SetActive(currentWeaponIndex == 2 && isAiming); 
-        _crossHair.gameObject.SetActive(((currentWeaponIndex == 1) || (currentWeaponIndex == 3))  && isAiming);
-
+        _crossHair.gameObject.SetActive(((currentWeaponIndex == 1))  && isAiming);
+        
 
 
 
@@ -67,5 +79,14 @@ public class CrossHairVisiliblity : MonoBehaviour
         }
 
 
+    }
+
+    private void OnDisable()
+    {
+        
+        SwitchWeapons.OnToggleWeaponSwitchUI -= HandleWeaponSwitchUI;
+        SwitchWeapons.OnWeaponSwitch -= HandleWeaponSwitch;
+        MousePosition3D.OnFirePerformed -= HandleFirePerformed;
+        Sniper.OnSniperStatusUpdate -= HandleSniperStatusUpdate;
     }
 }

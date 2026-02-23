@@ -29,6 +29,7 @@ public abstract class Weapon : MonoBehaviour
     // Events
     public event Action<int, int> OnAmmoChanged; // bulletOnMag, totalBullet
     public event Action<string> OnWeaponStatusChanged;
+    public static event Action OnBulletShot;
 
     // Variables
     protected int bulletOnMag;
@@ -163,6 +164,7 @@ public abstract class Weapon : MonoBehaviour
 
         // Update ammo UI
         OnAmmoChanged?.Invoke(bulletOnMag, totalBullet);
+        OnBulletShot?.Invoke();
 
         // Play shoot sound
         if (audioSource != null && shootSound != null)

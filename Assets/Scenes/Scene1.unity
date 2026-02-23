@@ -628,6 +628,7 @@ RectTransform:
   m_Children:
   - {fileID: 1092594667}
   - {fileID: 1225406290}
+  - {fileID: 1869762216}
   m_Father: {fileID: 263190663}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -649,6 +650,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   _crossHair: {fileID: 1092594668}
   _shotgunCrossHair: {fileID: 1225406291}
+  _sniperCrossHair: {fileID: 1869762218}
 --- !u!4 &257606674 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7256157562079959247, guid: 1065b7837df3b774f9cb7bc79a988cd6,
@@ -2944,7 +2946,12 @@ MonoBehaviour:
   mainCamera: {fileID: 717784050}
   raycastLayerMask:
     serializedVersion: 2
-    m_Bits: 3383
+    m_Bits: 3391
+  recoilBackDistance: 0.15
+  recoilUpPosition: 0.15
+  recoilUpDistance: 2
+  recoilKickSpeed: 18
+  recoilReturnSpeed: 12
 --- !u!4 &786754247
 Transform:
   m_ObjectHideFlags: 0
@@ -4392,7 +4399,7 @@ RectTransform:
   m_GameObject: {fileID: 1092594666}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.55, y: 0.55, z: 0.55}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 245181721}
@@ -4400,7 +4407,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 60.697, y: 60.697}
+  m_SizeDelta: {x: 72.6191, y: 72.6191}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1092594668
 MonoBehaviour:
@@ -5162,6 +5169,9 @@ MonoBehaviour:
   scopedSensitivity: 0.2
   isScoped: 0
   isADSActive: 0
+  shotFovKick: 3
+  shotFovKickInSpeed: 30
+  shotFovReturnSpeed: 20
 --- !u!114 &1166636368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8611,6 +8621,104 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ReloadHandler
   animator: {fileID: 1722869277}
   aimLayerController: {fileID: 0}
+--- !u!1 &1869762215
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1869762216}
+  - component: {fileID: 1869762219}
+  - component: {fileID: 1869762218}
+  - component: {fileID: 1869762217}
+  m_Layer: 5
+  m_Name: CrossHair Sniper
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1869762216
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869762215}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.90000004, y: 0.90000004, z: 0.90000004}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 245181721}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0.4391}
+  m_SizeDelta: {x: 54.7469, y: 55.4457}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!95 &1869762217
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869762215}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6e020bc5c0ae8954aa45040839cc498d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1869762218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869762215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 36548ca6e2963644297debd9cb2f4ea6, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1869762219
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869762215}
+  m_CullTransparentMesh: 1
 --- !u!1 &1879319764
 GameObject:
   m_ObjectHideFlags: 0

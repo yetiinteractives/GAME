@@ -22,10 +22,16 @@ public class FreeLookADS : MonoBehaviour
     public bool isScoped = false;
     public bool isADSActive = false;
 
+    [Header("Shot FOV Spike")]
+    public float shotFovKick = 3f;
+    public float shotFovKickInSpeed = 30f;
+    public float shotFovReturnSpeed = 20f;
+
     private CinemachineInputAxisController _inputAxisController;
     private float _currentSensitivity = 1f;
     private float _targetFOV;
     private float _targetSensitivity;
+    private Coroutine _shotFovRoutine;
 
     void Start()
     {
@@ -42,6 +48,12 @@ public class FreeLookADS : MonoBehaviour
         }
 
         _targetFOV = normalFOV;
+
+        Weapon.OnBulletShot += CameraRecoilOnShot;
+    }
+    private void OnDisable()
+    {
+        Weapon.OnBulletShot -= CameraRecoilOnShot;
     }
 
     void Update()
@@ -108,4 +120,39 @@ public class FreeLookADS : MonoBehaviour
     {
         return isADSActive;
     }
+
+    void CameraRecoilOnShot()
+    {
+        if (_shotFovRoutine != null)
+        {
+            StopCoroutine(_shotFovRoutine);
+        }
+
+        _shotFovRoutine = StartCoroutine(ShotFovKick());
+    }
+
+    private IEnumerator ShotFovKick()
+    {
+        float baseFov = _targetFOV;
+        float kickFov = baseFov + shotFovKick;
+
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * shotFovKickInSpeed;
+            cam.Lens.FieldOfView = Mathf.Lerp(baseFov, kickFov, t);
+            yield return null;
+        }
+
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * shotFovReturnSpeed;
+            cam.Lens.FieldOfView = Mathf.Lerp(kickFov, _targetFOV, t);
+            yield return null;
+        }
+
+        _shotFovRoutine = null;
+    }
+
 }

@@ -14,6 +14,7 @@ public class Sniper : Weapon
     [SerializeField] private GameObject sniperStock;
 
     private bool isScopeActive = false;
+    public static event Action<bool> OnSniperStatusUpdate;
 
     protected override void Awake()
     {
@@ -75,6 +76,8 @@ public class Sniper : Weapon
         // Hide bodies when scoped
         if (playerBody != null) playerBody.SetActive(false);
         if (sniperBody != null) sniperBody.SetActive(false);
+
+        OnSniperStatusUpdate?.Invoke(true);
     }
 
     private void DisableScope()
@@ -97,6 +100,8 @@ public class Sniper : Weapon
         {
             cameraController.SetNormalState();
         }
+
+        OnSniperStatusUpdate?.Invoke(false);
     }
 
     protected override void Update()
