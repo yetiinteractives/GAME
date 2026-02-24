@@ -3,7 +3,19 @@ using UnityEngine.AI;
 
 public class ZombieBrain : UniversalEnemyAi, IDamageable
 {
-    public enum ZombieState { Idle, Chase, Attack, Rage }
+
+
+//caaching all ragdoll parts
+    private Rigidbody[] ragdollBodies;
+    private Collider[] ragdollColliders;
+
+    private Collider mainCollider;
+    private Rigidbody mainRigidbody;
+
+    ZombieDeathHandler deathHandler;
+
+
+    public enum ZombieState { Idle, Chase, Attack}
     public ZombieState state;
 
   
@@ -22,13 +34,22 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
     float attackTimer = 0f;
     float rageTimer = 0f;
 
-    ZombieDeathHandler deathHandler;
+   
+
 
     protected override void OnEnemyAwake()
     {
         state = ZombieState.Idle;
         deathHandler = GetComponent<ZombieDeathHandler>();
 
+        mainCollider = GetComponent<Collider>();
+        mainRigidbody = GetComponent<Rigidbody>();
+        anim = GetComponent<Animator>();
+
+        ragdollBodies = GetComponentsInChildren<Rigidbody>();
+        ragdollColliders = GetComponentsInChildren<Collider>();
+
+        SetRagdoll(false);
 
     }
 
@@ -85,7 +106,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
                 }
 
                 attackTimer += Time.deltaTime;
-                if (attackTimer >= attackCooldown)
+                if (attackTimer >= attackCooldown )
                 {
                     attackInProgress = false;
                     //appy damage to player yeta
@@ -140,13 +161,32 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
 
          
     }
- 
+     void SetRagdoll(bool enabled)
+    {
+        foreach (Rigidbody rb in ragdollBodies)
+        {
+            if (rb != mainRigidbody)
+                rb.isKinematic = !enabled;
+        }
+
+        foreach (Collider col in ragdollColliders)
+        {
+            if (col != mainCollider)
+                col.enabled = enabled;
+        }
+
+        mainCollider.enabled = !enabled;
+        mainRigidbody.isKinematic = enabled;
+
+        anim.enabled = !enabled;      // using base class animator
+        agent.enabled = !enabled;     // using base class agent
+    }
 
     protected override void OnEnemyDeath()
     {
-
+          SetRagdoll(true);
         //for loot and some items
         deathHandler.PlayRandomDeath();
     }
 
-}
+}//do everything 
