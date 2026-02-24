@@ -31,9 +31,9 @@ public class LarvaBrain : UniversalEnemyAi,IDamageable
     {
         if (player == null) return;
         float dist = distanceToPlayer;
-        if (dist <= attackRange)
+        if (dist <= attackRange*attackRange)
             state = BossState.Attack;
-        else if (dist <= lookRadius)
+        else if (dist <= lookRadius*lookRadius)
             state = BossState.Chase;
         else
             state = BossState.Idle;
@@ -52,7 +52,10 @@ public class LarvaBrain : UniversalEnemyAi,IDamageable
             if(isDead) break;
                 agent.isStopped = false;
                 agent.speed = WalkSpeed;
-                agent.SetDestination(player.position);
+                if (!agent.hasPath || agent.destination != player.position)
+                    agent.SetDestination(player.position);
+
+
                 if (currentHealth < 50)
                 { 
                 PlayChargeAnimation();  

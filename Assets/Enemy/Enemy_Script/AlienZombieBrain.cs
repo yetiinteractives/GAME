@@ -34,9 +34,9 @@ public class AlienZombieBrain : UniversalEnemyAi, IDamageable
     {
         if (player == null) return;
         float dist = distanceToPlayer;
-        if (dist <= attackRange)
+        if (dist <= attackRange*attackRange)
             state = AlienZombieState.Attack;
-        else if (dist <= lookRadius)
+        else if (dist <= lookRadius*lookRadius)
         {    
           state = AlienZombieState.Chase;
             
@@ -63,7 +63,9 @@ public class AlienZombieBrain : UniversalEnemyAi, IDamageable
                 PlayWalkAnimation();
                 MoveAgent(WalkSpeed);
                 attackInProgress = false;
-                agent.SetDestination(player.position);
+                if (!agent.hasPath || agent.destination != player.position)
+                    agent.SetDestination(player.position);
+
 
                
                 break;

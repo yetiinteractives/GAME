@@ -53,7 +53,7 @@ public abstract class UniversalEnemyAi : MonoBehaviour
             HandleAI();
     }
 
-    protected float distanceToPlayer => Vector3.Distance(transform.position, player.position);
+    protected float distanceToPlayer =>  (player.position- transform.position).sqrMagnitude;
 
     //--------Animations control
     protected void PlayStartAnimation() => anim.SetTrigger("GetOutOfGround");

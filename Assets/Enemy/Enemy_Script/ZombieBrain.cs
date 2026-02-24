@@ -35,10 +35,10 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
     protected override void HandleAI()
     {
         if (player == null) return;
-        float dist = distanceToPlayer;
-        if (dist <= attackRange)
+        float sqrDist = distanceToPlayer;
+        if (sqrDist <= attackRange*attackRange)
             state = ZombieState.Attack;
-        else if (dist <= lookRadius)
+        else if (sqrDist <= lookRadius*lookRadius)
         {    
           state = ZombieState.Chase;
             
@@ -67,7 +67,8 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
                 PlayWalkAnimation();
                 MoveAgent(WalkSpeed);
                 attackInProgress = false;
-                agent.SetDestination(player.position);
+               if(!agent.hasPath || agent.destination != player.position)
+                    agent.SetDestination(player.position);
 
                
                 break;
@@ -108,6 +109,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
     private void StopAgent()
     {
         agent.isStopped = true;
+        agent.ResetPath();
         agent.velocity = Vector3.zero;
     }
     private void MoveAgent(float speed)
