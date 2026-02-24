@@ -1,20 +1,22 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+
 public abstract class UniversalEnemyAi : MonoBehaviour
 {
     [SerializeField] protected int deathDecayTime = 5;
 
-     public event Action OnEnemyDeathEvent;
-    [Header("core stats")]
+    public event Action OnEnemyDeathEvent;
+
+    [Header("Core Stats")]
     public int maxhealth = 100;
     [HideInInspector] public int currentHealth;
 
-    [Header("Component")]
+    [Header("Components")]
     protected NavMeshAgent agent;
     protected Animator anim;
 
-    [Header("player refrence")]
+    [Header("Player Reference")]
     public Transform player;
 
     protected bool isDead = false;
@@ -23,66 +25,88 @@ public abstract class UniversalEnemyAi : MonoBehaviour
     {
         currentHealth = maxhealth;
         agent = GetComponent<NavMeshAgent>();
-        anim = GetComponent<Animator>();    
-
+        anim = GetComponent<Animator>();
     }
+
     protected virtual void Start()
     {
         OnEnemyAwake();
-
     }
+
     protected abstract void OnEnemyAwake();
 
-
-    protected virtual void Die()
-    {
-        isDead = true;
-        agent.isStopped = true;
-        PlayDieAnimation();
-        OnEnemyDeathEvent?.Invoke();
-        
-        Destroy(gameObject, deathDecayTime);
-
-    }
-   
-    protected abstract void OnEnemyDeath();
-    protected abstract void HandleAI();
     protected virtual void Update()
     {
-        if(!isDead)
+        if (!isDead)
             HandleAI();
     }
 
-    protected float distanceToPlayer =>  (player.position- transform.position).sqrMagnitude;
+    protected virtual void Die()
+    {
+        if (isDead) return;
 
-    //--------Animations control
-    protected void PlayStartAnimation() => anim.SetTrigger("GetOutOfGround");
+        isDead = true;
+
+        if (agent != null)
+        {
+            agent.isStopped = true;
+            agent.enabled = false;
+        }
+
+        HandleDeathVisuals();
+        OnEnemyDeath();
+        OnEnemyDeathEvent?.Invoke();
+
+        Destroy(gameObject, deathDecayTime);
+    }
+
+    protected virtual void HandleDeathVisuals()
+    {
+        PlayDieAnimation();
+    }
+
+    protected abstract void OnEnemyDeath();
+    protected abstract void HandleAI();
+
+    protected float distanceToPlayer =>
+        (player.position - transform.position).sqrMagnitude;
+
+    // -------- Animation Controls --------
+
+    protected void PlayStartAnimation() =>
+        anim.SetTrigger("GetOutOfGround");
+
     protected void PlayIdleAnimation()
     {
-      
         anim.SetBool("Idle", true);
         anim.SetBool("Walk", false);
     }
+
     protected void PlayWalkAnimation()
     {
-        Debug.Log("walk");
         anim.SetBool("Walk", true);
         anim.SetBool("Idle", false);
     }
+
     protected void PlayChargeAnimation()
     {
         anim.SetBool("Idle", false);
         anim.SetBool("Walk", false);
         anim.SetBool("Charge", true);
-
     }
-    protected void PlayAttackAnimation() => anim.SetTrigger("Attack1");
-    protected void PlayAttack2Animation() => anim.SetTrigger("Attack2");
-    protected void PlayRageAnimation() => anim.SetTrigger("Roar");
-    protected void PlayHitAnimation() => anim.SetTrigger("GetHitBack");
-    protected void PlayDieAnimation() => anim.SetTrigger("Death");
 
+    protected void PlayAttackAnimation() =>
+        anim.SetTrigger("Attack1");
 
+    protected void PlayAttack2Animation() =>
+        anim.SetTrigger("Attack2");
 
+    protected void PlayRageAnimation() =>
+        anim.SetTrigger("Roar");
 
+    protected void PlayHitAnimation() =>
+        anim.SetTrigger("GetHitBack");
+
+    protected void PlayDieAnimation() =>
+        anim.SetTrigger("Death");
 }

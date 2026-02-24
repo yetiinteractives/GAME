@@ -3,24 +3,14 @@ using UnityEngine.AI;
 
 public class ZombieBrain : UniversalEnemyAi, IDamageable
 {
-
-
-//caaching all ragdoll parts
     private Rigidbody[] ragdollBodies;
     private Collider[] ragdollColliders;
-
     private Collider mainCollider;
-    private Rigidbody mainRigidbody;
 
-    ZombieDeathHandler deathHandler;
-
-
-    public enum ZombieState { Idle, Chase, Attack}
+    public enum ZombieState { Idle, Chase, Attack }
     public ZombieState state;
 
-  
     bool attackInProgress = false;
-
 
     [Header("Movement")]
     public float WalkSpeed = 3f;
@@ -29,74 +19,57 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
     public float lookRadius = 8f;
     public float attackRange = 2f;
     public int attackDamage = 10;
-    public float attackCooldown = 2;
-    public float rageCooldown = 2;
+    public float attackCooldown = 2f;
+
     float attackTimer = 0f;
-    float rageTimer = 0f;
-
-   
-
 
     protected override void OnEnemyAwake()
     {
         state = ZombieState.Idle;
-        deathHandler = GetComponent<ZombieDeathHandler>();
 
         mainCollider = GetComponent<Collider>();
-        mainRigidbody = GetComponent<Rigidbody>();
-        anim = GetComponent<Animator>();
-
         ragdollBodies = GetComponentsInChildren<Rigidbody>();
         ragdollColliders = GetComponentsInChildren<Collider>();
 
-        SetRagdoll(false);
-
+        DisableRagdoll();
     }
 
     protected override void HandleAI()
     {
         if (player == null) return;
-        float sqrDist = distanceToPlayer;
-        if (sqrDist <= attackRange*attackRange)
-            state = ZombieState.Attack;
-        else if (sqrDist <= lookRadius*lookRadius)
-        {    
-          state = ZombieState.Chase;
-            
-   
 
-        }
+        float sqrDist = (player.position - transform.position).sqrMagnitude;
+
+        if (sqrDist <= attackRange * attackRange)
+            state = ZombieState.Attack;
+        else if (sqrDist <= lookRadius * lookRadius)
+            state = ZombieState.Chase;
         else
             state = ZombieState.Idle;
 
-        if(state == ZombieState.Chase || state == ZombieState.Attack)
+        if (state == ZombieState.Chase || state == ZombieState.Attack)
             FacePlayer();
-
 
         switch (state)
         {
             case ZombieState.Idle:
-                if (isDead) break;
-               StopAgent();
+                StopAgent();
                 PlayIdleAnimation();
                 attackInProgress = false;
                 break;
 
             case ZombieState.Chase:
-                if(isDead) break;
-
                 PlayWalkAnimation();
                 MoveAgent(WalkSpeed);
                 attackInProgress = false;
-               if(!agent.hasPath || agent.destination != player.position)
-                    agent.SetDestination(player.position);
 
-               
+                if (!agent.hasPath || agent.destination != player.position)
+                    agent.SetDestination(player.position);
                 break;
 
             case ZombieState.Attack:
-                if(isDead) break;
                 StopAgent();
+
                 if (!attackInProgress)
                 {
                     anim.SetBool("Walk", false);
@@ -106,87 +79,78 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
                 }
 
                 attackTimer += Time.deltaTime;
-                if (attackTimer >= attackCooldown )
-                {
+
+                if (attackTimer >= attackCooldown)
                     attackInProgress = false;
-                    //appy damage to player yeta
-                }
                 break;
         }
-
     }
 
     private void FacePlayer()
     {
-        if (player == null) return;
-
         Vector3 direction = (player.position - transform.position).normalized;
-        direction.y = 0; // keep only horizontal rotation
+        direction.y = 0f;
+
         if (direction == Vector3.zero) return;
 
         Quaternion lookRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 5f * Time.deltaTime);
     }
+
     private void StopAgent()
     {
         agent.isStopped = true;
         agent.ResetPath();
-        agent.velocity = Vector3.zero;
     }
+
     private void MoveAgent(float speed)
     {
         agent.isStopped = false;
         agent.speed = speed;
-
     }
 
-     public void TakeDamage(int damage)
+    public void TakeDamage(int damage)
     {
-         if (isDead) return;
+        if (isDead) return;
+
         currentHealth -= damage;
-         
+
         if (currentHealth <= 0)
-        {
-              
-              Die(); 
-        }
-        else
-        {
-            EnemyShotKnockback.Instance.TriggerKnockback();
-             
-
-        }
-
-         
-
-         
+            Die();
     }
-     void SetRagdoll(bool enabled)
+
+    
+    protected override void HandleDeathVisuals()
     {
-        foreach (Rigidbody rb in ragdollBodies)
-        {
-            if (rb != mainRigidbody)
-                rb.isKinematic = !enabled;
-        }
+        anim.enabled = false;
+        mainCollider.enabled = false;
 
-        foreach (Collider col in ragdollColliders)
-        {
-            if (col != mainCollider)
-                col.enabled = enabled;
-        }
-
-        mainCollider.enabled = !enabled;
-        mainRigidbody.isKinematic = enabled;
-
-        anim.enabled = !enabled;      // using base class animator
-        agent.enabled = !enabled;     // using base class agent
+        EnableRagdoll();
     }
 
     protected override void OnEnemyDeath()
     {
-          SetRagdoll(true);
-        //for loot and some items
-        deathHandler.PlayRandomDeath();
+        enabled = false;
     }
 
-}//do everything 
+    void EnableRagdoll()
+    {
+        foreach (Rigidbody rb in ragdollBodies)
+            rb.isKinematic = false;
+
+        foreach (Collider col in ragdollColliders)
+            col.enabled = true;
+    }
+
+    void DisableRagdoll()
+    {
+        foreach (Rigidbody rb in ragdollBodies)
+            rb.isKinematic = true;
+
+        foreach (Collider col in ragdollColliders)
+        {
+            if (col != mainCollider)
+                col.enabled = false;
+        }
+    }
+}
