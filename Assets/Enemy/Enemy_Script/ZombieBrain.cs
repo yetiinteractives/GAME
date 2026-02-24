@@ -126,7 +126,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
          
         if (currentHealth <= 0)
         {
-
+              
               Die(); 
         }
         else

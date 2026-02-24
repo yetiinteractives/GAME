@@ -1,9 +1,21 @@
 fileFormatVersion: 2
 guid: e27b168025f851248a0ad7cfe0a056b7
+AssetOrigin:
+  serializedVersion: 1
+  productId: 302402
+  packageName: mid/high poly rigged weapons pack
+  packageVersion: 1.0
+  assetPath: Assets/WeaponsPack/modelsInFBX/models/pistolModelFBX.fbx
+  uploadId: 716108
 ModelImporter:
-  serializedVersion: 22200
+  serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: taxture
+    second: {fileID: 2100000, guid: c58992fe9d5549843bff5b248ef8983e, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -16,8 +28,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -58,6 +68,9 @@ ModelImporter:
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
     optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
@@ -107,10 +120,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 302402
-  packageName: mid/high poly rigged weapons pack
-  packageVersion: 1.0
-  assetPath: Assets/WeaponsPack/modelsInFBX/models/pistolModelFBX.fbx
-  uploadId: 716108
