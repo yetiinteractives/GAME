@@ -19,7 +19,6 @@ public class WeaponsUI : MonoBehaviour
 
     private void Start()
     {
-        // Start with pistol
         SwitchToWeapon(1);
     }
 
@@ -41,15 +40,12 @@ public class WeaponsUI : MonoBehaviour
 
     private void SwitchToWeapon(int weaponIndex)
     {
-        // Unsubscribe from old weapon
         UnsubscribeFromWeapon();
 
-        // Deactivate all icons first
         pistolIcon.SetActive(false);
         shotgunIcon.SetActive(false);
         sniperIcon.SetActive(false);
 
-        // Switch weapon based on index
         switch (weaponIndex)
         {
             case 1:
@@ -69,16 +65,7 @@ public class WeaponsUI : MonoBehaviour
                 return;
         }
 
-        // Subscribe to new weapon
         SubscribeToWeapon();
-
-        // Update UI immediately
-        if (currentWeapon != null)
-        {
-            UpdateAmmoDisplay(currentWeapon.BulletOnMag, currentWeapon.TotalBullet);
-            UpdateWeaponStatus(currentWeapon.IsReloading ? "Reloading..." :
-                              currentWeapon.BulletOnMag == 0 ? "Out of Ammo!" : "Ready");
-        }
     }
 
     private void SubscribeToWeapon()
@@ -101,10 +88,8 @@ public class WeaponsUI : MonoBehaviour
 
     private void UpdateAmmoDisplay(int bulletOnMag, int totalBullet)
     {
-        if (ammoText != null && currentWeapon != null)
-        {
+        if (ammoText != null)
             ammoText.text = $"{bulletOnMag} / {totalBullet}";
-        }
     }
 
     private void UpdateWeaponStatus(string status)
@@ -113,7 +98,6 @@ public class WeaponsUI : MonoBehaviour
         {
             weaponStatusText.text = status;
 
-            // Color code
             if (status == "Ready" || status == "Aiming") weaponStatusText.color = Color.green;
             else if (status == "Reloading...") weaponStatusText.color = Color.yellow;
             else if (status == "Out of Ammo!") weaponStatusText.color = Color.red;

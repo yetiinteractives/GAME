@@ -1,9 +1,26 @@
 fileFormatVersion: 2
 guid: 118cb1f646ddd474aa7cc7ec7b1ee2cb
+AssetOrigin:
+  serializedVersion: 1
+  productId: 302402
+  packageName: mid/high poly rigged weapons pack
+  packageVersion: 1.0
+  assetPath: Assets/WeaponsPack/modelsInFBX/models/sniperModelFBX.fbx
+  uploadId: 716108
 ModelImporter:
-  serializedVersion: 22200
+  serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lenses
+    second: {fileID: 2100000, guid: 9e0ed139b88e1444eb7df73edefb86a0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: taxture
+    second: {fileID: 2100000, guid: a24f4aa75276dc3499d1f359f7eb2306, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -16,8 +33,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -58,6 +73,9 @@ ModelImporter:
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
     optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
@@ -90,7 +108,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.002542
+    globalScale: 0.2542
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
@@ -107,10 +125,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 302402
-  packageName: mid/high poly rigged weapons pack
-  packageVersion: 1.0
-  assetPath: Assets/WeaponsPack/modelsInFBX/models/sniperModelFBX.fbx
-  uploadId: 716108

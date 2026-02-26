@@ -1,16 +1,14 @@
 using System;
 using System.Collections;
-using Unity.Cinemachine;
 using UnityEngine;
 using static ImpactManager;
-
 
 public abstract class Weapon : MonoBehaviour
 {
     [Header("Weapon Stats")]
     [SerializeField] protected int damage = 10;
-    [SerializeField] protected int magCapacity = 10;     // Magazine capacity
-    [SerializeField] protected int totalBullet = 100;    // Total bullets in pocket/reserve
+    [SerializeField] protected int magCapacity = 10;
+    [SerializeField] protected int totalBullet = 100;
     [SerializeField] protected float reloadTime = 1.5f;
     [SerializeField] protected float fireRate = 0.3f;
     [SerializeField] protected float recoilIntensity = 1.5f;
@@ -21,9 +19,9 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField] protected AudioClip reloadSound;
     [SerializeField] protected AudioClip emptyMagSound;
     [SerializeField] protected ParticleSystem muzzleFlash;
-   
-    protected AudioSource audioSource;
+    [SerializeField] protected Light muzzleFlashLight;
 
+    protected AudioSource audioSource;
     protected FreeLookADS freeLookAds;
 
     // Events
@@ -44,10 +42,7 @@ public abstract class Weapon : MonoBehaviour
     public int MagCapacity => magCapacity;
     public int TotalBullet => totalBullet;
 
-   [SerializeField]protected GunTypeEnum gunType;
-
-
-
+    [SerializeField] protected GunTypeEnum gunType;
 
     protected virtual void Awake()
     {
@@ -55,15 +50,10 @@ public abstract class Weapon : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
 
         if (audioSource == null)
-        {
             audioSource = gameObject.AddComponent<AudioSource>();
-        }
 
-        // Stop muzzle flash on start if it exists
         if (muzzleFlash != null)
-        {
             muzzleFlash.Stop();
-        }
 
         freeLookAds = FindFirstObjectByType<FreeLookADS>();
     }
@@ -71,36 +61,34 @@ public abstract class Weapon : MonoBehaviour
     protected virtual void OnEnable()
     {
         MousePosition3D.OnFirePerformed += OnFireInput;
+
+        
+        OnAmmoChanged?.Invoke(bulletOnMag, totalBullet);
+
         UpdateStatus("Ready");
 
-        // Stop muzzle flash when enabled
         if (muzzleFlash != null)
-        {
             muzzleFlash.Stop();
-        }
-
-
+        muzzleFlashLight.gameObject.SetActive(true);
+        muzzleFlashLight.enabled = false;
     }
 
     protected virtual void OnDisable()
     {
         MousePosition3D.OnFirePerformed -= OnFireInput;
+
         if (isReloading)
         {
             StopAllCoroutines();
             isReloading = false;
         }
 
-        // Stop muzzle flash when disabled
         if (muzzleFlash != null)
-        {
             muzzleFlash.Stop();
-        }
     }
 
     void OnFireInput(RaycastHit hit)
     {
-        // Only shoot if we can shoot and aiming
         if (isAiming && CanShoot)
         {
             Shoot(hit);
@@ -117,134 +105,86 @@ public abstract class Weapon : MonoBehaviour
         if (!gameObject.activeInHierarchy) return;
 
         // AIM - Right click hold
-        if (Input.GetMouseButtonDown(1))
-        {
-            StartAiming();
-        }
-        if (Input.GetMouseButtonUp(1))
-        {
-            StopAiming();
-        }
+        if (Input.GetMouseButtonDown(1)) StartAiming();
+        if (Input.GetMouseButtonUp(1)) StopAiming();
 
         // RELOAD on R key
         if (Input.GetKeyDown(KeyCode.R) && !isReloading && bulletOnMag < magCapacity && totalBullet > 0)
-        {
             StartReload();
-        }
 
         if (isAiming)
-        {
             ScopeCheck();
-        }
     }
 
     protected virtual void StartAiming()
     {
         isAiming = true;
         UpdateStatus("Aiming");
-        freeLookAds.SetADSState();  // Adjust FOV and sensitivity for aiming
-
+        freeLookAds.SetADSState();
     }
 
     protected virtual void StopAiming()
     {
         isAiming = false;
         UpdateStatus("Ready");
-        freeLookAds.SetNormalState(); // Reset FOV and sensitivity
+        freeLookAds.SetNormalState();
     }
 
     protected virtual void Shoot(RaycastHit hit)
     {
-        // apply damage to target if it has a health component
         ApplyDamage(hit, damage);
 
-        // Reduce bullet in magazine
         bulletOnMag--;
         nextFireTime = Time.time + fireRate;
 
-        // Update ammo UI
         OnAmmoChanged?.Invoke(bulletOnMag, totalBullet);
         OnBulletShot?.Invoke();
 
-        // Play shoot sound
         if (audioSource != null && shootSound != null)
-        {
             audioSource.PlayOneShot(shootSound);
-        }
 
-        // Handle muzzle flash with coroutine
-        StartCoroutine(PlayMuzzleFlash());
+        if (muzzleFlash != null)
+            StartCoroutine(PlayMuzzleFlash());
 
-        // Instantiate bullet impact effect at hit point
-        /*if (bulletImpactPrefab != null)
-        {
-            GameObject impact = Instantiate(bulletImpactPrefab, hit.point, Quaternion.LookRotation(hit.normal));
-            Destroy(impact, 2f);
-        }
-        */
         if (ImpactManager.Instance != null)
-        {
             ImpactManager.Instance.SpawnImpact(gunType, hit);
-        }
 
+        CinemachineShake.Instance.Shake(recoilIntensity, recoilDuration);
 
-        // Instantiate bullet tracer effect
-        /*if (bulleteHolePrefab != null)
-        {
-            GameObject hole = Instantiate(bulleteHolePrefab, hit.point + hit.normal * 0.01f, Quaternion.LookRotation(-hit.normal));
-            Destroy(hole, 30f);
-        }
-        */
-
-        CinemachineShake.Instance.Shake(recoilIntensity, recoilDuration); // Camera shake
-
-
-
-
-        // Call derived class shooting logic
         OnShoot(hit);
 
-        // Check ammo
         if (bulletOnMag <= 0)
-        {
             UpdateStatus("Out of Ammo!");
-        }
         else
-        {
             UpdateStatus("Aiming");
-        }
 
         Debug.Log($"{gameObject.name} fired! Mag: {bulletOnMag}/{magCapacity}, Total: {totalBullet}");
     }
 
-
     protected void ApplyDamage(RaycastHit hit, int damageAmount)
     {
         IDamageable damageable = hit.collider.GetComponentInParent<IDamageable>();
-
         if (damageable != null)
-        {
             damageable.TakeDamage(damageAmount);
-        }
     }
 
-
-
-    // Coroutine to play muzzle flash
     protected virtual IEnumerator PlayMuzzleFlash()
     {
         if (muzzleFlash != null)
         {
             muzzleFlash.Play();
-            yield return new WaitForSeconds(0.1f); // Flash for 0.1 seconds
+            muzzleFlashLight.enabled = true;
+            yield return new WaitForSeconds(0.04f);
+            muzzleFlashLight.enabled = false;
+
+            yield return new WaitForSeconds(0.06f);
             muzzleFlash.Stop();
         }
     }
 
-    // Virtual method for derived classes to override for specific shooting logic
     protected virtual void OnShoot(RaycastHit hit)
     {
-        // Override in derived classes for specific weapon behavior
+        // Override in child classes
     }
 
     public void StartReload()
@@ -252,7 +192,7 @@ public abstract class Weapon : MonoBehaviour
         if (!isReloading && bulletOnMag < magCapacity && totalBullet > 0)
         {
             StartCoroutine(Reload());
-            ReloadHandler.Instance.HandleReload(); // Trigger reload animation
+            ReloadHandler.Instance.HandleReload();
         }
     }
 
@@ -261,33 +201,21 @@ public abstract class Weapon : MonoBehaviour
         isReloading = true;
         UpdateStatus("Reloading...");
 
-        // Play reload sound
         if (audioSource != null && reloadSound != null)
-        {
             audioSource.PlayOneShot(reloadSound);
-        }
 
         yield return new WaitForSeconds(reloadTime);
 
-        // Calculate how many bullets to reload
         int bulletsNeeded = magCapacity - bulletOnMag;
         int bulletsToAdd = Mathf.Min(bulletsNeeded, totalBullet);
 
-        // Update bullet counts
         bulletOnMag += bulletsToAdd;
         totalBullet -= bulletsToAdd;
 
         isReloading = false;
         OnAmmoChanged?.Invoke(bulletOnMag, totalBullet);
 
-        if (isAiming)
-        {
-            UpdateStatus("Aiming");
-        }
-        else
-        {
-            UpdateStatus("Ready");
-        }
+        UpdateStatus(isAiming ? "Aiming" : "Ready");
 
         Debug.Log($"{gameObject.name} reloaded! Added {bulletsToAdd} bullets");
     }
@@ -297,7 +225,6 @@ public abstract class Weapon : MonoBehaviour
         OnWeaponStatusChanged?.Invoke(status);
     }
 
-    // Add bullets to reserve
     public void AddBullets(int amount)
     {
         totalBullet += amount;
@@ -306,11 +233,6 @@ public abstract class Weapon : MonoBehaviour
 
     protected virtual void ScopeCheck()
     {
-        //to override in sniper class
+        // Override in sniper class
     }
-
-
-  
-
-
 }
