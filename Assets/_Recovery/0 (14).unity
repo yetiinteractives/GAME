@@ -2548,6 +2548,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Flashlight
       objectReference: {fileID: 0}
+    - target: {fileID: 1681291802286368986, guid: f0a5bcfb8ad4eb240aa6a65b0f592dfe,
+        type: 3}
+      propertyPath: m_Name
+      value: Chest_Light
+      objectReference: {fileID: 0}
     - target: {fileID: 6188813908813138702, guid: f0a5bcfb8ad4eb240aa6a65b0f592dfe,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6333,7 +6338,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1263790920
 Transform:
   m_ObjectHideFlags: 0
@@ -9065,6 +9070,11 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 523021137621077568, guid: 945c292cf1eda8b41aba3e07f8ca2892,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1037824937267262035, guid: 945c292cf1eda8b41aba3e07f8ca2892,
         type: 3}
       propertyPath: m_Layer
       value: 10
