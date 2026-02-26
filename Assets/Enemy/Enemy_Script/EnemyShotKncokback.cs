@@ -1,31 +1,29 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class EnemyShotKnockback : MonoBehaviour
 {
-    Animator animator;
-    int knockbackLayerIndex;
+    private Animator animator;
+    private int knockbackLayerIndex;
 
-    public static EnemyShotKnockback Instance { get; private set; }
-
-    [SerializeField] private float knockbackDuration = 3f;
+    [Header("Knockback Settings")]
+    [SerializeField] private float knockbackDuration = 0.4f;
     [SerializeField] private float blendSpeed = 8f;
-    [SerializeField] private float targetWeight = 0.9f;
+    [SerializeField] private float targetWeight = 1f;
 
-    float knockbackTimer;
-    bool isKnockbackActive;
-
-    float currentWeight;
+    private float knockbackTimer;
+    private bool isKnockbackActive;
+    private float currentWeight;
 
     private void Awake()
     {
-        Instance = this;
-    }
-
-    private void Start()
-    {
         animator = GetComponent<Animator>();
         knockbackLayerIndex = animator.GetLayerIndex("Knockback Layer");
-        currentWeight = animator.GetLayerWeight(knockbackLayerIndex);
+
+        if (knockbackLayerIndex == -1)
+        {
+            Debug.LogError("Knockback Layer not found in Animator!");
+        }
     }
 
     private void Update()
@@ -36,7 +34,8 @@ public class EnemyShotKnockback : MonoBehaviour
 
     public void TriggerKnockback()
     {
-        
+        if (knockbackLayerIndex == -1) return;
+
         knockbackTimer = knockbackDuration;
         isKnockbackActive = true;
 
@@ -44,10 +43,9 @@ public class EnemyShotKnockback : MonoBehaviour
         animator.SetTrigger("Knockback");
     }
 
-    void HandleKnockbackTimer()
+    private void HandleKnockbackTimer()
     {
-        if (!isKnockbackActive)
-            return;
+        if (!isKnockbackActive) return;
 
         knockbackTimer -= Time.deltaTime;
 
@@ -57,8 +55,10 @@ public class EnemyShotKnockback : MonoBehaviour
         }
     }
 
-    void HandleLayerBlending()
+    private void HandleLayerBlending()
     {
+        if (knockbackLayerIndex == -1) return;
+
         float desiredWeight = isKnockbackActive ? targetWeight : 0f;
 
         currentWeight = Mathf.Lerp(currentWeight, desiredWeight, Time.deltaTime * blendSpeed);

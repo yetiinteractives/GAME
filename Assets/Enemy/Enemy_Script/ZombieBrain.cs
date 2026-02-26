@@ -23,6 +23,8 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
 
     float attackTimer = 0f;
 
+    private EnemyShotKnockback knockback;
+
     protected override void OnEnemyAwake()
     {
         state = ZombieState.Idle;
@@ -30,6 +32,8 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         mainCollider = GetComponent<Collider>();
         ragdollBodies = GetComponentsInChildren<Rigidbody>();
         ragdollColliders = GetComponentsInChildren<Collider>();
+
+        knockback = GetComponent<EnemyShotKnockback>();
 
         DisableRagdoll();
     }
@@ -117,6 +121,13 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
 
         if (currentHealth <= 0)
             Die();
+        else
+        {
+            if (knockback != null)
+            {
+                knockback.TriggerKnockback();
+            }
+        }
     }
 
     
