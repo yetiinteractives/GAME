@@ -54,7 +54,7 @@ public class LarvaBrain : UniversalEnemyAi,IDamageable
                 agent.speed = WalkSpeed;
                 if (!agent.hasPath || agent.destination != player.position)
                     agent.SetDestination(player.position);
-                    
+
                 PlayWalkAnimation();
                 attackInProgress = false;
                 break;
@@ -123,11 +123,24 @@ public class LarvaBrain : UniversalEnemyAi,IDamageable
     {
        //for loot and some items
     }
+    public void OnDeathEnds()
+    {
+               if (anim != null)
+            anim.enabled = false;
+    }
 
 
     public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
     {
         // override interface
+    }
+        protected override void HandleDeathVisuals()
+    {
+        PlayDieAnimation();
+
+
+        
+
     }
 
 }
