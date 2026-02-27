@@ -1498,37 +1498,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6730892630650226741}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &341722408 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5270917447620018781, guid: 19df000e55745ca4fbf58c3f55f518fd,
-    type: 3}
-  m_PrefabInstance: {fileID: 2257366966255014241}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &341722413
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 341722408}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
---- !u!114 &341722414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 341722408}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 272df809553c1e049ba90d4202140b33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyBodyType
-  bodyType: 5
 --- !u!1 &342101764 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1160859828529614933, guid: 945c292cf1eda8b41aba3e07f8ca2892,
@@ -1775,37 +1744,6 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
---- !u!1 &401718899 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3001586215583049483, guid: 19df000e55745ca4fbf58c3f55f518fd,
-    type: 3}
-  m_PrefabInstance: {fileID: 2257366966255014241}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &401718904
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 401718899}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
---- !u!114 &401718905
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 401718899}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 272df809553c1e049ba90d4202140b33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyBodyType
-  bodyType: 5
 --- !u!1 &405876935 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4335000003089392257, guid: 8c4884cda648eec4a81ce895bbbf1fb4,
@@ -5044,7 +4982,7 @@ MonoBehaviour:
   mainCamera: {fileID: 717784050}
   raycastLayerMask:
     serializedVersion: 2
-    m_Bits: 26943
+    m_Bits: 10559
   recoilBackDistance: 0.08
   recoilUpPosition: 0.08
   recoilUpDistance: 2
@@ -7352,37 +7290,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1146319228 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3514028694953759925, guid: 19df000e55745ca4fbf58c3f55f518fd,
-    type: 3}
-  m_PrefabInstance: {fileID: 2257366966255014241}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1146319233
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1146319228}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
---- !u!114 &1146319234
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1146319228}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 272df809553c1e049ba90d4202140b33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyBodyType
-  bodyType: 5
 --- !u!198 &1149548492 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 19800004, guid: b0a227fc2e558f241b1c747820ccc361,
@@ -8471,37 +8378,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: a092c0f0b11001d408725f5da8d5b238, type: 3}
---- !u!1 &1247082813 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1104319399325955838, guid: 19df000e55745ca4fbf58c3f55f518fd,
-    type: 3}
-  m_PrefabInstance: {fileID: 2257366966255014241}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1247082818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1247082813}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
---- !u!114 &1247082819
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1247082813}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 272df809553c1e049ba90d4202140b33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyBodyType
-  bodyType: 5
 --- !u!1 &1251707038 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6480771852515576467, guid: 441945e8a4aa644b3ac6600c6712f79c,
@@ -10619,37 +10495,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
---- !u!1 &1564773183 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4822621388790224578, guid: 19df000e55745ca4fbf58c3f55f518fd,
-    type: 3}
-  m_PrefabInstance: {fileID: 2257366966255014241}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1564773188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1564773183}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
---- !u!114 &1564773189
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1564773183}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 272df809553c1e049ba90d4202140b33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyBodyType
-  bodyType: 5
 --- !u!1 &1566967684
 GameObject:
   m_ObjectHideFlags: 0
@@ -11884,37 +11729,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 618314454}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1690463651 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6020213523095036493, guid: 19df000e55745ca4fbf58c3f55f518fd,
-    type: 3}
-  m_PrefabInstance: {fileID: 2257366966255014241}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1690463655
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1690463651}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
---- !u!114 &1690463656
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1690463651}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 272df809553c1e049ba90d4202140b33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyBodyType
-  bodyType: 2
 --- !u!1 &1704202526 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1833398448893836939, guid: 8c4884cda648eec4a81ce895bbbf1fb4,
@@ -12878,6 +12692,35 @@ Transform:
   - {fileID: 1879319765}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1844127613 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4407072370426327486, guid: 19df000e55745ca4fbf58c3f55f518fd,
+    type: 3}
+  m_PrefabInstance: {fileID: 2257366966255014241}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &1844127621
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844127613}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1
+  m_Height: 6
+  m_Direction: 2
+  m_Center: {x: 0, y: 0.6, z: 0}
 --- !u!4 &1853374342 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3210344701245034461, guid: 1065b7837df3b774f9cb7bc79a988cd6,
@@ -13727,37 +13570,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBodyType
   bodyType: 3
---- !u!1 &1933658508 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8755274285807483300, guid: 19df000e55745ca4fbf58c3f55f518fd,
-    type: 3}
-  m_PrefabInstance: {fileID: 2257366966255014241}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1933658513
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1933658508}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
---- !u!114 &1933658514
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1933658508}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 272df809553c1e049ba90d4202140b33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyBodyType
-  bodyType: 1
 --- !u!4 &1940357650 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4616474790623800874, guid: 1065b7837df3b774f9cb7bc79a988cd6,
@@ -14336,37 +14148,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6730892630650226741}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1979704457 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1451933882244844981, guid: 19df000e55745ca4fbf58c3f55f518fd,
-    type: 3}
-  m_PrefabInstance: {fileID: 2257366966255014241}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1979704462
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1979704457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
---- !u!114 &1979704463
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1979704457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 272df809553c1e049ba90d4202140b33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyBodyType
-  bodyType: 5
 --- !u!1001 &1982465703
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15704,80 +15485,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4942989773739398612, guid: 19df000e55745ca4fbf58c3f55f518fd,
-        type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 932285579832655199, guid: b8333c5b720e8da4aa5cc64b582d9c71,
-        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6020213523095036493, guid: 19df000e55745ca4fbf58c3f55f518fd,
+    - targetCorrespondingSourceObject: {fileID: 4407072370426327486, guid: 19df000e55745ca4fbf58c3f55f518fd,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1690463656}
-    - targetCorrespondingSourceObject: {fileID: 6020213523095036493, guid: 19df000e55745ca4fbf58c3f55f518fd,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1690463655}
-    - targetCorrespondingSourceObject: {fileID: 8755274285807483300, guid: 19df000e55745ca4fbf58c3f55f518fd,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1933658514}
-    - targetCorrespondingSourceObject: {fileID: 8755274285807483300, guid: 19df000e55745ca4fbf58c3f55f518fd,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1933658513}
-    - targetCorrespondingSourceObject: {fileID: 5270917447620018781, guid: 19df000e55745ca4fbf58c3f55f518fd,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 341722414}
-    - targetCorrespondingSourceObject: {fileID: 5270917447620018781, guid: 19df000e55745ca4fbf58c3f55f518fd,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 341722413}
-    - targetCorrespondingSourceObject: {fileID: 1104319399325955838, guid: 19df000e55745ca4fbf58c3f55f518fd,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1247082819}
-    - targetCorrespondingSourceObject: {fileID: 1104319399325955838, guid: 19df000e55745ca4fbf58c3f55f518fd,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1247082818}
-    - targetCorrespondingSourceObject: {fileID: 1451933882244844981, guid: 19df000e55745ca4fbf58c3f55f518fd,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1979704463}
-    - targetCorrespondingSourceObject: {fileID: 1451933882244844981, guid: 19df000e55745ca4fbf58c3f55f518fd,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1979704462}
-    - targetCorrespondingSourceObject: {fileID: 3001586215583049483, guid: 19df000e55745ca4fbf58c3f55f518fd,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 401718905}
-    - targetCorrespondingSourceObject: {fileID: 3001586215583049483, guid: 19df000e55745ca4fbf58c3f55f518fd,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 401718904}
-    - targetCorrespondingSourceObject: {fileID: 4822621388790224578, guid: 19df000e55745ca4fbf58c3f55f518fd,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1564773189}
-    - targetCorrespondingSourceObject: {fileID: 4822621388790224578, guid: 19df000e55745ca4fbf58c3f55f518fd,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1564773188}
-    - targetCorrespondingSourceObject: {fileID: 3514028694953759925, guid: 19df000e55745ca4fbf58c3f55f518fd,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1146319234}
-    - targetCorrespondingSourceObject: {fileID: 3514028694953759925, guid: 19df000e55745ca4fbf58c3f55f518fd,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1146319233}
+      addedObject: {fileID: 1844127621}
   m_SourcePrefab: {fileID: 100100000, guid: 19df000e55745ca4fbf58c3f55f518fd, type: 3}
 --- !u!1001 &5364278319236228485
 PrefabInstance:

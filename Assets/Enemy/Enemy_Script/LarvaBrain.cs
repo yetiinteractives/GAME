@@ -4,12 +4,16 @@ using UnityEngine.AI;
 
 public class LarvaBrain : UniversalEnemyAi,IDamageable
 {
-    public enum BossState { Idle, Chase, Attack, Rage }
+    public enum BossState { Idle, Chase, Attack}
     public BossState state;
 
     bool attackchanger = true;
     bool attackInProgress = false;
     bool phase2;
+    [Header("RagDoll variables")]
+    private Collider mainCollider;
+    private Collider[] allColliders;
+    private RagdollPhysicsHandler[] ragdollHandlers;
 
     [Header("Movement")]
     public float WalkSpeed = 3f;
@@ -25,7 +29,13 @@ public class LarvaBrain : UniversalEnemyAi,IDamageable
     {
         if(attackHitBox != null)
             attackHitBox.enabled = false;
+        
+         mainCollider = GetComponent<Collider>();
+        allColliders = GetComponentsInChildren<Collider>(true);
 
+        ragdollHandlers = GetComponentsInChildren<RagdollPhysicsHandler>(true);
+          DisableRagdoll(); // start animated
+        
 
         state = BossState.Idle;
         PlayStartAnimation();
@@ -85,12 +95,7 @@ public class LarvaBrain : UniversalEnemyAi,IDamageable
                 }
                 break;
 
-            case BossState.Rage:
-            if(isDead) break;
-                agent.isStopped = true;
-                PlayRageAnimation();
-                attackInProgress = false;
-                break;
+   
         }
     }
     
@@ -98,6 +103,7 @@ public class LarvaBrain : UniversalEnemyAi,IDamageable
     public void TakeDamage(float damage)
     {
          if (isDead) return;
+
         currentHealth -= damage;
          
         if (currentHealth <= 0)
@@ -132,13 +138,22 @@ public class LarvaBrain : UniversalEnemyAi,IDamageable
     {
                if (anim != null)
             anim.enabled = false;
+
+           if(agent != null)
+            agent.enabled = false;
+
+            if (mainCollider != null)
+            mainCollider.enabled = false;
+
+            EnableRagdoll();
+
     }
 
 
-    public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
-    {
-        // override interface
-    }
+public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
+{
+
+}
         protected override void HandleDeathVisuals()
     {
         PlayDieAnimation();
@@ -173,5 +188,44 @@ public class LarvaBrain : UniversalEnemyAi,IDamageable
         if (attackHitBox != null)
             attackHitBox.enabled = false;
     }
+
+
+    //-----------------------------------------/
+     private void EnableRagdoll()
+    {
+        
+        for (int i = 0; i < ragdollHandlers.Length; i++)
+            ragdollHandlers[i].EnableRagdoll();
+
+        
+        for (int i = 0; i < allColliders.Length; i++)
+        {
+            Collider col = allColliders[i];
+            if (col == null) continue;
+            if (col == mainCollider) continue;
+            col.enabled = true;
+        }
+    }
+
+    private void DisableRagdoll()
+    {
+        
+        for (int i = 0; i < ragdollHandlers.Length; i++)
+            ragdollHandlers[i].DisableRagdoll();
+
+       
+        for (int i = 0; i < allColliders.Length; i++)
+        {
+            Collider col = allColliders[i];
+            if (col == null) continue;
+            if (col == mainCollider) continue;
+            col.enabled = false;
+        }
+
+        if (mainCollider != null)
+            mainCollider.enabled = true;
+    }
+
+   
 
 }
