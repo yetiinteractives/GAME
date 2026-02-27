@@ -9,8 +9,13 @@ public class AlienZombieBrain : UniversalEnemyAi, IDamageable
 
   
     bool attackInProgress = false;
-   
-     
+
+    public bool IsDead()
+    {
+        return isDead;
+    }
+
+
 
     [Header("Movement")]
     public float WalkSpeed = 2f;
@@ -150,6 +155,12 @@ public class AlienZombieBrain : UniversalEnemyAi, IDamageable
     protected override void OnEnemyDeath()
     {
         //for loot and some items
+    }
+
+
+    public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
+    {
+        // override interface
     }
 
 }

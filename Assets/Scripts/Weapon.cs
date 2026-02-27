@@ -7,6 +7,7 @@ public abstract class Weapon : MonoBehaviour
 {
     [Header("Weapon Stats")]
     [SerializeField] protected int damage = 10;
+    [SerializeField] protected float force = 5f;
     [SerializeField] protected int magCapacity = 10;
     [SerializeField] protected int totalBullet = 100;
     [SerializeField] protected float reloadTime = 1.5f;
@@ -164,19 +165,26 @@ public abstract class Weapon : MonoBehaviour
     protected void ApplyDamage(RaycastHit hit, int damageAmount)
     {
         IDamageable damageable = hit.collider.GetComponentInParent<IDamageable>();
-        if (damageable != null)
+        if (damageable == null) return;
+
+        float multiplier = 1f;
+
+        EnemyBodyType bodyType = hit.collider.GetComponent<EnemyBodyType>();
+        if (bodyType != null)
+            multiplier = bodyType.DamageMultiplyer();
+
+        float finalDamage = damageAmount * multiplier;
+
+        // Apply damage first
+        damageable.TakeDamage(finalDamage);
+
+        // If enemy died from this shot -> apply death force to the limb that was hit
+        if (damageable.IsDead())
         {
-            float multiplier = 1f;
+            Vector3 direction = -hit.normal;
+            Vector3 impulse = direction.normalized * force * multiplier;
 
-            EnemyBodyType bodyType = hit.collider.GetComponent<EnemyBodyType>();
-            if(bodyType != null)
-            {
-               multiplier = bodyType.DamageMultiplyer();
-
-            }
-            float finalDamage = (damageAmount * multiplier);
-            
-            damageable.TakeDamage(finalDamage);
+            damageable.ApplyDeathForce(hit.collider, hit.point, impulse);
         }
     }
 

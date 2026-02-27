@@ -12,7 +12,7 @@ public class EnemyBodyType : MonoBehaviour
             switch (bodyType)
             {
                 case EnemyBodyEnum.head:
-                    damageMultiplier = 2.5f;
+                    damageMultiplier = 3f;
                 break;
                 case EnemyBodyEnum.torso:
                     damageMultiplier = 1.0f;

@@ -30,7 +30,10 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
     public GameObject larva;
     public Transform larvaSpawnPoint;
 
-
+    public bool IsDead()
+    {
+        return isDead;
+    }
 
     protected override void OnEnemyAwake()
     {
@@ -206,4 +209,10 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
     {
        //for loot and some items
     }
+
+
+    public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
+    {
+        // override interface
+     }
 }

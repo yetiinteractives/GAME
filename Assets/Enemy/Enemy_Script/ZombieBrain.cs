@@ -3,15 +3,6 @@ using UnityEngine.AI;
 
 public class ZombieBrain : UniversalEnemyAi, IDamageable
 {
-    private Rigidbody[] ragdollBodies;
-    private Collider[] ragdollColliders;
-    private Collider mainCollider;
-
-    public enum ZombieState { Idle, Chase, Attack }
-    public ZombieState state;
-
-    bool attackInProgress = false;
-
     [Header("Movement")]
     public float WalkSpeed = 3f;
 
@@ -21,26 +12,43 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
     public int attackDamage = 10;
     public float attackCooldown = 2f;
 
-    float attackTimer = 0f;
+    public enum ZombieState { Idle, Chase, Attack }
+    public ZombieState state;
+
+    private bool attackInProgress = false;
+    private float attackTimer = 0f;
 
     private EnemyShotKnockback knockback;
+
+    // Ragdoll system
+    private Collider mainCollider;
+    private Collider[] allColliders;
+    private RagdollPhysicsHandler[] ragdollHandlers;
+
+    // Cache lethal hit so we can apply it after ragdoll is enabled
+    private bool pendingDeathImpulse;
+    private Collider pendingHitCollider;
+    private Vector3 pendingHitPoint;
+    private Vector3 pendingImpulse;
+
+    public bool IsDead() => isDead;
 
     protected override void OnEnemyAwake()
     {
         state = ZombieState.Idle;
 
         mainCollider = GetComponent<Collider>();
-        ragdollBodies = GetComponentsInChildren<Rigidbody>();
-        ragdollColliders = GetComponentsInChildren<Collider>();
+        allColliders = GetComponentsInChildren<Collider>(true);
 
+        ragdollHandlers = GetComponentsInChildren<RagdollPhysicsHandler>(true);
         knockback = GetComponent<EnemyShotKnockback>();
 
-        DisableRagdoll();
+        DisableRagdoll(); // start animated
     }
 
     protected override void HandleAI()
     {
-        if (player == null) return;
+        if (player == null || agent == null) return;
 
         float sqrDist = (player.position - transform.position).sqrMagnitude;
 
@@ -76,7 +84,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
 
                 if (!attackInProgress)
                 {
-                    anim.SetBool("Walk", false);
+                    if (anim != null) anim.SetBool("Walk", false);
                     attackInProgress = true;
                     PlayAttackAnimation();
                     attackTimer = 0f;
@@ -120,23 +128,33 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         currentHealth -= damage;
 
         if (currentHealth <= 0)
+        {
             Die();
+        }
         else
         {
-            if (knockback != null)
-            {
-                knockback.TriggerKnockback();
-            }
+            knockback?.TriggerKnockback();
         }
     }
 
-    
     protected override void HandleDeathVisuals()
     {
-        anim.enabled = false;
-        mainCollider.enabled = false;
+        
+        if (anim != null)
+            anim.enabled = false;
+
+        
+        if (mainCollider != null)
+            mainCollider.enabled = false;
 
         EnableRagdoll();
+
+        // Apply cached lethal impulse after ragdoll is live
+        if (pendingDeathImpulse)
+        {
+            pendingDeathImpulse = false;
+            ApplyDeathForceInternal(pendingHitCollider, pendingHitPoint, pendingImpulse);
+        }
     }
 
     protected override void OnEnemyDeath()
@@ -144,24 +162,96 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         enabled = false;
     }
 
-    void EnableRagdoll()
+    private void EnableRagdoll()
     {
-        foreach (Rigidbody rb in ragdollBodies)
-            rb.isKinematic = false;
+        
+        for (int i = 0; i < ragdollHandlers.Length; i++)
+            ragdollHandlers[i].EnableRagdoll();
 
-        foreach (Collider col in ragdollColliders)
+        
+        for (int i = 0; i < allColliders.Length; i++)
+        {
+            Collider col = allColliders[i];
+            if (col == null) continue;
+            if (col == mainCollider) continue;
             col.enabled = true;
+        }
     }
 
-    void DisableRagdoll()
+    private void DisableRagdoll()
     {
-        foreach (Rigidbody rb in ragdollBodies)
-            rb.isKinematic = true;
+        
+        for (int i = 0; i < ragdollHandlers.Length; i++)
+            ragdollHandlers[i].DisableRagdoll();
 
-        foreach (Collider col in ragdollColliders)
+       
+        for (int i = 0; i < allColliders.Length; i++)
         {
-            if (col != mainCollider)
-                col.enabled = false;
+            Collider col = allColliders[i];
+            if (col == null) continue;
+            if (col == mainCollider) continue;
+            col.enabled = false;
         }
+
+        if (mainCollider != null)
+            mainCollider.enabled = true;
+    }
+
+    public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
+    {
+       
+        if (!isDead)
+        {
+            pendingDeathImpulse = true;
+            pendingHitCollider = hitCollider;
+            pendingHitPoint = hitPoint;
+            pendingImpulse = impulse;
+            return;
+        }
+
+        ApplyDeathForceInternal(hitCollider, hitPoint, impulse);
+    }
+
+    private void ApplyDeathForceInternal(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
+    {
+        Rigidbody target = null;
+
+       
+        if (hitCollider != null)
+            target = hitCollider.attachedRigidbody;
+
+        // Fallback: nearest ragdoll rigidbody (if collider had no RB)
+        if (target == null || target.isKinematic)
+            target = GetNearestActiveRagdollBody(hitPoint);
+
+        if (target == null) return;
+
+        target.AddForceAtPosition(impulse, hitPoint, ForceMode.Impulse);
+        target.WakeUp();
+    }
+
+    private Rigidbody GetNearestActiveRagdollBody(Vector3 hitPoint)
+    {
+        Rigidbody nearest = null;
+        float bestSqr = float.MaxValue;
+
+        for (int i = 0; i < ragdollHandlers.Length; i++)
+        {
+            var handler = ragdollHandlers[i];
+            if (handler == null) continue;
+
+            Rigidbody rb = handler.Rigidbody;
+            if (rb == null) continue;
+            if (rb.isKinematic) continue;
+
+            float sqr = (rb.worldCenterOfMass - hitPoint).sqrMagnitude;
+            if (sqr < bestSqr)
+            {
+                bestSqr = sqr;
+                nearest = rb;
+            }
+        }
+
+        return nearest;
     }
 }

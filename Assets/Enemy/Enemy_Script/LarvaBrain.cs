@@ -111,20 +111,31 @@ public class LarvaBrain : UniversalEnemyAi,IDamageable
          
     }
 
-   /* protected override void OnDamageTaken(int damage)
+    public bool IsDead()
     {
-        if (!phase2 && currentHealth <= maxhealth * 0.5f)
-        {
-            phase2 = true;
-            state = BossState.Rage;
-        }
-
-
+        return isDead;
     }
-    */
+
+    /* protected override void OnDamageTaken(int damage)
+     {
+         if (!phase2 && currentHealth <= maxhealth * 0.5f)
+         {
+             phase2 = true;
+             state = BossState.Rage;
+         }
+
+
+     }
+     */
     protected override void OnEnemyDeath()
     {
        //for loot and some items
+    }
+
+
+    public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
+    {
+        // override interface
     }
 
 }
