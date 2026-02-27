@@ -807,9 +807,10 @@ MonoBehaviour:
   visionCheckInterval: 0.2
   WalkSpeed: 3
   lookRadius: 15
-  attackRange: 2
+  attackRange: 1.5
   attackDamage: 10
   attackCooldown: 2
+  attackHitBox: {fileID: 8879043176705259002}
   state: 0
 --- !u!195 &5679354980846772865
 NavMeshAgent:

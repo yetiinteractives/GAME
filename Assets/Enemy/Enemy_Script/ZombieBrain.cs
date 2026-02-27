@@ -344,7 +344,7 @@ void OnDrawGizmosSelected()
             }
         }
     }
-    public void DestroyHitBox()
+    public void DisableHitBox()
     {
         if (attackHitBox != null)
             attackHitBox.enabled = false;

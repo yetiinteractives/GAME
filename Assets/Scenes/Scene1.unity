@@ -2346,6 +2346,7 @@ MonoBehaviour:
   attackRange: 2
   attackDamage: 10
   attackCooldown: 2
+  attackHitBox: {fileID: 0}
   state: 0
 --- !u!54 &480430982
 Rigidbody:
@@ -3607,7 +3608,7 @@ PrefabInstance:
     - target: {fileID: 4606455391047647706, guid: 8c4884cda648eec4a81ce895bbbf1fb4,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8222656007130814443, guid: 8c4884cda648eec4a81ce895bbbf1fb4,
         type: 3}
@@ -13721,7 +13722,7 @@ PrefabInstance:
     - target: {fileID: 4606455391047647706, guid: 8c4884cda648eec4a81ce895bbbf1fb4,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8222656007130814443, guid: 8c4884cda648eec4a81ce895bbbf1fb4,
         type: 3}
@@ -14697,7 +14698,7 @@ PrefabInstance:
     - target: {fileID: 4606455391047647706, guid: 8c4884cda648eec4a81ce895bbbf1fb4,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8222656007130814443, guid: 8c4884cda648eec4a81ce895bbbf1fb4,
         type: 3}
@@ -15625,6 +15626,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Center.z
       value: 0.005541339
+      objectReference: {fileID: 0}
+    - target: {fileID: 8879043176705259002, guid: 8c4884cda648eec4a81ce895bbbf1fb4,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8879043176705259002, guid: 8c4884cda648eec4a81ce895bbbf1fb4,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
