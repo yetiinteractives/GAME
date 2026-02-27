@@ -226,9 +226,6 @@ public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impu
             mainCollider.enabled = true;
     }
 
-    public void ApplyHitReaction(Collider hitCollider, Vector3 hitPoint, Vector3 impulse, float duration)
-    {
-
-    }
+   
 
 }

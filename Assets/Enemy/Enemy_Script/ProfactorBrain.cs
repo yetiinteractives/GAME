@@ -215,8 +215,4 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
     {
         // override interface
      }
-    public void ApplyHitReaction(Collider hitCollider, Vector3 hitPoint, Vector3 impulse, float duration)
-    {
-
-    }
 }
