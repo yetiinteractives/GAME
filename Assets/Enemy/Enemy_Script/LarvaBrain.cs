@@ -20,8 +20,13 @@ public class LarvaBrain : UniversalEnemyAi,IDamageable
     public int attackDamage = 10;
     public float attackCooldown = 1.2f;
     float attackTimer = 1f;
+    public BoxCollider attackHitBox;
     protected override void OnEnemyAwake()
     {
+        if(attackHitBox != null)
+            attackHitBox.enabled = false;
+
+
         state = BossState.Idle;
         PlayStartAnimation();
         PlayIdleAnimation();
@@ -141,6 +146,32 @@ public class LarvaBrain : UniversalEnemyAi,IDamageable
 
         
 
+    }
+
+    //------------atacking logic yeta-----------------/
+
+    public void CreateHitBox()
+    {
+        if (attackHitBox != null)
+            attackHitBox.enabled = true;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Player") && attackHitBox != null && attackHitBox.enabled)
+        {
+         
+            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(attackDamage);
+            }
+        }
+    }
+    public void DestroyHitBox()
+    {
+        if (attackHitBox != null)
+            attackHitBox.enabled = false;
     }
 
 }

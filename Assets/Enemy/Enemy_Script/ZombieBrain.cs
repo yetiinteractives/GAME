@@ -53,7 +53,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
     public float attackRange = 2f;
     public int attackDamage = 10;
     public float attackCooldown = 2f;
-
+      public BoxCollider attackHitBox;
     public enum ZombieState { Idle, Chase, Attack }
     public ZombieState state;
 
@@ -77,6 +77,9 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
    
     protected override void OnEnemyAwake()
     {
+             if(attackHitBox != null)
+            attackHitBox.enabled = false;
+
         state = ZombieState.Idle;
           
                 //angle check
@@ -320,4 +323,31 @@ void OnDrawGizmosSelected()
     Gizmos.DrawLine(transform.position, transform.position + left * lookRadius);
     Gizmos.DrawLine(transform.position, transform.position + right * lookRadius);
   }
+
+      //------------atacking logic yeta-----------------/
+
+    public void CreateHitBox()
+    {
+        if (attackHitBox != null)
+            attackHitBox.enabled = true;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Player") && attackHitBox != null && attackHitBox.enabled)
+        {
+         
+            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(attackDamage);
+            }
+        }
+    }
+    public void DestroyHitBox()
+    {
+        if (attackHitBox != null)
+            attackHitBox.enabled = false;
+    }
+
 }
