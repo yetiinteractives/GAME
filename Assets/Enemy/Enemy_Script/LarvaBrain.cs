@@ -98,7 +98,7 @@ public class LarvaBrain : UniversalEnemyAi,IDamageable
     }
     
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
          if (isDead) return;
         currentHealth -= damage;

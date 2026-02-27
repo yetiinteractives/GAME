@@ -165,7 +165,19 @@ public abstract class Weapon : MonoBehaviour
     {
         IDamageable damageable = hit.collider.GetComponentInParent<IDamageable>();
         if (damageable != null)
-            damageable.TakeDamage(damageAmount);
+        {
+            float multiplier = 1f;
+
+            EnemyBodyType bodyType = hit.collider.GetComponent<EnemyBodyType>();
+            if(bodyType != null)
+            {
+               multiplier = bodyType.DamageMultiplyer();
+
+            }
+            float finalDamage = (damageAmount * multiplier);
+            
+            damageable.TakeDamage(finalDamage);
+        }
     }
 
     protected virtual IEnumerator PlayMuzzleFlash()

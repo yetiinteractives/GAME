@@ -10,7 +10,7 @@ public abstract class UniversalEnemyAi : MonoBehaviour
 
     [Header("Core Stats")]
     public int maxhealth = 100;
-    [HideInInspector] public int currentHealth;
+    [HideInInspector] public float currentHealth;
 
     [Header("Components")]
     protected NavMeshAgent agent;

@@ -7,7 +7,7 @@ public class EnemyHealth : MonoBehaviour , IDamageable
 
     [Header("Enemy Health Settings")]
     public int enemy_maxHealth = 100;
-    private int currentHealth;
+    private float currentHealth;
 
     void Start()
     {
@@ -24,7 +24,7 @@ public class EnemyHealth : MonoBehaviour , IDamageable
 
     }
 
-public void TakeDamage(int damage)  //override from interface.
+public void TakeDamage(float damage)  //override from interface.
     {
     currentHealth -= damage;
     Debug.Log("Enemy Health:" + currentHealth);

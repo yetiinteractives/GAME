@@ -113,7 +113,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         agent.speed = speed;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         if (isDead) return;
 

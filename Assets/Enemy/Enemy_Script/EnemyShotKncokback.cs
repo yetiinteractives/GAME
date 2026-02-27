@@ -65,4 +65,4 @@ public class EnemyShotKnockback : MonoBehaviour
 
         animator.SetLayerWeight(knockbackLayerIndex, currentWeight);
     }
-}
+}   
