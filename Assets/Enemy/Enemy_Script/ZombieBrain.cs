@@ -98,7 +98,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         {
             visionTimer =0f;
             canSeePlayer = CheckVision();
-            
+
         }
 
         if (sqrDist <= attackRange * attackRange)
@@ -303,4 +303,17 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
 
         return nearest;
     }
+
+      void OnDrawGizmosSelected()
+  {
+    Gizmos.color = Color.yellow;
+    Gizmos.DrawWireSphere(transform.position, lookRadius);
+
+    Vector3 left = Quaternion.Euler(0, -fieldOfView / 2, 0) * transform.forward;
+    Vector3 right = Quaternion.Euler(0, fieldOfView / 2, 0) * transform.forward;
+
+    Gizmos.color = Color.red;
+    Gizmos.DrawLine(transform.position, transform.position + left * lookRadius);
+    Gizmos.DrawLine(transform.position, transform.position + right * lookRadius);
+  }
 }
