@@ -9,6 +9,8 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
     public float eyeHeight = 1.6f;
     public float visionCheckInterval = 0.2f;//same as human reaction time
     float visionTimer=0f;
+    float minDot;
+
     bool canSeePlayer = false;
 
     bool CheckVision()
@@ -28,8 +30,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         
         float dot = Vector3.Dot(transform.forward, direction);
         
-        //angle check
-        float minDot = Mathf.Cos(fieldOfView * 0.5f * Mathf.Deg2Rad);
+        //minDot chai onEnemyAwake vitra xa for optimization changes to avoid calculating cos every frame
 
         if(dot < minDot)
         return false;
@@ -77,6 +78,9 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
     protected override void OnEnemyAwake()
     {
         state = ZombieState.Idle;
+          
+                //angle check
+        minDot = Mathf.Cos(fieldOfView * 0.5f * Mathf.Deg2Rad);
 
         mainCollider = GetComponent<Collider>();
         allColliders = GetComponentsInChildren<Collider>(true);
