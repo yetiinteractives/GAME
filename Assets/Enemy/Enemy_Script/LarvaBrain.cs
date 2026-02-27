@@ -54,16 +54,8 @@ public class LarvaBrain : UniversalEnemyAi,IDamageable
                 agent.speed = WalkSpeed;
                 if (!agent.hasPath || agent.destination != player.position)
                     agent.SetDestination(player.position);
-
-
-                if (currentHealth < 50)
-                { 
-                PlayChargeAnimation();  
-                }
-                else
-                { 
+                    
                 PlayWalkAnimation();
-                }
                 attackInProgress = false;
                 break;
 
