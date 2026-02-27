@@ -308,7 +308,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         return nearest;
     }
 
-      void OnDrawGizmosSelected()
+void OnDrawGizmosSelected()
   {
     Gizmos.color = Color.yellow;
     Gizmos.DrawWireSphere(transform.position, lookRadius);
