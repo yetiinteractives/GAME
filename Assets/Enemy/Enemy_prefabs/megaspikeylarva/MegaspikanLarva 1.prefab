@@ -9,7 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8101882022295093287}
-  m_Layer: 0
+  - component: {fileID: 4661326643626872991}
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegRightRear3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31,6 +32,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4165036065953777933}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &4661326643626872991
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87954928550792228}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.2
+  m_Center: {x: -0.3, y: 0, z: 0}
 --- !u!1 &467679136949922453
 GameObject:
   m_ObjectHideFlags: 0
@@ -40,7 +62,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4029173113260214930}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegRightRear1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +94,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7685666087133998668}
-  m_Layer: 0
+  - component: {fileID: 8616327221694601729}
+  - component: {fileID: 1242176716709873623}
+  - component: {fileID: 122436635074928427}
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegLeftMiddle2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,6 +120,95 @@ Transform:
   - {fileID: 7040127954340285543}
   m_Father: {fileID: 5563514766267394911}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &8616327221694601729
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104319399325955838}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.2
+  m_Height: 0.7
+  m_Direction: 0
+  m_Center: {x: -0.2, y: 0, z: 0}
+--- !u!54 &1242176716709873623
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104319399325955838}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 1
+--- !u!59 &122436635074928427
+HingeJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104319399325955838}
+  serializedVersion: 3
+  m_ConnectedBody: {fileID: 8772758240990982217}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_Anchor: {x: 0, y: 0, z: 0}
+  m_Axis: {x: 1, y: 0, z: 0}
+  m_AutoConfigureConnectedAnchor: 1
+  m_ConnectedAnchor: {x: 0, y: 0, z: 0}
+  m_UseSpring: 0
+  m_Spring:
+    spring: 0
+    damper: 0
+    targetPosition: 0
+  m_UseMotor: 0
+  m_Motor:
+    targetVelocity: 0
+    force: 0
+    freeSpin: 0
+  m_UseLimits: 1
+  m_ExtendedLimits: 0
+  m_UseAcceleration: 0
+  m_Limits:
+    min: -45
+    max: 45
+    bounciness: 0
+    bounceMinVelocity: 0.2
+    contactDistance: 0
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1 &1451933882244844981
 GameObject:
   m_ObjectHideFlags: 0
@@ -104,7 +218,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6884335554891085303}
-  m_Layer: 0
+  - component: {fileID: 2033190868166813334}
+  - component: {fileID: 538295243882779895}
+  - component: {fileID: 8961149260752058689}
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegLeftRear2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,6 +244,95 @@ Transform:
   - {fileID: 6409670187949465527}
   m_Father: {fileID: 5510575554733662617}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &2033190868166813334
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1451933882244844981}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.2
+  m_Height: 0.7
+  m_Direction: 0
+  m_Center: {x: -0.2, y: 0, z: 0}
+--- !u!54 &538295243882779895
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1451933882244844981}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 1
+--- !u!59 &8961149260752058689
+HingeJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1451933882244844981}
+  serializedVersion: 3
+  m_ConnectedBody: {fileID: 8772758240990982217}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_Anchor: {x: 0, y: 0, z: 0}
+  m_Axis: {x: 1, y: 0, z: 0}
+  m_AutoConfigureConnectedAnchor: 1
+  m_ConnectedAnchor: {x: 0, y: 0, z: 0}
+  m_UseSpring: 0
+  m_Spring:
+    spring: 0
+    damper: 0
+    targetPosition: 0
+  m_UseMotor: 0
+  m_Motor:
+    targetVelocity: 0
+    force: 0
+    freeSpin: 0
+  m_UseLimits: 1
+  m_ExtendedLimits: 0
+  m_UseAcceleration: 0
+  m_Limits:
+    min: -45
+    max: 45
+    bounciness: 0
+    bounceMinVelocity: 0.2
+    contactDistance: 0
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1 &2074475672851318287
 GameObject:
   m_ObjectHideFlags: 0
@@ -136,7 +342,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 766902398755004446}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -169,7 +375,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2867992391641160643}
   - component: {fileID: 9176229077811828684}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: SK_MegaspikanLarvae
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -286,7 +492,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2055675682237944519}
-  m_Layer: 0
+  - component: {fileID: 6556309750963756529}
+  - component: {fileID: 3651150891985402217}
+  - component: {fileID: 3837033144715978399}
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegRightFront2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -309,6 +518,95 @@ Transform:
   - {fileID: 5346345405329575674}
   m_Father: {fileID: 9195682134044923469}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &6556309750963756529
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3001586215583049483}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.2
+  m_Height: 0.7
+  m_Direction: 0
+  m_Center: {x: -0.2, y: 0, z: 0}
+--- !u!54 &3651150891985402217
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3001586215583049483}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 1
+--- !u!59 &3837033144715978399
+HingeJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3001586215583049483}
+  serializedVersion: 3
+  m_ConnectedBody: {fileID: 8772758240990982217}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_Anchor: {x: 0, y: 0, z: 0}
+  m_Axis: {x: 1, y: 0, z: 0}
+  m_AutoConfigureConnectedAnchor: 1
+  m_ConnectedAnchor: {x: 0, y: 0, z: 0}
+  m_UseSpring: 0
+  m_Spring:
+    spring: 0
+    damper: 0
+    targetPosition: 0
+  m_UseMotor: 0
+  m_Motor:
+    targetVelocity: 0
+    force: 0
+    freeSpin: 0
+  m_UseLimits: 1
+  m_ExtendedLimits: 0
+  m_UseAcceleration: 0
+  m_Limits:
+    min: -45
+    max: 45
+    bounciness: 0
+    bounceMinVelocity: 0.2
+    contactDistance: 0
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1 &3041568525178194183
 GameObject:
   m_ObjectHideFlags: 0
@@ -318,7 +616,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5346345405329575674}
-  m_Layer: 0
+  - component: {fileID: 6519087903328977592}
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegRightFront3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -340,6 +639,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2055675682237944519}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &6519087903328977592
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3041568525178194183}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.2
+  m_Center: {x: -0.3, y: 0, z: 0}
 --- !u!1 &3158977415497227846
 GameObject:
   m_ObjectHideFlags: 0
@@ -349,7 +669,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3232501698622581500}
-  m_Layer: 0
+  - component: {fileID: 4083709673045821272}
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegRightMiddle3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -371,6 +692,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8054264610875153488}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &4083709673045821272
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3158977415497227846}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.2
+  m_Center: {x: -0.3, y: 0, z: 0}
 --- !u!1 &3369927380079446449
 GameObject:
   m_ObjectHideFlags: 0
@@ -380,7 +722,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5563514766267394911}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegLeftMiddle1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -412,7 +754,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4165036065953777933}
-  m_Layer: 0
+  - component: {fileID: 5009817402813232658}
+  - component: {fileID: 3388194050681884275}
+  - component: {fileID: 9029846507701330469}
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegRightRear2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -435,6 +780,95 @@ Transform:
   - {fileID: 8101882022295093287}
   m_Father: {fileID: 4029173113260214930}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &5009817402813232658
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3514028694953759925}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.2
+  m_Height: 0.7
+  m_Direction: 0
+  m_Center: {x: -0.2, y: 0, z: 0}
+--- !u!54 &3388194050681884275
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3514028694953759925}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 1
+--- !u!59 &9029846507701330469
+HingeJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3514028694953759925}
+  serializedVersion: 3
+  m_ConnectedBody: {fileID: 8772758240990982217}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_Anchor: {x: 0, y: 0, z: 0}
+  m_Axis: {x: 1, y: 0, z: 0}
+  m_AutoConfigureConnectedAnchor: 1
+  m_ConnectedAnchor: {x: 0, y: 0, z: 0}
+  m_UseSpring: 0
+  m_Spring:
+    spring: 0
+    damper: 0
+    targetPosition: 0
+  m_UseMotor: 0
+  m_Motor:
+    targetVelocity: 0
+    force: 0
+    freeSpin: 0
+  m_UseLimits: 1
+  m_ExtendedLimits: 0
+  m_UseAcceleration: 0
+  m_Limits:
+    min: -45
+    max: 45
+    bounciness: 0
+    bounceMinVelocity: 0.2
+    contactDistance: 0
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1 &3678596351218288568
 GameObject:
   m_ObjectHideFlags: 0
@@ -444,7 +878,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6575953548672652145}
-  m_Layer: 0
+  - component: {fileID: 2203843118116960814}
+  m_Layer: 14
   m_Name: MegaspikanLarvae_JawLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -466,6 +901,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7570562133229750705}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2203843118116960814
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3678596351218288568}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.1, z: 1}
+  m_Center: {x: -1, y: 0, z: 0}
 --- !u!1 &3800320419392185761
 GameObject:
   m_ObjectHideFlags: 0
@@ -475,7 +931,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2185733096327221707}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: MegaspikanLarvae_JawRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -506,7 +962,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2068014456892754827}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: MegaspikanLarvae_Tail4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -537,7 +993,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8262129426858572180}
-  m_Layer: 0
+  - component: {fileID: 8354883748381904889}
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegLeftFront3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -559,6 +1016,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6733222715657509818}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &8354883748381904889
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4179332945099491939}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.2
+  m_Center: {x: -0.3, y: 0, z: 0}
 --- !u!1 &4407072370426327486
 GameObject:
   m_ObjectHideFlags: 0
@@ -571,10 +1049,9 @@ GameObject:
   - component: {fileID: 5174259483551682067}
   - component: {fileID: 140773246607954813}
   - component: {fileID: 3441457477263027050}
-  - component: {fileID: 2958586626880275835}
-  - component: {fileID: 2272192021676056250}
   - component: {fileID: 4085530859779302043}
-  m_Layer: 0
+  - component: {fileID: 4942989773739398612}
+  m_Layer: 14
   m_Name: MegaspikanLarva 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -633,7 +1110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MegaSpikeyLarva
   deathDecayTime: 5
-  maxhealth: 100
+  maxhealth: 10
   currentHealth: 0
   player: {fileID: 0}
   state: 0
@@ -642,6 +1119,7 @@ MonoBehaviour:
   attackRange: 2
   attackDamage: 10
   attackCooldown: 0.6
+  attackHitBox: {fileID: 0}
 --- !u!195 &3441457477263027050
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -664,7 +1142,20 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!64 &2958586626880275835
+--- !u!114 &4085530859779302043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4407072370426327486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe2e41c83163c2441b63fe2f01297a76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Surface
+  surfaceType: 4
+--- !u!64 &4942989773739398612
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -685,47 +1176,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 932285579832655199, guid: 5cfbf70f8c8b5ed4e96f8686e9b86c59, type: 3}
---- !u!54 &2272192021676056250
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4407072370426327486}
-  serializedVersion: 5
-  m_Mass: 20
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!114 &4085530859779302043
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4407072370426327486}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe2e41c83163c2441b63fe2f01297a76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Surface
-  surfaceType: 4
+  m_Mesh: {fileID: 0}
 --- !u!1 &4822621388790224578
 GameObject:
   m_ObjectHideFlags: 0
@@ -735,7 +1186,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8054264610875153488}
-  m_Layer: 0
+  - component: {fileID: 6288866150426042458}
+  - component: {fileID: 2744607917259460438}
+  - component: {fileID: 4336534298185556639}
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegRightMiddle2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -758,6 +1212,95 @@ Transform:
   - {fileID: 3232501698622581500}
   m_Father: {fileID: 5788901340013713975}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &6288866150426042458
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4822621388790224578}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.2
+  m_Height: 0.7
+  m_Direction: 0
+  m_Center: {x: -0.2, y: 0, z: 0}
+--- !u!54 &2744607917259460438
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4822621388790224578}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 1
+--- !u!59 &4336534298185556639
+HingeJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4822621388790224578}
+  serializedVersion: 3
+  m_ConnectedBody: {fileID: 8772758240990982217}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_Anchor: {x: 0, y: 0, z: 0}
+  m_Axis: {x: 1, y: 0, z: 0}
+  m_AutoConfigureConnectedAnchor: 1
+  m_ConnectedAnchor: {x: 0, y: 0, z: 0}
+  m_UseSpring: 0
+  m_Spring:
+    spring: 0
+    damper: 0
+    targetPosition: 0
+  m_UseMotor: 0
+  m_Motor:
+    targetVelocity: 0
+    force: 0
+    freeSpin: 0
+  m_UseLimits: 1
+  m_ExtendedLimits: 0
+  m_UseAcceleration: 0
+  m_Limits:
+    min: -45
+    max: 45
+    bounciness: 0
+    bounceMinVelocity: 0.2
+    contactDistance: 0
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1 &5270917447620018781
 GameObject:
   m_ObjectHideFlags: 0
@@ -767,7 +1310,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6733222715657509818}
-  m_Layer: 0
+  - component: {fileID: 4753951335641499307}
+  - component: {fileID: 1171254756149216790}
+  - component: {fileID: 5499011155960483253}
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegLeftFront2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -790,6 +1336,95 @@ Transform:
   - {fileID: 8262129426858572180}
   m_Father: {fileID: 6237013743138171303}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &4753951335641499307
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5270917447620018781}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.2
+  m_Height: 0.7
+  m_Direction: 0
+  m_Center: {x: -0.2, y: 0, z: 0}
+--- !u!54 &1171254756149216790
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5270917447620018781}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 1
+--- !u!59 &5499011155960483253
+HingeJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5270917447620018781}
+  serializedVersion: 3
+  m_ConnectedBody: {fileID: 8772758240990982217}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_Anchor: {x: 0, y: 0, z: 0}
+  m_Axis: {x: 1, y: 0, z: 0}
+  m_AutoConfigureConnectedAnchor: 1
+  m_ConnectedAnchor: {x: 0, y: 0, z: 0}
+  m_UseSpring: 0
+  m_Spring:
+    spring: 0
+    damper: 0
+    targetPosition: 0
+  m_UseMotor: 0
+  m_Motor:
+    targetVelocity: 0
+    force: 0
+    freeSpin: 0
+  m_UseLimits: 1
+  m_ExtendedLimits: 0
+  m_UseAcceleration: 0
+  m_Limits:
+    min: -45
+    max: 45
+    bounciness: 0
+    bounceMinVelocity: 0.2
+    contactDistance: 0
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1 &5396414729983869965
 GameObject:
   m_ObjectHideFlags: 0
@@ -799,7 +1434,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7103886778413366824}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: MegaspikanLarvae_Tail2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -831,7 +1466,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9098323722034892335}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: MegaspikanLarvae_Tail1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -863,7 +1498,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3076792702415523057}
-  m_Layer: 0
+  - component: {fileID: 3153450206996546814}
+  - component: {fileID: 8772758240990982217}
+  m_Layer: 14
   m_Name: MegaspikanLarvae_Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -893,6 +1530,56 @@ Transform:
   - {fileID: 9098323722034892335}
   m_Father: {fileID: 766902398755004446}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &3153450206996546814
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020213523095036493}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.9
+  m_Height: 2.4
+  m_Direction: 0
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &8772758240990982217
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020213523095036493}
+  serializedVersion: 5
+  m_Mass: 10
+  m_LinearDamping: 0
+  m_AngularDamping: 2
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 1
 --- !u!1 &6489329157603746460
 GameObject:
   m_ObjectHideFlags: 0
@@ -902,7 +1589,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8597776605703708153}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: MegaspikanLarvae_Tail3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -934,7 +1621,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5510575554733662617}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegLeftRear1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -966,7 +1653,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7040127954340285543}
-  m_Layer: 0
+  - component: {fileID: 1508726103413522532}
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegLeftMiddle3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -988,6 +1676,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7685666087133998668}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &1508726103413522532
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7782488025899121240}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.2
+  m_Center: {x: -0.3, y: 0, z: 0}
 --- !u!1 &8040279467361872407
 GameObject:
   m_ObjectHideFlags: 0
@@ -997,7 +1706,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5788901340013713975}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegRightMiddle1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1029,7 +1738,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6237013743138171303}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegLeftFront1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1061,7 +1770,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9195682134044923469}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegRightFront1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1093,7 +1802,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7570562133229750705}
-  m_Layer: 0
+  - component: {fileID: 1111445545280871698}
+  - component: {fileID: 6780808164322342073}
+  - component: {fileID: 3003220466951044599}
+  m_Layer: 14
   m_Name: MegaspikanLarvae_Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1118,6 +1830,156 @@ Transform:
   - {fileID: 2185733096327221707}
   m_Father: {fileID: 3076792702415523057}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &1111445545280871698
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8755274285807483300}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.7
+  m_Center: {x: -0.6, y: -0.4, z: 0}
+--- !u!54 &6780808164322342073
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8755274285807483300}
+  serializedVersion: 5
+  m_Mass: 4
+  m_LinearDamping: 0
+  m_AngularDamping: 2
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 1
+--- !u!153 &3003220466951044599
+ConfigurableJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8755274285807483300}
+  serializedVersion: 4
+  m_ConnectedBody: {fileID: 8772758240990982217}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_Anchor: {x: 0, y: 0, z: 0}
+  m_Axis: {x: 1, y: 0, z: 0}
+  m_AutoConfigureConnectedAnchor: 1
+  m_ConnectedAnchor: {x: 0, y: 0, z: 0}
+  m_SecondaryAxis: {x: 0, y: 1, z: 0}
+  m_XMotion: 0
+  m_YMotion: 0
+  m_ZMotion: 0
+  m_AngularXMotion: 1
+  m_AngularYMotion: 1
+  m_AngularZMotion: 1
+  m_LinearLimitSpring:
+    spring: 150
+    damper: 25
+  m_LinearLimit:
+    limit: 25
+    bounciness: 0
+    contactDistance: 0
+  m_AngularXLimitSpring:
+    spring: 0
+    damper: 0
+  m_LowAngularXLimit:
+    limit: 0
+    bounciness: 0
+    contactDistance: 0
+  m_HighAngularXLimit:
+    limit: 0
+    bounciness: 0
+    contactDistance: 0
+  m_AngularYZLimitSpring:
+    spring: 0
+    damper: 0
+  m_AngularYLimit:
+    limit: 0
+    bounciness: 0
+    contactDistance: 0
+  m_AngularZLimit:
+    limit: 0
+    bounciness: 0
+    contactDistance: 0
+  m_TargetPosition: {x: 0, y: 0, z: 0}
+  m_TargetVelocity: {x: 0, y: 0, z: 0}
+  m_XDrive:
+    serializedVersion: 4
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+    useAcceleration: 0
+  m_YDrive:
+    serializedVersion: 4
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+    useAcceleration: 0
+  m_ZDrive:
+    serializedVersion: 4
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+    useAcceleration: 0
+  m_TargetRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_TargetAngularVelocity: {x: 0, y: 0, z: 0}
+  m_RotationDriveMode: 0
+  m_AngularXDrive:
+    serializedVersion: 4
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+    useAcceleration: 0
+  m_AngularYZDrive:
+    serializedVersion: 4
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+    useAcceleration: 0
+  m_SlerpDrive:
+    serializedVersion: 4
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+    useAcceleration: 0
+  m_ProjectionMode: 0
+  m_ProjectionDistance: 0.1
+  m_ProjectionAngle: 180
+  m_ConfiguredInWorldSpace: 0
+  m_SwapBodies: 0
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1 &8768094020202335979
 GameObject:
   m_ObjectHideFlags: 0
@@ -1127,7 +1989,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6409670187949465527}
-  m_Layer: 0
+  - component: {fileID: 2433414178479264818}
+  m_Layer: 14
   m_Name: MegaspikanLarvae_LegLeftRear3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1149,3 +2012,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6884335554891085303}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &2433414178479264818
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8768094020202335979}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.2
+  m_Center: {x: -0.3, y: 0, z: 0}

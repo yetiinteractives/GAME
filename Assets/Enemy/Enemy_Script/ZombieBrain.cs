@@ -1,8 +1,50 @@
+using Unity.AppUI.UI;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class ZombieBrain : UniversalEnemyAi, IDamageable
 {
+    [Header("Vision")]
+    public float fieldOfView = 120f;
+    public float eyeHeight = 1.6f;
+    public float visionCheckInterval = 0.2f;//same as human reaction time
+    float visionTimer=0f;
+    float minDot;
+
+    bool canSeePlayer = false;
+
+    bool CheckVision()
+    {
+        if(player == null) return false;
+
+        Vector3 origin = transform.position+ Vector3.up *eyeHeight;
+        Vector3 direction = player.position - origin;
+
+        float sqrDistance = direction.sqrMagnitude;
+        //distacne check
+        if(sqrDistance > lookRadius * lookRadius)
+            return false;
+
+        float distance = Mathf.Sqrt(sqrDistance);
+        direction /= distance; //normalizee
+        
+        float dot = Vector3.Dot(transform.forward, direction);
+        
+        //minDot chai onEnemyAwake vitra xa for optimization changes to avoid calculating cos every frame
+
+        if(dot < minDot)
+        return false;
+
+        //line of sight 
+        if(Physics.Raycast(origin , direction, out RaycastHit hit, lookRadius))
+        {
+            if(hit.transform == player)
+             return true;
+        }
+        return false;
+
+    }
+
     [Header("Movement")]
     public float WalkSpeed = 3f;
 
@@ -11,7 +53,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
     public float attackRange = 2f;
     public int attackDamage = 10;
     public float attackCooldown = 2f;
-
+      public BoxCollider attackHitBox;
     public enum ZombieState { Idle, Chase, Attack }
     public ZombieState state;
 
@@ -32,10 +74,16 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
     private Vector3 pendingImpulse;
 
     public bool IsDead() => isDead;
-
+   
     protected override void OnEnemyAwake()
     {
+             if(attackHitBox != null)
+            attackHitBox.enabled = false;
+
         state = ZombieState.Idle;
+          
+                //angle check
+        minDot = Mathf.Cos(fieldOfView * 0.5f * Mathf.Deg2Rad);
 
         mainCollider = GetComponent<Collider>();
         allColliders = GetComponentsInChildren<Collider>(true);
@@ -52,14 +100,22 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
 
         float sqrDist = (player.position - transform.position).sqrMagnitude;
 
+        visionTimer += Time.deltaTime;
+        if(visionTimer >= visionCheckInterval)
+        {
+            visionTimer =0f;
+            canSeePlayer = CheckVision();
+
+        }
+
         if (sqrDist <= attackRange * attackRange)
             state = ZombieState.Attack;
-        else if (sqrDist <= lookRadius * lookRadius)
+        else if (canSeePlayer)
             state = ZombieState.Chase;
         else
             state = ZombieState.Idle;
 
-        if (state == ZombieState.Chase || state == ZombieState.Attack)
+        if (state == ZombieState.Attack)
             FacePlayer();
 
         switch (state)
@@ -254,4 +310,44 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
 
         return nearest;
     }
+
+void OnDrawGizmosSelected()
+  {
+    Gizmos.color = Color.yellow;
+    Gizmos.DrawWireSphere(transform.position, lookRadius);
+
+    Vector3 left = Quaternion.Euler(0, -fieldOfView / 2, 0) * transform.forward;
+    Vector3 right = Quaternion.Euler(0, fieldOfView / 2, 0) * transform.forward;
+
+    Gizmos.color = Color.red;
+    Gizmos.DrawLine(transform.position, transform.position + left * lookRadius);
+    Gizmos.DrawLine(transform.position, transform.position + right * lookRadius);
+  }
+
+      //------------atacking logic yeta-----------------/
+
+    public void CreateHitBox()
+    {
+        if (attackHitBox != null)
+            attackHitBox.enabled = true;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Player") && attackHitBox != null && attackHitBox.enabled)
+        {
+         
+            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(attackDamage);
+            }
+        }
+    }
+    public void DisableHitBox()
+    {
+        if (attackHitBox != null)
+            attackHitBox.enabled = false;
+    }
+
 }

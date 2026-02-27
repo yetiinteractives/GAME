@@ -136,6 +136,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2751486668925776738}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a89f2a25cb825fc4dadcb8ac47070807,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8879043176705259002}
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: a89f2a25cb825fc4dadcb8ac47070807,
         type: 3}
       insertIndex: -1
@@ -798,12 +802,16 @@ MonoBehaviour:
   maxhealth: 100
   currentHealth: 0
   player: {fileID: 0}
-  state: 0
+  fieldOfView: 120
+  eyeHeight: 1.6
+  visionCheckInterval: 0.2
   WalkSpeed: 3
   lookRadius: 15
-  attackRange: 2
+  attackRange: 1.5
   attackDamage: 10
   attackCooldown: 2
+  attackHitBox: {fileID: 8879043176705259002}
+  state: 0
 --- !u!195 &5679354980846772865
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -862,6 +870,27 @@ CapsuleCollider:
   m_Height: 2.2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!65 &8879043176705259002
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4606455391047647706}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.5, y: 0.5, z: 0.6}
+  m_Center: {x: 0, y: 1.4, z: 1}
 --- !u!1 &5249806381820363636 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -290750445479886849, guid: a89f2a25cb825fc4dadcb8ac47070807,
