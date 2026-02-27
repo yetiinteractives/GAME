@@ -41,9 +41,9 @@ public class MousePosition3D : MonoBehaviour
                 {
             
                     // Raycast Check
-                    Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);  
-                    if (Physics.Raycast(ray, out RaycastHit raycastHit, Mathf.Infinity, raycastLayerMask))
-                    {
+                    Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+                    if (Physics.Raycast(ray, out RaycastHit raycastHit, Mathf.Infinity, raycastLayerMask, QueryTriggerInteraction.Collide))
+                {
                     Transform origin = recoilDistanceOrigin != null ? recoilDistanceOrigin : transform;
                     lastHitDistance = Vector3.Distance(origin.position, raycastHit.point);
 
