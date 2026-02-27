@@ -1,8 +1,49 @@
+using Unity.AppUI.UI;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class ZombieBrain : UniversalEnemyAi, IDamageable
 {
+    [Header("Vision")]
+    public float fieldOfView = 120f;
+    public float eyeHeight = 1.6f;
+    public float visionCheckInterval = 0.2f;//same as human reaction time
+    float visionTimer=0f;
+    bool canSeePlayer = false;
+
+    bool CheckVision()
+    {
+        if(player == null) return false;
+
+        Vector3 origin = transform.position+ Vector3.up *eyeHeight;
+        Vector3 direction = player.position - origin;
+
+        float sqrDistance = direction.sqrMagnitude;
+        //distacne check
+        if(sqrDistance > lookRadius * lookRadius)
+            return false;
+
+        float distance = Mathf.Sqrt(sqrDistance);
+        direction /= distance; //normalizee
+        
+        float dot = Vector3.Dot(transform.forward, direction);
+        
+        //angle check
+        float minDot = Mathf.Cos(fieldOfView * 0.5f * Mathf.Deg2Rad);
+
+        if(dot < minDot)
+        return false;
+
+        //line of sight 
+        if(Physics.Raycast(origin , direction, out RaycastHit hit, lookRadius))
+        {
+            if(hit.transform == player)
+             return true;
+        }
+        return false;
+
+    }
+
     [Header("Movement")]
     public float WalkSpeed = 3f;
 
@@ -32,7 +73,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
     private Vector3 pendingImpulse;
 
     public bool IsDead() => isDead;
-
+   
     protected override void OnEnemyAwake()
     {
         state = ZombieState.Idle;
@@ -52,14 +93,22 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
 
         float sqrDist = (player.position - transform.position).sqrMagnitude;
 
+        visionTimer += Time.deltaTime;
+        if(visionTimer >= visionCheckInterval)
+        {
+            visionTimer =0f;
+            canSeePlayer = CheckVision();
+            
+        }
+
         if (sqrDist <= attackRange * attackRange)
             state = ZombieState.Attack;
-        else if (sqrDist <= lookRadius * lookRadius)
+        else if (canSeePlayer)
             state = ZombieState.Chase;
         else
             state = ZombieState.Idle;
 
-        if (state == ZombieState.Chase || state == ZombieState.Attack)
+        if (state == ZombieState.Attack)
             FacePlayer();
 
         switch (state)
