@@ -95,6 +95,11 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     private float attackRangeSqr;
     private float arrivalThresholdSqr;
 
+    // Self-tick fallback when AITickManager is absent
+    private bool registeredWithTickManager;
+    private float selfTickTimer;
+    private const float SELF_TICK_INTERVAL = 0.2f;
+
     public bool IsDead() => isDead;
 
     // ════════════════════════════════════════════════
@@ -157,13 +162,26 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     private void OnEnable()
     {
         SoundManager.Instance?.Register(this);
-        AITickManager.Instance?.Register(this);
+
+        if (AITickManager.Instance != null)
+        {
+            AITickManager.Instance.Register(this);
+            registeredWithTickManager = true;
+        }
+        else
+        {
+            registeredWithTickManager = false;
+        }
     }
 
     private void OnDisable()
     {
         SoundManager.Instance?.Unregister(this);
-        AITickManager.Instance?.Unregister(this);
+
+        if (AITickManager.Instance != null)
+            AITickManager.Instance.Unregister(this);
+
+        registeredWithTickManager = false;
     }
 
     // ════════════════════════════════════════════════
@@ -172,11 +190,24 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
     /// <summary>
     /// Override base Update so HandleAI() is NOT called every frame.
-    /// Only the cheap FrameUpdate runs per-frame.
+    /// FrameUpdate runs per-frame for cheap work (rotation, timers).
+    /// If no AITickManager exists, we self-tick decisions on a timer.
     /// </summary>
     protected override void Update()
     {
         if (isDead) return;
+
+        // Fallback: if no AITickManager, drive slow ticks ourselves
+        if (!registeredWithTickManager)
+        {
+            selfTickTimer += Time.deltaTime;
+            if (selfTickTimer >= SELF_TICK_INTERVAL)
+            {
+                selfTickTimer = 0f;
+                SlowAITick();
+            }
+        }
+
         FrameUpdate();
     }
 
