@@ -37,7 +37,7 @@ public class MousePosition3D : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButton(1)) // right click to aim
+        if (GameInput.Aim) // right click / left trigger to aim
         {
             if (mainCamera != null)
             {
@@ -57,7 +57,7 @@ public class MousePosition3D : MonoBehaviour
                         Time.deltaTime * smoothSpeed);
                     transform.position += recoilOffset;
 
-                    if (Input.GetMouseButtonUp(0)) // left click to fire
+                    if (GameInput.FireUp) // left click release / right trigger release to fire
                     {
                         if (raycastHit.transform != null)
                         {
