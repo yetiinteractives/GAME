@@ -1,51 +1,30 @@
-using Unity.AppUI.UI;
 using UnityEngine;
-using UnityEngine.AI;
 
-public class ZombieBrain : UniversalEnemyAi, IDamageable
+public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener
 {
+    // ──────────── Vision ────────────
+
     [Header("Vision")]
     public float fieldOfView = 120f;
     public float eyeHeight = 1.6f;
     public float visionCheckInterval = 0.2f;
-    private float visionTimer = 0f;
-    private float minDot;
 
-    [Tooltip("What layers should block vision raycasts (exclude Zombie layer & your ragdoll hitbox layer if needed).")]
+    [Tooltip("Layers that block vision raycasts (exclude zombie / ragdoll layers).")]
     [SerializeField] private LayerMask visionMask = ~0;
 
-    private bool canSeePlayer = false;
+    private float visionTimer;
+    private float minDot;
+    private bool canSeePlayer;
 
-    bool CheckVision()
-    {
-        if (player == null) return false;
-
-        Vector3 origin = transform.position + Vector3.up * eyeHeight;
-        Vector3 direction = player.position - origin;
-
-        float sqrDistance = direction.sqrMagnitude;
-        if (sqrDistance > lookRadius * lookRadius)
-            return false;
-
-        float distance = Mathf.Sqrt(sqrDistance);
-        direction /= distance;
-
-        float dot = Vector3.Dot(transform.forward, direction);
-        if (dot < minDot)
-            return false;
-
-        // Raycast with mask + ignore triggers to avoid hitting your own trigger hitboxes
-        if (Physics.Raycast(origin, direction, out RaycastHit hit, lookRadius, visionMask, QueryTriggerInteraction.Ignore))
-        {
-            // IMPORTANT: player might be hit on a child collider
-            return hit.transform == player || hit.transform.IsChildOf(player);
-        }
-
-        return false;
-    }
+    // ──────────── Movement ────────────
 
     [Header("Movement")]
-    public float WalkSpeed = 3f;
+    public float walkSpeed = 3f;
+
+    [Tooltip("Speed multiplier when rushing toward a gunshot.")]
+    public float investigateRunMultiplier = 1.5f;
+
+    // ──────────── Detection & Combat ────────────
 
     [Header("Detection & Combat")]
     public float lookRadius = 8f;
@@ -54,26 +33,50 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
     public float attackCooldown = 2f;
     public BoxCollider attackHitBox;
 
-    public enum ZombieState { Idle, Chase, Attack }
+    // ──────────── Investigation ────────────
+
+    [Header("Investigation")]
+    [Tooltip("How long the zombie lingers at the sound location before returning to idle.")]
+    public float investigateLingerTime = 3f;
+
+    [Tooltip("How close the zombie must get to the investigation point to consider it 'reached'.")]
+    public float investigateArrivalThreshold = 1.5f;
+
+    // ──────────── State ────────────
+
+    public enum ZombieState { Idle, Investigate, Chase, Attack }
     public ZombieState state;
 
-    private bool attackInProgress = false;
-    private float attackTimer = 0f;
+    private bool attackInProgress;
+    private float attackTimer;
+
+    // Investigation bookkeeping
+    private Vector3 investigateTarget;
+    private SoundType investigateSoundType;
+    private float investigateTimer;
+    private bool hasInvestigateTarget;
+
+    // ──────────── Cached components ────────────
 
     private EnemyShotKnockback knockback;
-
-    // Ragdoll system
     private Collider mainCollider;
     private Collider[] allColliders;
     private RagdollPhysicsHandler[] ragdollHandlers;
 
-    // Cache lethal hit
+    // Death-force deferral
     private bool pendingDeathImpulse;
     private Collider pendingHitCollider;
     private Vector3 pendingHitPoint;
     private Vector3 pendingImpulse;
 
+    // Squared-distance caches
+    private float lookRadiusSqr;
+    private float attackRangeSqr;
+    private float arrivalThresholdSqr;
+
     public bool IsDead() => isDead;
+
+    // ──────────── Lifecycle ────────────
 
     protected override void OnEnemyAwake()
     {
@@ -83,21 +86,62 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         state = ZombieState.Idle;
 
         minDot = Mathf.Cos(fieldOfView * 0.5f * Mathf.Deg2Rad);
+        lookRadiusSqr = lookRadius * lookRadius;
+        attackRangeSqr = attackRange * attackRange;
+        arrivalThresholdSqr = investigateArrivalThreshold * investigateArrivalThreshold;
 
         mainCollider = GetComponent<Collider>();
         allColliders = GetComponentsInChildren<Collider>(true);
         ragdollHandlers = GetComponentsInChildren<RagdollPhysicsHandler>(true);
         knockback = GetComponent<EnemyShotKnockback>();
 
-        DisableRagdoll(); // ragdoll colliders enabled as triggers while alive
+        DisableRagdoll();
     }
+
+    private void OnEnable()
+    {
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.Register(this);
+    }
+
+    private void OnDisable()
+    {
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.Unregister(this);
+    }
+
+    // ──────────── Vision ────────────
+
+    private bool CheckVision()
+    {
+        if (player == null) return false;
+
+        Vector3 origin = transform.position + Vector3.up * eyeHeight;
+        Vector3 direction = player.position - origin;
+
+        float sqrDistance = direction.sqrMagnitude;
+        if (sqrDistance > lookRadiusSqr)
+            return false;
+
+        float distance = Mathf.Sqrt(sqrDistance);
+        direction /= distance;
+
+        if (Vector3.Dot(transform.forward, direction) < minDot)
+            return false;
+
+        if (Physics.Raycast(origin, direction, out RaycastHit hit, lookRadius, visionMask, QueryTriggerInteraction.Ignore))
+            return hit.transform == player || hit.transform.IsChildOf(player);
+
+        return false;
+    }
+
+    // ──────────── AI Core ────────────
 
     protected override void HandleAI()
     {
         if (player == null || agent == null) return;
 
-        float sqrDist = (player.position - transform.position).sqrMagnitude;
-
+        // Periodic vision check
         visionTimer += Time.deltaTime;
         if (visionTimer >= visionCheckInterval)
         {
@@ -105,51 +149,175 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
             canSeePlayer = CheckVision();
         }
 
-        if (sqrDist <= attackRange * attackRange)
+        // State transitions (highest priority first)
+        float sqrDist = (player.position - transform.position).sqrMagnitude;
+
+        if (sqrDist <= attackRangeSqr)
             state = ZombieState.Attack;
         else if (canSeePlayer)
             state = ZombieState.Chase;
-        else
+        else if (hasInvestigateTarget)
+            state = ZombieState.Investigate;
+        else if (state != ZombieState.Investigate)
             state = ZombieState.Idle;
 
-        if (state == ZombieState.Attack)
-            FacePlayer();
-
+        // Execute current state
         switch (state)
         {
             case ZombieState.Idle:
-                StopAgent();
-                PlayIdleAnimation();
-                attackInProgress = false;
+                HandleIdle();
                 break;
-
+            case ZombieState.Investigate:
+                HandleInvestigate();
+                break;
             case ZombieState.Chase:
-                PlayWalkAnimation();
-                MoveAgent(WalkSpeed);
-                attackInProgress = false;
-
-                if (!agent.hasPath || agent.destination != player.position)
-                    agent.SetDestination(player.position);
+                HandleChase();
                 break;
-
             case ZombieState.Attack:
-                StopAgent();
-
-                if (!attackInProgress)
-                {
-                    if (anim != null) anim.SetBool("Walk", false);
-                    attackInProgress = true;
-                    PlayAttackAnimation();
-                    attackTimer = 0f;
-                }
-
-                attackTimer += Time.deltaTime;
-
-                if (attackTimer >= attackCooldown)
-                    attackInProgress = false;
+                HandleAttack();
                 break;
         }
     }
+
+    // ──────────── State Handlers ────────────
+
+    private void HandleIdle()
+    {
+        StopAgent();
+        PlayIdleAnimation();
+        attackInProgress = false;
+    }
+
+    private void HandleInvestigate()
+    {
+        attackInProgress = false;
+
+        float speed = walkSpeed;
+
+        // React differently based on what sound was heard
+        switch (investigateSoundType)
+        {
+            case SoundType.Gunshot:
+                // Rush toward gunshots at higher speed
+                speed = walkSpeed * investigateRunMultiplier;
+                break;
+
+            case SoundType.Explosion:
+                // Run even faster toward explosions
+                speed = walkSpeed * investigateRunMultiplier * 1.2f;
+                break;
+
+            case SoundType.Footstep:
+            case SoundType.Reload:
+                // Walk cautiously
+                speed = walkSpeed * 0.7f;
+                break;
+
+            case SoundType.Distraction:
+                // Slow, curious approach
+                speed = walkSpeed * 0.5f;
+                break;
+
+            case SoundType.ObjectBreak:
+                speed = walkSpeed;
+                break;
+        }
+
+        MoveAgent(speed);
+        agent.SetDestination(investigateTarget);
+        PlayWalkAnimation();
+
+        // Check if arrived
+        float sqrToTarget = (transform.position - investigateTarget).sqrMagnitude;
+        if (sqrToTarget <= arrivalThresholdSqr)
+        {
+            // Linger at the location, look around
+            StopAgent();
+            PlayIdleAnimation();
+
+            investigateTimer += Time.deltaTime;
+            if (investigateTimer >= investigateLingerTime)
+            {
+                hasInvestigateTarget = false;
+                state = ZombieState.Idle;
+            }
+        }
+        else
+        {
+            investigateTimer = 0f;
+        }
+    }
+
+    private void HandleChase()
+    {
+        hasInvestigateTarget = false; // seeing the player overrides investigation
+        attackInProgress = false;
+
+        MoveAgent(walkSpeed);
+        agent.SetDestination(player.position);
+        PlayWalkAnimation();
+    }
+
+    private void HandleAttack()
+    {
+        hasInvestigateTarget = false;
+        FacePlayer();
+        StopAgent();
+
+        if (!attackInProgress)
+        {
+            if (anim != null) anim.SetBool("Walk", false);
+            attackInProgress = true;
+            PlayAttackAnimation();
+            attackTimer = 0f;
+        }
+
+        attackTimer += Time.deltaTime;
+
+        if (attackTimer >= attackCooldown)
+            attackInProgress = false;
+    }
+
+    // ──────────── ISoundListener ────────────
+
+    public void HearSound(SoundStimulus stimulus)
+    {
+        if (isDead) return;
+
+        // If the zombie can already see the player, ignore sounds
+        if (canSeePlayer) return;
+
+        // Accept investigation: louder / more urgent sounds override quieter ones
+        bool shouldOverride = !hasInvestigateTarget
+            || GetSoundPriority(stimulus.Type) > GetSoundPriority(investigateSoundType);
+
+        if (shouldOverride)
+        {
+            investigateTarget = stimulus.Position;
+            investigateSoundType = stimulus.Type;
+            investigateTimer = 0f;
+            hasInvestigateTarget = true;
+        }
+    }
+
+    /// <summary>
+    /// Higher value = higher priority. Gunshots and explosions take precedence.
+    /// </summary>
+    private static int GetSoundPriority(SoundType type)
+    {
+        switch (type)
+        {
+            case SoundType.Distraction:  return 1;
+            case SoundType.Footstep:     return 2;
+            case SoundType.ObjectBreak:  return 3;
+            case SoundType.Reload:       return 4;
+            case SoundType.Gunshot:      return 5;
+            case SoundType.Explosion:    return 6;
+            default:                     return 0;
+        }
+    }
+
+    // ──────────── Helpers ────────────
 
     private void FacePlayer()
     {
@@ -174,6 +342,8 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         agent.speed = speed;
     }
 
+    // ──────────── IDamageable ────────────
+
     public void TakeDamage(float damage)
     {
         if (isDead) return;
@@ -185,6 +355,8 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         else
             knockback?.TriggerKnockback();
     }
+
+    // ──────────── Death & Ragdoll ────────────
 
     protected override void HandleDeathVisuals()
     {
@@ -213,15 +385,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         for (int i = 0; i < ragdollHandlers.Length; i++)
             ragdollHandlers[i].EnableRagdoll();
 
-        for (int i = 0; i < allColliders.Length; i++)
-        {
-            Collider col = allColliders[i];
-            if (col == null) continue;
-            if (col == mainCollider) continue;
-
-            col.enabled = true;
-            col.isTrigger = false;
-        }
+        SetCollidersRagdollState(isTrigger: false);
 
         if (attackHitBox != null)
             attackHitBox.enabled = false;
@@ -232,18 +396,21 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         for (int i = 0; i < ragdollHandlers.Length; i++)
             ragdollHandlers[i].DisableRagdoll();
 
-        for (int i = 0; i < allColliders.Length; i++)
-        {
-            Collider col = allColliders[i];
-            if (col == null) continue;
-            if (col == mainCollider) continue;
-
-            col.enabled = true;
-            col.isTrigger = true;
-        }
+        SetCollidersRagdollState(isTrigger: true);
 
         if (mainCollider != null)
             mainCollider.enabled = true;
+    }
+
+    private void SetCollidersRagdollState(bool isTrigger)
+    {
+        for (int i = 0; i < allColliders.Length; i++)
+        {
+            Collider col = allColliders[i];
+            if (col == null || col == mainCollider) continue;
+            col.isTrigger = isTrigger;
+            col.enabled = true;
+        }
     }
 
     public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
@@ -284,8 +451,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
             if (handler == null) continue;
 
             Rigidbody rb = handler.Rigidbody;
-            if (rb == null) continue;
-            if (rb.isKinematic) continue;
+            if (rb == null || rb.isKinematic) continue;
 
             float sqr = (rb.worldCenterOfMass - hitPoint).sqrMagnitude;
             if (sqr < bestSqr)
@@ -298,7 +464,33 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         return nearest;
     }
 
-    void OnDrawGizmosSelected()
+    // ──────────── Attack Hitbox ────────────
+
+    public void CreateHitBox()
+    {
+        if (attackHitBox != null)
+            attackHitBox.enabled = true;
+    }
+
+    public void DisableHitBox()
+    {
+        if (attackHitBox != null)
+            attackHitBox.enabled = false;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (attackHitBox == null || !attackHitBox.enabled) return;
+        if (!other.CompareTag("Player")) return;
+
+        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+            playerHealth.TakeDamage(attackDamage);
+    }
+
+    // ──────────── Gizmos ────────────
+
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, lookRadius);
@@ -309,27 +501,13 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, transform.position + left * lookRadius);
         Gizmos.DrawLine(transform.position, transform.position + right * lookRadius);
-    }
 
-    public void CreateHitBox()
-    {
-        if (attackHitBox != null)
-            attackHitBox.enabled = true;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player") && attackHitBox != null && attackHitBox.enabled)
+        // Draw investigate target
+        if (hasInvestigateTarget)
         {
-            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
-                playerHealth.TakeDamage(attackDamage);
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(investigateTarget, 0.5f);
+            Gizmos.DrawLine(transform.position, investigateTarget);
         }
-    }
-
-    public void DisableHitBox()
-    {
-        if (attackHitBox != null)
-            attackHitBox.enabled = false;
     }
 }
