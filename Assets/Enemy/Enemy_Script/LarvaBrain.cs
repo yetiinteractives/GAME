@@ -203,6 +203,7 @@ public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impu
             Collider col = allColliders[i];
             if (col == null) continue;
             if (col == mainCollider) continue;
+            col.isTrigger = false;
             col.enabled = true;
         }
     }
@@ -219,7 +220,8 @@ public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impu
             Collider col = allColliders[i];
             if (col == null) continue;
             if (col == mainCollider) continue;
-            col.enabled = false;
+            col.isTrigger = true;
+            col.enabled = true;
         }
 
         if (mainCollider != null)

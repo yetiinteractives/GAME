@@ -7,42 +7,41 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
     [Header("Vision")]
     public float fieldOfView = 120f;
     public float eyeHeight = 1.6f;
-    public float visionCheckInterval = 0.2f;//same as human reaction time
-    float visionTimer=0f;
-    float minDot;
+    public float visionCheckInterval = 0.2f;
+    private float visionTimer = 0f;
+    private float minDot;
 
-    bool canSeePlayer = false;
+    [Tooltip("What layers should block vision raycasts (exclude Zombie layer & your ragdoll hitbox layer if needed).")]
+    [SerializeField] private LayerMask visionMask = ~0;
+
+    private bool canSeePlayer = false;
 
     bool CheckVision()
     {
-        if(player == null) return false;
+        if (player == null) return false;
 
-        Vector3 origin = transform.position+ Vector3.up *eyeHeight;
+        Vector3 origin = transform.position + Vector3.up * eyeHeight;
         Vector3 direction = player.position - origin;
 
         float sqrDistance = direction.sqrMagnitude;
-        //distacne check
-        if(sqrDistance > lookRadius * lookRadius)
+        if (sqrDistance > lookRadius * lookRadius)
             return false;
 
         float distance = Mathf.Sqrt(sqrDistance);
-        direction /= distance; //normalizee
-        
+        direction /= distance;
+
         float dot = Vector3.Dot(transform.forward, direction);
-        
-        //minDot chai onEnemyAwake vitra xa for optimization changes to avoid calculating cos every frame
+        if (dot < minDot)
+            return false;
 
-        if(dot < minDot)
-        return false;
-
-        //line of sight 
-        if(Physics.Raycast(origin , direction, out RaycastHit hit, lookRadius))
+        // Raycast with mask + ignore triggers to avoid hitting your own trigger hitboxes
+        if (Physics.Raycast(origin, direction, out RaycastHit hit, lookRadius, visionMask, QueryTriggerInteraction.Ignore))
         {
-            if(hit.transform == player)
-             return true;
+            // IMPORTANT: player might be hit on a child collider
+            return hit.transform == player || hit.transform.IsChildOf(player);
         }
-        return false;
 
+        return false;
     }
 
     [Header("Movement")]
@@ -53,7 +52,8 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
     public float attackRange = 2f;
     public int attackDamage = 10;
     public float attackCooldown = 2f;
-      public BoxCollider attackHitBox;
+    public BoxCollider attackHitBox;
+
     public enum ZombieState { Idle, Chase, Attack }
     public ZombieState state;
 
@@ -67,31 +67,29 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
     private Collider[] allColliders;
     private RagdollPhysicsHandler[] ragdollHandlers;
 
-    // Cache lethal hit so we can apply it after ragdoll is enabled
+    // Cache lethal hit
     private bool pendingDeathImpulse;
     private Collider pendingHitCollider;
     private Vector3 pendingHitPoint;
     private Vector3 pendingImpulse;
 
     public bool IsDead() => isDead;
-   
+
     protected override void OnEnemyAwake()
     {
-             if(attackHitBox != null)
+        if (attackHitBox != null)
             attackHitBox.enabled = false;
 
         state = ZombieState.Idle;
-          
-                //angle check
+
         minDot = Mathf.Cos(fieldOfView * 0.5f * Mathf.Deg2Rad);
 
         mainCollider = GetComponent<Collider>();
         allColliders = GetComponentsInChildren<Collider>(true);
-
         ragdollHandlers = GetComponentsInChildren<RagdollPhysicsHandler>(true);
         knockback = GetComponent<EnemyShotKnockback>();
 
-        DisableRagdoll(); // start animated
+        DisableRagdoll(); // ragdoll colliders enabled as triggers while alive
     }
 
     protected override void HandleAI()
@@ -101,11 +99,10 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         float sqrDist = (player.position - transform.position).sqrMagnitude;
 
         visionTimer += Time.deltaTime;
-        if(visionTimer >= visionCheckInterval)
+        if (visionTimer >= visionCheckInterval)
         {
-            visionTimer =0f;
+            visionTimer = 0f;
             canSeePlayer = CheckVision();
-
         }
 
         if (sqrDist <= attackRange * attackRange)
@@ -184,28 +181,21 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         currentHealth -= damage;
 
         if (currentHealth <= 0)
-        {
             Die();
-        }
         else
-        {
             knockback?.TriggerKnockback();
-        }
     }
 
     protected override void HandleDeathVisuals()
     {
-        
         if (anim != null)
             anim.enabled = false;
 
-        
         if (mainCollider != null)
             mainCollider.enabled = false;
 
         EnableRagdoll();
 
-        // Apply cached lethal impulse after ragdoll is live
         if (pendingDeathImpulse)
         {
             pendingDeathImpulse = false;
@@ -220,33 +210,36 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
 
     private void EnableRagdoll()
     {
-        
         for (int i = 0; i < ragdollHandlers.Length; i++)
             ragdollHandlers[i].EnableRagdoll();
 
-        
         for (int i = 0; i < allColliders.Length; i++)
         {
             Collider col = allColliders[i];
             if (col == null) continue;
             if (col == mainCollider) continue;
+
             col.enabled = true;
+            col.isTrigger = false;
         }
+
+        if (attackHitBox != null)
+            attackHitBox.enabled = false;
     }
 
     private void DisableRagdoll()
     {
-        
         for (int i = 0; i < ragdollHandlers.Length; i++)
             ragdollHandlers[i].DisableRagdoll();
 
-       
         for (int i = 0; i < allColliders.Length; i++)
         {
             Collider col = allColliders[i];
             if (col == null) continue;
             if (col == mainCollider) continue;
-            col.enabled = false;
+
+            col.enabled = true;
+            col.isTrigger = true;
         }
 
         if (mainCollider != null)
@@ -255,7 +248,6 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
 
     public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
     {
-       
         if (!isDead)
         {
             pendingDeathImpulse = true;
@@ -270,13 +262,8 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
 
     private void ApplyDeathForceInternal(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
     {
-        Rigidbody target = null;
+        Rigidbody target = hitCollider != null ? hitCollider.attachedRigidbody : null;
 
-       
-        if (hitCollider != null)
-            target = hitCollider.attachedRigidbody;
-
-        // Fallback: nearest ragdoll rigidbody (if collider had no RB)
         if (target == null || target.isKinematic)
             target = GetNearestActiveRagdollBody(hitPoint);
 
@@ -311,20 +298,18 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable
         return nearest;
     }
 
-void OnDrawGizmosSelected()
-  {
-    Gizmos.color = Color.yellow;
-    Gizmos.DrawWireSphere(transform.position, lookRadius);
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, lookRadius);
 
-    Vector3 left = Quaternion.Euler(0, -fieldOfView / 2, 0) * transform.forward;
-    Vector3 right = Quaternion.Euler(0, fieldOfView / 2, 0) * transform.forward;
+        Vector3 left = Quaternion.Euler(0, -fieldOfView / 2, 0) * transform.forward;
+        Vector3 right = Quaternion.Euler(0, fieldOfView / 2, 0) * transform.forward;
 
-    Gizmos.color = Color.red;
-    Gizmos.DrawLine(transform.position, transform.position + left * lookRadius);
-    Gizmos.DrawLine(transform.position, transform.position + right * lookRadius);
-  }
-
-      //------------atacking logic yeta-----------------/
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + left * lookRadius);
+        Gizmos.DrawLine(transform.position, transform.position + right * lookRadius);
+    }
 
     public void CreateHitBox()
     {
@@ -334,20 +319,17 @@ void OnDrawGizmosSelected()
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player") && attackHitBox != null && attackHitBox.enabled)
+        if (other.CompareTag("Player") && attackHitBox != null && attackHitBox.enabled)
         {
-         
             PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
             if (playerHealth != null)
-            {
                 playerHealth.TakeDamage(attackDamage);
-            }
         }
     }
+
     public void DisableHitBox()
     {
         if (attackHitBox != null)
             attackHitBox.enabled = false;
     }
-
 }
