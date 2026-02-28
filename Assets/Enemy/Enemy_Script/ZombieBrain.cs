@@ -57,10 +57,14 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     [Tooltip("Max random delay (seconds) added before each attack animation.")]
     [SerializeField] private float maxAttackDelay = 0.3f;
 
+    [Tooltip("Max offset (meters) from the target position. Creates varied approach paths.")]
+    [SerializeField] private float pathSpread = 3f;
+
     // Per-instance random values (computed once, zero per-frame cost)
-    private float speedMultiplier;     // [1-variation .. 1+variation]
-    private float attackWindUpDelay;   // [0 .. maxAttackDelay]
+    private float speedMultiplier;      // [1-variation .. 1+variation]
+    private float attackWindUpDelay;    // [0 .. maxAttackDelay]
     private float animOffsetNormalized; // [0..1] random phase for animation desync
+    private Vector3 pathOffset;         // unique XZ offset so zombies take different routes
 
     // ──────────── State ────────────
 
@@ -125,6 +129,10 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
         DisableRagdoll();
         ApplyDesync();
+
+        // Safety net: if OnEnable ran before managers were ready, register now.
+        // (Start runs after all Awake calls, so singletons are guaranteed to exist.)
+        TryRegisterWithManagers();
     }
 
     /// <summary>
@@ -142,6 +150,12 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
         // ── Attack wind-up delay (unique per zombie) ──
         attackWindUpDelay = Random.Range(0f, maxAttackDelay);
+
+        // ── Path offset (unique approach vector per zombie) ──
+        // Random angle around the target so zombies don't all walk the same line.
+        float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
+        float radius = Random.Range(0f, pathSpread);
+        pathOffset = new Vector3(Mathf.Cos(angle) * radius, 0f, Mathf.Sin(angle) * radius);
 
         // ── Animation phase offset ──
         // Play the current state at a random normalizedTime so walk/idle
@@ -161,27 +175,34 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
     private void OnEnable()
     {
-        SoundManager.Instance?.Register(this);
+        TryRegisterWithManagers();
+    }
+
+    private void OnDisable()
+    {
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.Unregister(this);
+
+        if (AITickManager.Instance != null)
+            AITickManager.Instance.Unregister(this);
+
+        registeredWithTickManager = false;
+    }
+
+    /// <summary>
+    /// Attempts to register with SoundManager and AITickManager.
+    /// Safe to call multiple times — managers ignore duplicate registrations.
+    /// </summary>
+    private void TryRegisterWithManagers()
+    {
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.Register(this);
 
         if (AITickManager.Instance != null)
         {
             AITickManager.Instance.Register(this);
             registeredWithTickManager = true;
         }
-        else
-        {
-            registeredWithTickManager = false;
-        }
-    }
-
-    private void OnDisable()
-    {
-        SoundManager.Instance?.Unregister(this);
-
-        if (AITickManager.Instance != null)
-            AITickManager.Instance.Unregister(this);
-
-        registeredWithTickManager = false;
     }
 
     // ════════════════════════════════════════════════
@@ -259,9 +280,21 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
         // Refresh NavMesh destinations for moving states
         if (state == ZombieState.Chase)
-            agent.SetDestination(player.position);
+            agent.SetDestination(GetOffsetDestination(player.position));
         else if (state == ZombieState.Investigate)
             agent.SetDestination(investigateTarget);
+    }
+
+    /// <summary>
+    /// Returns the target position offset by this zombie's unique pathOffset.
+    /// The offset fades out when close so zombies still converge for melee.
+    /// </summary>
+    private Vector3 GetOffsetDestination(Vector3 target)
+    {
+        float sqrDist = (target - transform.position).sqrMagnitude;
+        // Fade offset from full at >lookRadius to zero at attackRange
+        float fade = Mathf.Clamp01((sqrDist - attackRangeSqr) / (lookRadiusSqr - attackRangeSqr));
+        return target + pathOffset * fade;
     }
 
     /// <summary>

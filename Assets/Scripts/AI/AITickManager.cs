@@ -13,6 +13,7 @@ using UnityEngine;
 ///
 /// Attach to an empty GameObject alongside SoundManager.
 /// </summary>
+[DefaultExecutionOrder(-100)]
 public class AITickManager : MonoBehaviour
 {
     public static AITickManager Instance { get; private set; }

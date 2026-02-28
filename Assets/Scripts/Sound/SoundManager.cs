@@ -5,6 +5,7 @@ using UnityEngine;
 /// Lightweight singleton that broadcasts sound events to registered ISoundListeners.
 /// Attach to an empty GameObject in the scene or let it auto-create via Instance.
 /// </summary>
+[DefaultExecutionOrder(-100)]
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance { get; private set; }
