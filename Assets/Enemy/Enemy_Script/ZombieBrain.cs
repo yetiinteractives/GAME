@@ -1,18 +1,24 @@
 using UnityEngine;
 
-public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener
+/// <summary>
+/// Zombie AI with split update:
+///   • SlowAITick()  — called by AITickManager ~5×/sec, staggered across frames.
+///                     Handles vision, distance checks, state decisions.
+///   • FrameUpdate() — called every frame from Update().
+///                     Handles smooth rotation, attack timing, investigation timers.
+///   • NavMeshAgent  — path-following is automatic and smooth between slow ticks.
+/// </summary>
+public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITickableAI
 {
     // ──────────── Vision ────────────
 
     [Header("Vision")]
     public float fieldOfView = 120f;
     public float eyeHeight = 1.6f;
-    public float visionCheckInterval = 0.2f;
 
     [Tooltip("Layers that block vision raycasts (exclude zombie / ragdoll layers).")]
     [SerializeField] private LayerMask visionMask = ~0;
 
-    private float visionTimer;
     private float minDot;
     private bool canSeePlayer;
 
@@ -69,14 +75,16 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener
     private Vector3 pendingHitPoint;
     private Vector3 pendingImpulse;
 
-    // Squared-distance caches
+    // Squared-distance caches (computed once in Awake, zero per-frame cost)
     private float lookRadiusSqr;
     private float attackRangeSqr;
     private float arrivalThresholdSqr;
 
     public bool IsDead() => isDead;
 
-    // ──────────── Lifecycle ────────────
+    // ════════════════════════════════════════════════
+    //  LIFECYCLE
+    // ════════════════════════════════════════════════
 
     protected override void OnEnemyAwake()
     {
@@ -100,17 +108,183 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener
 
     private void OnEnable()
     {
-        if (SoundManager.Instance != null)
-            SoundManager.Instance.Register(this);
+        SoundManager.Instance?.Register(this);
+        AITickManager.Instance?.Register(this);
     }
 
     private void OnDisable()
     {
-        if (SoundManager.Instance != null)
-            SoundManager.Instance.Unregister(this);
+        SoundManager.Instance?.Unregister(this);
+        AITickManager.Instance?.Unregister(this);
     }
 
-    // ──────────── Vision ────────────
+    // ════════════════════════════════════════════════
+    //  UPDATE SPLIT
+    // ════════════════════════════════════════════════
+
+    /// <summary>
+    /// Override base Update so HandleAI() is NOT called every frame.
+    /// Only the cheap FrameUpdate runs per-frame.
+    /// </summary>
+    protected override void Update()
+    {
+        if (isDead) return;
+        FrameUpdate();
+    }
+
+    /// <summary>
+    /// Required by base class — intentionally empty.
+    /// Logic is split between SlowAITick (decisions) and FrameUpdate (execution).
+    /// </summary>
+    protected override void HandleAI() { }
+
+    /// <summary>
+    /// Called by AITickManager ~5× per second, staggered so only a few zombies
+    /// tick each frame. Contains ALL expensive work: vision raycast, distance
+    /// calculations, state transitions, NavMesh destination updates.
+    /// </summary>
+    public void SlowAITick()
+    {
+        if (isDead || player == null || agent == null) return;
+        EvaluateState();
+    }
+
+    // ════════════════════════════════════════════════
+    //  SLOW TICK — DECISION MAKING  (~5×/sec)
+    // ════════════════════════════════════════════════
+
+    private void EvaluateState()
+    {
+        canSeePlayer = CheckVision();
+
+        float sqrDist = (player.position - transform.position).sqrMagnitude;
+
+        // Priority: Attack > Chase > Investigate > Idle
+        ZombieState newState;
+
+        if (sqrDist <= attackRangeSqr)
+            newState = ZombieState.Attack;
+        else if (canSeePlayer)
+            newState = ZombieState.Chase;
+        else if (hasInvestigateTarget)
+            newState = ZombieState.Investigate;
+        else
+            newState = ZombieState.Idle;
+
+        // Apply state change (setup happens once on transition)
+        if (newState != state)
+        {
+            state = newState;
+            OnStateEnter(newState);
+        }
+
+        // Refresh NavMesh destinations for moving states
+        if (state == ZombieState.Chase)
+            agent.SetDestination(player.position);
+        else if (state == ZombieState.Investigate)
+            agent.SetDestination(investigateTarget);
+    }
+
+    /// <summary>
+    /// One-time setup when transitioning into a new state.
+    /// Sets agent speed, stops/starts movement, and picks the right animation.
+    /// </summary>
+    private void OnStateEnter(ZombieState newState)
+    {
+        attackInProgress = false;
+
+        switch (newState)
+        {
+            case ZombieState.Idle:
+                StopAgent();
+                PlayIdleAnimation();
+                break;
+
+            case ZombieState.Investigate:
+                investigateTimer = 0f;
+                MoveAgent(GetInvestigateSpeed());
+                PlayWalkAnimation();
+                break;
+
+            case ZombieState.Chase:
+                hasInvestigateTarget = false;
+                MoveAgent(walkSpeed);
+                PlayWalkAnimation();
+                break;
+
+            case ZombieState.Attack:
+                hasInvestigateTarget = false;
+                StopAgent();
+                if (anim != null) anim.SetBool("Walk", false);
+                break;
+        }
+    }
+
+    // ════════════════════════════════════════════════
+    //  FAST UPDATE — EXECUTION  (every frame)
+    // ════════════════════════════════════════════════
+
+    /// <summary>
+    /// Runs every frame. Only cheap operations:
+    /// smooth rotation, attack cooldown timer, investigation linger timer.
+    /// NavMeshAgent movement is automatic — no per-frame cost here.
+    /// </summary>
+    private void FrameUpdate()
+    {
+        switch (state)
+        {
+            case ZombieState.Attack:
+                FacePlayer();
+                UpdateAttack();
+                break;
+
+            case ZombieState.Investigate:
+                UpdateInvestigate();
+                break;
+
+            // Chase & Idle: NavMeshAgent + animations are already set by OnStateEnter.
+            // Nothing expensive to do per-frame.
+        }
+    }
+
+    private void UpdateAttack()
+    {
+        if (!attackInProgress)
+        {
+            attackInProgress = true;
+            PlayAttackAnimation();
+            attackTimer = 0f;
+        }
+
+        attackTimer += Time.deltaTime;
+
+        if (attackTimer >= attackCooldown)
+            attackInProgress = false;
+    }
+
+    private void UpdateInvestigate()
+    {
+        float sqrToTarget = (transform.position - investigateTarget).sqrMagnitude;
+
+        if (sqrToTarget <= arrivalThresholdSqr)
+        {
+            // Arrived — linger at location
+            StopAgent();
+            PlayIdleAnimation();
+
+            investigateTimer += Time.deltaTime;
+            if (investigateTimer >= investigateLingerTime)
+            {
+                hasInvestigateTarget = false;
+                state = ZombieState.Idle;
+                PlayIdleAnimation();
+            }
+        }
+    }
+
+    // ════════════════════════════════════════════════
+    //  VISION  (called inside SlowAITick only)
+    // ════════════════════════════════════════════════
 
     private bool CheckVision()
     {
@@ -135,159 +309,15 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener
         return false;
     }
 
-    // ──────────── AI Core ────────────
-
-    protected override void HandleAI()
-    {
-        if (player == null || agent == null) return;
-
-        // Periodic vision check
-        visionTimer += Time.deltaTime;
-        if (visionTimer >= visionCheckInterval)
-        {
-            visionTimer = 0f;
-            canSeePlayer = CheckVision();
-        }
-
-        // State transitions (highest priority first)
-        float sqrDist = (player.position - transform.position).sqrMagnitude;
-
-        if (sqrDist <= attackRangeSqr)
-            state = ZombieState.Attack;
-        else if (canSeePlayer)
-            state = ZombieState.Chase;
-        else if (hasInvestigateTarget)
-            state = ZombieState.Investigate;
-        else if (state != ZombieState.Investigate)
-            state = ZombieState.Idle;
-
-        // Execute current state
-        switch (state)
-        {
-            case ZombieState.Idle:
-                HandleIdle();
-                break;
-            case ZombieState.Investigate:
-                HandleInvestigate();
-                break;
-            case ZombieState.Chase:
-                HandleChase();
-                break;
-            case ZombieState.Attack:
-                HandleAttack();
-                break;
-        }
-    }
-
-    // ──────────── State Handlers ────────────
-
-    private void HandleIdle()
-    {
-        StopAgent();
-        PlayIdleAnimation();
-        attackInProgress = false;
-    }
-
-    private void HandleInvestigate()
-    {
-        attackInProgress = false;
-
-        float speed = walkSpeed;
-
-        // React differently based on what sound was heard
-        switch (investigateSoundType)
-        {
-            case SoundType.Gunshot:
-                // Rush toward gunshots at higher speed
-                speed = walkSpeed * investigateRunMultiplier;
-                break;
-
-            case SoundType.Explosion:
-                // Run even faster toward explosions
-                speed = walkSpeed * investigateRunMultiplier * 1.2f;
-                break;
-
-            case SoundType.Footstep:
-            case SoundType.Reload:
-                // Walk cautiously
-                speed = walkSpeed * 0.7f;
-                break;
-
-            case SoundType.Distraction:
-                // Slow, curious approach
-                speed = walkSpeed * 0.5f;
-                break;
-
-            case SoundType.ObjectBreak:
-                speed = walkSpeed;
-                break;
-        }
-
-        MoveAgent(speed);
-        agent.SetDestination(investigateTarget);
-        PlayWalkAnimation();
-
-        // Check if arrived
-        float sqrToTarget = (transform.position - investigateTarget).sqrMagnitude;
-        if (sqrToTarget <= arrivalThresholdSqr)
-        {
-            // Linger at the location, look around
-            StopAgent();
-            PlayIdleAnimation();
-
-            investigateTimer += Time.deltaTime;
-            if (investigateTimer >= investigateLingerTime)
-            {
-                hasInvestigateTarget = false;
-                state = ZombieState.Idle;
-            }
-        }
-        else
-        {
-            investigateTimer = 0f;
-        }
-    }
-
-    private void HandleChase()
-    {
-        hasInvestigateTarget = false; // seeing the player overrides investigation
-        attackInProgress = false;
-
-        MoveAgent(walkSpeed);
-        agent.SetDestination(player.position);
-        PlayWalkAnimation();
-    }
-
-    private void HandleAttack()
-    {
-        hasInvestigateTarget = false;
-        FacePlayer();
-        StopAgent();
-
-        if (!attackInProgress)
-        {
-            if (anim != null) anim.SetBool("Walk", false);
-            attackInProgress = true;
-            PlayAttackAnimation();
-            attackTimer = 0f;
-        }
-
-        attackTimer += Time.deltaTime;
-
-        if (attackTimer >= attackCooldown)
-            attackInProgress = false;
-    }
-
-    // ──────────── ISoundListener ────────────
+    // ════════════════════════════════════════════════
+    //  ISoundListener
+    // ════════════════════════════════════════════════
 
     public void HearSound(SoundStimulus stimulus)
     {
         if (isDead) return;
-
-        // If the zombie can already see the player, ignore sounds
         if (canSeePlayer) return;
 
-        // Accept investigation: louder / more urgent sounds override quieter ones
         bool shouldOverride = !hasInvestigateTarget
             || GetSoundPriority(stimulus.Type) > GetSoundPriority(investigateSoundType);
 
@@ -300,9 +330,6 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener
         }
     }
 
-    /// <summary>
-    /// Higher value = higher priority. Gunshots and explosions take precedence.
-    /// </summary>
     private static int GetSoundPriority(SoundType type)
     {
         switch (type)
@@ -317,13 +344,27 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener
         }
     }
 
-    // ──────────── Helpers ────────────
+    private float GetInvestigateSpeed()
+    {
+        switch (investigateSoundType)
+        {
+            case SoundType.Gunshot:     return walkSpeed * investigateRunMultiplier;
+            case SoundType.Explosion:   return walkSpeed * investigateRunMultiplier * 1.2f;
+            case SoundType.Footstep:
+            case SoundType.Reload:      return walkSpeed * 0.7f;
+            case SoundType.Distraction: return walkSpeed * 0.5f;
+            default:                    return walkSpeed;
+        }
+    }
+
+    // ════════════════════════════════════════════════
+    //  HELPERS
+    // ════════════════════════════════════════════════
 
     private void FacePlayer()
     {
         Vector3 direction = (player.position - transform.position).normalized;
         direction.y = 0f;
-
         if (direction == Vector3.zero) return;
 
         Quaternion lookRotation = Quaternion.LookRotation(direction);
@@ -342,7 +383,9 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener
         agent.speed = speed;
     }
 
-    // ──────────── IDamageable ────────────
+    // ════════════════════════════════════════════════
+    //  IDamageable
+    // ════════════════════════════════════════════════
 
     public void TakeDamage(float damage)
     {
@@ -356,7 +399,9 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener
             knockback?.TriggerKnockback();
     }
 
-    // ──────────── Death & Ragdoll ────────────
+    // ════════════════════════════════════════════════
+    //  DEATH & RAGDOLL
+    // ════════════════════════════════════════════════
 
     protected override void HandleDeathVisuals()
     {
@@ -464,7 +509,9 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener
         return nearest;
     }
 
-    // ──────────── Attack Hitbox ────────────
+    // ════════════════════════════════════════════════
+    //  ATTACK HITBOX
+    // ════════════════════════════════════════════════
 
     public void CreateHitBox()
     {
@@ -488,7 +535,9 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener
             playerHealth.TakeDamage(attackDamage);
     }
 
-    // ──────────── Gizmos ────────────
+    // ════════════════════════════════════════════════
+    //  GIZMOS
+    // ════════════════════════════════════════════════
 
     private void OnDrawGizmosSelected()
     {
@@ -502,7 +551,6 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener
         Gizmos.DrawLine(transform.position, transform.position + left * lookRadius);
         Gizmos.DrawLine(transform.position, transform.position + right * lookRadius);
 
-        // Draw investigate target
         if (hasInvestigateTarget)
         {
             Gizmos.color = Color.cyan;
