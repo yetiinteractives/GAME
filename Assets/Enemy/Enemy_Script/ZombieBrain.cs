@@ -48,6 +48,20 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     [Tooltip("How close the zombie must get to the investigation point to consider it 'reached'.")]
     public float investigateArrivalThreshold = 1.5f;
 
+    // ──────────── Desynchronization ────────────
+
+    [Header("Desync (applied once at spawn)")]
+    [Tooltip("Max ± fraction applied to walkSpeed and agent.acceleration. 0.1 = ±10%.")]
+    [SerializeField] private float speedVariation = 0.1f;
+
+    [Tooltip("Max random delay (seconds) added before each attack animation.")]
+    [SerializeField] private float maxAttackDelay = 0.3f;
+
+    // Per-instance random values (computed once, zero per-frame cost)
+    private float speedMultiplier;     // [1-variation .. 1+variation]
+    private float attackWindUpDelay;   // [0 .. maxAttackDelay]
+    private float animOffsetNormalized; // [0..1] random phase for animation desync
+
     // ──────────── State ────────────
 
     public enum ZombieState { Idle, Investigate, Chase, Attack }
@@ -55,6 +69,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
     private bool attackInProgress;
     private float attackTimer;
+    private bool attackWindUpDone;  // tracks whether the wind-up delay has elapsed
 
     // Investigation bookkeeping
     private Vector3 investigateTarget;
@@ -104,6 +119,39 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         knockback = GetComponent<EnemyShotKnockback>();
 
         DisableRagdoll();
+        ApplyDesync();
+    }
+
+    /// <summary>
+    /// Called once at spawn. Rolls per-instance random values for speed,
+    /// attack delay, animation offset, and agent acceleration.
+    /// All randomness is baked into fields — zero per-frame cost.
+    /// </summary>
+    private void ApplyDesync()
+    {
+        // ── Speed & acceleration variation ──
+        speedMultiplier = Random.Range(1f - speedVariation, 1f + speedVariation);
+
+        if (agent != null)
+            agent.acceleration *= Random.Range(1f - speedVariation, 1f + speedVariation);
+
+        // ── Attack wind-up delay (unique per zombie) ──
+        attackWindUpDelay = Random.Range(0f, maxAttackDelay);
+
+        // ── Animation phase offset ──
+        // Play the current state at a random normalizedTime so walk/idle
+        // cycles are not aligned across zombies sharing the same controller.
+        animOffsetNormalized = Random.Range(0f, 1f);
+
+        if (anim != null)
+        {
+            AnimatorStateInfo info = anim.GetCurrentAnimatorStateInfo(0);
+            anim.Play(info.fullPathHash, 0, animOffsetNormalized);
+
+            // Slight animator speed jitter (±3%) makes even looping anims
+            // drift apart over time without being visually noticeable.
+            anim.speed = Random.Range(0.97f, 1.03f);
+        }
     }
 
     private void OnEnable()
@@ -192,6 +240,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     private void OnStateEnter(ZombieState newState)
     {
         attackInProgress = false;
+        attackWindUpDone = false;
 
         switch (newState)
         {
@@ -202,13 +251,13 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
             case ZombieState.Investigate:
                 investigateTimer = 0f;
-                MoveAgent(GetInvestigateSpeed());
+                MoveAgent(GetInvestigateSpeed() * speedMultiplier);
                 PlayWalkAnimation();
                 break;
 
             case ZombieState.Chase:
                 hasInvestigateTarget = false;
-                MoveAgent(walkSpeed);
+                MoveAgent(walkSpeed * speedMultiplier);
                 PlayWalkAnimation();
                 break;
 
@@ -252,13 +301,21 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         if (!attackInProgress)
         {
             attackInProgress = true;
-            PlayAttackAnimation();
+            attackWindUpDone = false;
             attackTimer = 0f;
         }
 
         attackTimer += Time.deltaTime;
 
-        if (attackTimer >= attackCooldown)
+        // Random wind-up delay before the animation fires
+        // (prevents all zombies attacking on the exact same frame)
+        if (!attackWindUpDone && attackTimer >= attackWindUpDelay)
+        {
+            attackWindUpDone = true;
+            PlayAttackAnimation();
+        }
+
+        if (attackTimer >= attackCooldown + attackWindUpDelay)
             attackInProgress = false;
     }
 
