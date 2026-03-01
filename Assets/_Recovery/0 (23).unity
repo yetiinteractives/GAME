@@ -3338,7 +3338,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1004360779}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.000047302252}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3346,9 +3346,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 40.697357, y: 9.617161}
-  m_SizeDelta: {x: 40.606293, y: 10.965698}
-  m_Pivot: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 60, y: 15.1}
+  m_SizeDelta: {x: 40.6063, y: 10.9657}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1004360781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3362,7 +3362,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8037735, g: 0.8037735, b: 0.8037735, a: 0.20392157}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4165,16 +4165,6 @@ PrefabInstance:
       propertyPath: orignalIconPosition
       value: 
       objectReference: {fileID: 1004360780}
-    - target: {fileID: 8823724606015440329, guid: d7fcb52adb3a8cd40bb748351e3613c4,
-        type: 3}
-      propertyPath: originalIconPosition.x
-      value: 0.30670166
-      objectReference: {fileID: 0}
-    - target: {fileID: 8823724606015440329, guid: d7fcb52adb3a8cd40bb748351e3613c4,
-        type: 3}
-      propertyPath: originalIconPosition.y
-      value: -0.02009964
-      objectReference: {fileID: 0}
     - target: {fileID: 8823724606015440329, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
       propertyPath: silencerAttachedColor.a
