@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,21 +11,21 @@ public class Pistol : Weapon
     [SerializeField] private AudioClip silencerSound;
 
     [Header("UI")]
-    [SerializeField] private Image silencerIcon;
-    private Vector2 originalIconPosition;
-    private Vector2 detachedOffset = new Vector2(10, 0);
+    [SerializeField] private Image silencerAttachedIcon;
+    [SerializeField] private Image silencerDetachedIcon;
+    [SerializeField] private Slider silencerDurabilitySlider;
 
-    [SerializeField] private Color silencerAttachedColor = Color.white;
-    [SerializeField] private Color silencerDetachedColor = Color.gray;
+
+    
 
     [Header("Sound")]
     [SerializeField, Range(0.01f, 1f)]
     private float silencedLoudnessMultiplier = 0.1f;
 
-    private RectTransform iconRect;
+    
 
     private bool hasSilencer = true;
-    private bool isSilencerOn;
+    private bool isSilencerOn = false;
 
     private int currentSilencerDurability;
 
@@ -35,35 +36,39 @@ public class Pistol : Weapon
     {
         base.Awake();
 
-        iconRect = silencerIcon.rectTransform;
+        
 
         baseGunshotLoudness = gunshotLoudness;
+
+        silencerDurabilitySlider.maxValue = silencerDurability;
         currentSilencerDurability = silencerDurability;
 
-        UpdateUI(false);
+        UpdateUI(isSilencerOn);
         RemoveSilencer();
     }
-    private void Start()
-    {
-        originalIconPosition = silencerIcon.rectTransform.localPosition;
-    }
+
 
     void UpdateUI(bool attached)
     {
-        if (silencerIcon == null) return;
+        if (silencerAttachedIcon == null || silencerDetachedIcon == null || silencerDurabilitySlider == null)
+            return;
+        DisableAllSilencerIcons();
+        silencerDurabilitySlider.value = currentSilencerDurability;
 
-        silencerIcon.gameObject.SetActive(hasSilencer);
+        if (attached && hasSilencer)
+        {
+            silencerAttachedIcon.gameObject.SetActive(true);
+        }
+        else if (!attached && hasSilencer)
+        {
+            silencerDetachedIcon.gameObject.SetActive(true);
+        }
+    }
 
-        if (attached)
-        {
-            silencerIcon.color = silencerAttachedColor;
-            //iconRect.localPosition = originalIconPosition;
-        }
-        else
-        {
-            silencerIcon.color = silencerDetachedColor;
-            //iconRect.localPosition = originalIconPosition + detachedOffset;
-        }
+    private void DisableAllSilencerIcons()
+    {
+       silencerDetachedIcon.gameObject.SetActive(false);
+        silencerAttachedIcon.gameObject.SetActive(false);
     }
 
     public void SetSilencer()
@@ -128,6 +133,7 @@ public class Pistol : Weapon
         if (isSilencerOn)
         {
             currentSilencerDurability--;
+            silencerDurabilitySlider.value = currentSilencerDurability;
 
             if (currentSilencerDurability <= 0)
             {
