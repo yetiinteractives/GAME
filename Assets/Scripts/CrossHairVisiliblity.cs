@@ -48,14 +48,7 @@ public class CrossHairVisiliblity : MonoBehaviour
     void Update()
     {
         
-        if (Input.GetMouseButton(1))
-        {
-            isAiming = true;
-        }
-        else
-        {
-            isAiming = false;
-        }
+        isAiming = GameInput.Aim;
 
         // Crosshair visibility logic
         _sniperCrossHair.gameObject.SetActive(((currentWeaponIndex == 3)) && isAiming && !isScoped);

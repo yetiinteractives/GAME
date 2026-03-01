@@ -52,7 +52,7 @@ public class Sniper : Weapon
         }
 
         // Weapon is aiming - check for scope toggle
-        if (Input.GetKeyDown(KeyCode.E))
+        if (GameInput.ScopeToggleDown)
         {
             if (isScopeActive)
             {

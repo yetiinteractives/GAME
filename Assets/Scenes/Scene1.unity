@@ -1095,7 +1095,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!108 &376879373
 Light:
   m_ObjectHideFlags: 0
@@ -1510,16 +1510,18 @@ MonoBehaviour:
   player: {fileID: 0}
   fieldOfView: 120
   eyeHeight: 1.6
-  visionCheckInterval: 0.2
   visionMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  WalkSpeed: 3
+  walkSpeed: 3
+  investigateRunMultiplier: 1.5
   lookRadius: 15
   attackRange: 2
   attackDamage: 10
   attackCooldown: 2
   attackHitBox: {fileID: 0}
+  investigateLingerTime: 3
+  investigateArrivalThreshold: 1.5
   state: 0
 --- !u!54 &480430982
 Rigidbody:
@@ -6587,6 +6589,64 @@ MonoBehaviour:
   knockbackDuration: 0.4
   blendSpeed: 8
   targetWeight: 1
+--- !u!1 &2106991646
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2106991648}
+  - component: {fileID: 2106991647}
+  - component: {fileID: 2106991649}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2106991647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2106991646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9782eb5cd8e76834585c8373f52906cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SoundManager
+--- !u!4 &2106991648
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2106991646}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.00153, y: -0, z: -28.58334}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2106991649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2106991646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e28ee7d156682aa4696fe99ea3af09ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AITickManager
+  tickInterval: 0.2
 --- !u!4 &2133796156 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5235224422772268667, guid: eb2165edd3e7844999a55b305c92b541,
@@ -7220,3 +7280,4 @@ SceneRoots:
   - {fileID: 168462829}
   - {fileID: 1476305432}
   - {fileID: 1588351774}
+  - {fileID: 2106991648}

@@ -22,6 +22,12 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField] protected ParticleSystem muzzleFlash;
     [SerializeField] protected Light muzzleFlashLight;
 
+    [Header("AI Sound Emission")]
+    [Tooltip("How far enemies can hear this weapon fire.")]
+    [SerializeField] protected float gunshotLoudness = 40f;
+    [Tooltip("How far enemies can hear a reload.")]
+    [SerializeField] protected float reloadLoudness = 8f;
+
     protected AudioSource audioSource;
     protected FreeLookADS freeLookAds;
 
@@ -105,12 +111,12 @@ public abstract class Weapon : MonoBehaviour
     {
         if (!gameObject.activeInHierarchy) return;
 
-        // AIM - Right click hold
-        if (Input.GetMouseButtonDown(1)) StartAiming();
-        if (Input.GetMouseButtonUp(1)) StopAiming();
+        // AIM - Right click / Left Trigger
+        if (GameInput.AimDown) StartAiming();
+        if (GameInput.AimUp) StopAiming();
 
-        // RELOAD on R key
-        if (Input.GetKeyDown(KeyCode.R) && !isReloading && bulletOnMag < magCapacity && totalBullet > 0)
+        // RELOAD - R key / Gamepad X
+        if (GameInput.ReloadDown && !isReloading && bulletOnMag < magCapacity && totalBullet > 0)
             StartReload();
 
         if (isAiming)
@@ -143,6 +149,9 @@ public abstract class Weapon : MonoBehaviour
 
         if (audioSource != null && shootSound != null)
             audioSource.PlayOneShot(shootSound);
+
+        // Notify AI sound system
+        SoundEmitter.EmitSoundAt(transform.position, SoundType.Gunshot, gunshotLoudness, gameObject);
 
         if (muzzleFlash != null)
             StartCoroutine(PlayMuzzleFlash());
@@ -223,6 +232,9 @@ public abstract class Weapon : MonoBehaviour
 
         if (audioSource != null && reloadSound != null)
             audioSource.PlayOneShot(reloadSound);
+
+        // Notify AI sound system
+        SoundEmitter.EmitSoundAt(transform.position, SoundType.Reload, reloadLoudness, gameObject);
 
         yield return new WaitForSeconds(reloadTime);
 

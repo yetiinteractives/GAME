@@ -17,10 +17,9 @@ public class Flashlight : MonoBehaviour
 
     private void Update()
     {
-        if( Input.GetKeyDown(KeyCode.T))
+        if (GameInput.FlashlightDown)
         {
             ToggleFlashlight();
-
         }
     }
 

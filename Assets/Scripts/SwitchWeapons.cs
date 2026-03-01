@@ -32,13 +32,13 @@ public class SwitchWeapons : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (GameInput.WeaponWheelDown)
         {
             OpenWheel();
         }
 
-        // Only close if wheel is open AND Tab is released
-        if (isWheelOpen && Input.GetKeyUp(KeyCode.Tab))
+        // Only close if wheel is open AND key/button released
+        if (isWheelOpen && GameInput.WeaponWheelUp)
         {
             CloseWheel();
         }

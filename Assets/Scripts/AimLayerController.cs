@@ -81,7 +81,7 @@ public class AimLayerController : MonoBehaviour
     {
         if (currentWeaponIndex == 1) // Pistol
         {
-            if (Input.GetMouseButton(1))
+            if (GameInput.Aim)
             {
                 targetWeight = 0.85f;
                 StartCoroutine(AimRigWeightDelay());
@@ -116,7 +116,7 @@ public class AimLayerController : MonoBehaviour
                 return;
             }
 
-            if (Input.GetMouseButton(1))
+            if (GameInput.Aim)
             {
                 animator.SetLayerWeight(shotgunAimLayerIndex,
                     Mathf.Lerp(animator.GetLayerWeight(shotgunAimLayerIndex), 1f, Time.deltaTime * blendSpeed));
