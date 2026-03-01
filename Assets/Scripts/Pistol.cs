@@ -1,16 +1,22 @@
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using UnityEngine.UI;
 
 public class Pistol : Weapon
 {
     [SerializeField] private GameObject silencerModel;
     [SerializeField] private AudioClip silencerSound;
+    [SerializeField] private Image silencerIcon;
+
+    [SerializeField] private int silencerDurability = 5;
+    
+    private int currentSilencerDurability;
 
     [Header("Silencer")]
     [SerializeField, Range(0.01f, 1f)] private float silencedLoudnessMultiplier = 0.1f;
 
     private AudioClip currentShootSound;
-    private bool isSilencerOn = true;
+    private bool isSilencerOn;
     private float baseGunshotLoudness;
 
     protected override void Awake()
@@ -19,6 +25,7 @@ public class Pistol : Weapon
 
         baseGunshotLoudness = gunshotLoudness;
         RemoveSilencer();
+        currentSilencerDurability = silencerDurability;
     }
 
     public void SetSilencer()
@@ -28,6 +35,7 @@ public class Pistol : Weapon
         if (silencerModel != null)
             silencerModel.SetActive(true);
 
+        silencerIcon.gameObject.SetActive(true);
         currentShootSound = silencerSound;
         gunshotLoudness = baseGunshotLoudness * silencedLoudnessMultiplier;
     }
@@ -39,6 +47,7 @@ public class Pistol : Weapon
         if (silencerModel != null)
             silencerModel.SetActive(false);
 
+        silencerIcon.gameObject.SetActive(false);
         currentShootSound = shootSound;
         gunshotLoudness = baseGunshotLoudness;
     }
@@ -48,6 +57,10 @@ public class Pistol : Weapon
         ApplyDamage(hit, damage);
 
         bulletOnMag--;
+        if (isSilencerOn)
+        {
+            currentSilencerDurability--;
+        }
         nextFireTime = Time.time + fireRate;
 
         NotifyShotEvent();
@@ -74,6 +87,11 @@ public class Pistol : Weapon
             UpdateStatus("Aiming");
 
         Debug.Log($"{gameObject.name} fired! Mag: {bulletOnMag}/{magCapacity}, Total: {totalBullet}, Loudness: {gunshotLoudness:F2}");
+    
+        if(currentSilencerDurability <= 0)
+        {
+            RemoveSilencer();
+        }
     }
 
     protected override void Update()
