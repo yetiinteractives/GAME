@@ -39,6 +39,32 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     public float attackCooldown = 2f;
     public BoxCollider attackHitBox;
 
+    // ──────────── Hearing ────────────
+
+    [Header("Hearing")]
+    [Tooltip("Master multiplier applied to all hearing ranges.")]
+    [SerializeField] private float hearingSensitivity = 1f;
+
+    [Tooltip("Minimum loudness required to react to a sound.")]
+    [SerializeField] private float minAudibleLoudness = 0.05f;
+
+    [Tooltip("If true, hearing is reduced when line-of-sight to sound is blocked.")]
+    [SerializeField] private bool useSoundOcclusion = true;
+
+    [Tooltip("Layers that block sound raycasts.")]
+    [SerializeField] private LayerMask soundOcclusionMask = ~0;
+
+    [Tooltip("Multiplier applied to loudness when sound is occluded.")]
+    [SerializeField] private float occludedLoudnessMultiplier = 0.5f;
+
+    [Header("Hearing Ranges (base meters at loudness = 1)")]
+    [SerializeField] private float distractionHearingRange = 6f;
+    [SerializeField] private float footstepHearingRange = 10f;
+    [SerializeField] private float objectBreakHearingRange = 14f;
+    [SerializeField] private float reloadHearingRange = 12f;
+    [SerializeField] private float gunshotHearingRange = 30f;
+    [SerializeField] private float explosionHearingRange = 40f;
+
     // ──────────── Investigation ────────────
 
     [Header("Investigation")]
@@ -355,8 +381,8 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
                 UpdateInvestigate();
                 break;
 
-            // Chase & Idle: NavMeshAgent + animations are already set by OnStateEnter.
-            // Nothing expensive to do per-frame.
+                // Chase & Idle: NavMeshAgent + animations are already set by OnStateEnter.
+                // Nothing expensive to do per-frame.
         }
     }
 
@@ -439,6 +465,8 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         if (isDead) return;
         if (canSeePlayer) return;
 
+        if (!CanHearStimulus(stimulus)) return;
+
         bool shouldOverride = !hasInvestigateTarget
             || GetSoundPriority(stimulus.Type) > GetSoundPriority(investigateSoundType);
 
@@ -451,17 +479,62 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         }
     }
 
+    private bool CanHearStimulus(SoundStimulus stimulus)
+    {
+        float loudness = Mathf.Max(0f, stimulus.Loudness);
+        if (loudness < minAudibleLoudness) return false;
+
+        if (useSoundOcclusion && IsSoundOccluded(stimulus.Position))
+            loudness *= occludedLoudnessMultiplier;
+
+        if (loudness < minAudibleLoudness) return false;
+
+        float baseRange = GetBaseHearingRange(stimulus.Type) * hearingSensitivity;
+        float effectiveRange = baseRange * loudness;
+
+        if (effectiveRange <= 0f) return false;
+
+        float sqrDist = (stimulus.Position - transform.position).sqrMagnitude;
+        return sqrDist <= effectiveRange * effectiveRange;
+    }
+
+    private bool IsSoundOccluded(Vector3 soundPosition)
+    {
+        Vector3 origin = transform.position + Vector3.up * eyeHeight;
+        Vector3 toSound = soundPosition - origin;
+        float distance = toSound.magnitude;
+
+        if (distance <= 0.01f) return false;
+
+        Vector3 direction = toSound / distance;
+        return Physics.Raycast(origin, direction, distance, soundOcclusionMask, QueryTriggerInteraction.Ignore);
+    }
+
+    private float GetBaseHearingRange(SoundType type)
+    {
+        switch (type)
+        {
+            case SoundType.Distraction: return distractionHearingRange;
+            case SoundType.Footstep: return footstepHearingRange;
+            case SoundType.ObjectBreak: return objectBreakHearingRange;
+            case SoundType.Reload: return reloadHearingRange;
+            case SoundType.Gunshot: return gunshotHearingRange;
+            case SoundType.Explosion: return explosionHearingRange;
+            default: return footstepHearingRange;
+        }
+    }
+
     private static int GetSoundPriority(SoundType type)
     {
         switch (type)
         {
-            case SoundType.Distraction:  return 1;
-            case SoundType.Footstep:     return 2;
-            case SoundType.ObjectBreak:  return 3;
-            case SoundType.Reload:       return 4;
-            case SoundType.Gunshot:      return 5;
-            case SoundType.Explosion:    return 6;
-            default:                     return 0;
+            case SoundType.Distraction: return 1;
+            case SoundType.Footstep: return 2;
+            case SoundType.ObjectBreak: return 3;
+            case SoundType.Reload: return 4;
+            case SoundType.Gunshot: return 5;
+            case SoundType.Explosion: return 6;
+            default: return 0;
         }
     }
 
@@ -469,12 +542,12 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     {
         switch (investigateSoundType)
         {
-            case SoundType.Gunshot:     return walkSpeed * investigateRunMultiplier;
-            case SoundType.Explosion:   return walkSpeed * investigateRunMultiplier * 1.2f;
+            case SoundType.Gunshot: return walkSpeed * investigateRunMultiplier;
+            case SoundType.Explosion: return walkSpeed * investigateRunMultiplier * 1.2f;
             case SoundType.Footstep:
-            case SoundType.Reload:      return walkSpeed * 0.7f;
+            case SoundType.Reload: return walkSpeed * 0.7f;
             case SoundType.Distraction: return walkSpeed * 0.5f;
-            default:                    return walkSpeed;
+            default: return walkSpeed;
         }
     }
 

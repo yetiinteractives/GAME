@@ -80,6 +80,12 @@ public abstract class Weapon : MonoBehaviour
         muzzleFlashLight.enabled = false;
     }
 
+    protected void NotifyShotEvent()
+    {
+        OnAmmoChanged?.Invoke(bulletOnMag, totalBullet);
+        OnBulletShot?.Invoke();
+    }
+
     protected virtual void OnDisable()
     {
         MousePosition3D.OnFirePerformed -= OnFireInput;
