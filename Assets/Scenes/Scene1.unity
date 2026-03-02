@@ -486,6 +486,18 @@ CapsuleCollider:
   m_Height: 0.27567706
   m_Direction: 1
   m_Center: {x: 0, y: 0.13783853, z: 0}
+--- !u!114 &64880455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 64880449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
 --- !u!1 &102827758 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 423741651858450880, guid: 8c4884cda648eec4a81ce895bbbf1fb4,
@@ -1202,6 +1214,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1433642320}
+    - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1433642323}
     - targetCorrespondingSourceObject: {fileID: 3135921509060577837, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
         type: 3}
       insertIndex: -1
@@ -1214,6 +1230,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1115537289}
+    - targetCorrespondingSourceObject: {fileID: 3135921509060577837, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1115537292}
     - targetCorrespondingSourceObject: {fileID: -6170625038081293824, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
         type: 3}
       insertIndex: -1
@@ -1226,6 +1246,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1945614405}
+    - targetCorrespondingSourceObject: {fileID: -6170625038081293824, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1945614409}
     - targetCorrespondingSourceObject: {fileID: -3086436065929644917, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
         type: 3}
       insertIndex: -1
@@ -1262,6 +1286,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 496504382}
+    - targetCorrespondingSourceObject: {fileID: -203856693384778745, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 496504385}
     - targetCorrespondingSourceObject: {fileID: 8817898888258712963, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
         type: 3}
       insertIndex: -1
@@ -1274,6 +1302,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 64880452}
+    - targetCorrespondingSourceObject: {fileID: 8817898888258712963, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 64880455}
     - targetCorrespondingSourceObject: {fileID: 3948933247560734027, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
         type: 3}
       insertIndex: -1
@@ -1286,6 +1318,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 929469884}
+    - targetCorrespondingSourceObject: {fileID: 3948933247560734027, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 929469888}
     - targetCorrespondingSourceObject: {fileID: -1781356600409242780, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
         type: 3}
       insertIndex: -1
@@ -1298,6 +1334,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1718691174}
+    - targetCorrespondingSourceObject: {fileID: -1781356600409242780, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1718691178}
     - targetCorrespondingSourceObject: {fileID: -9070493210130169274, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
         type: 3}
       insertIndex: -1
@@ -1310,6 +1350,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1116478603}
+    - targetCorrespondingSourceObject: {fileID: -9070493210130169274, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1116478606}
     - targetCorrespondingSourceObject: {fileID: -290750445479886849, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
         type: 3}
       insertIndex: -1
@@ -1322,6 +1366,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 661046642}
+    - targetCorrespondingSourceObject: {fileID: -290750445479886849, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 661046646}
   m_SourcePrefab: {fileID: 100100000, guid: 7a73a8ecc961e9c469f537ccc3774a5b, type: 3}
 --- !u!1 &309737385 stripped
 GameObject:
@@ -1532,7 +1580,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &376879373
 Light:
   m_ObjectHideFlags: 0
@@ -2150,6 +2198,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.3731575, y: 0.26943004, z: 0.27653068}
   m_Center: {x: -0.00000008940697, y: 0.13471504, z: -0.031267077}
+--- !u!114 &496504385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 496504379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
 --- !u!1 &498840898
 GameObject:
   m_ObjectHideFlags: 0
@@ -3217,6 +3277,18 @@ CapsuleCollider:
   m_Height: 0.5520854
   m_Direction: 1
   m_Center: {x: 0, y: 0.2760427, z: 0}
+--- !u!114 &661046646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 661046640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
 --- !u!4 &661938100 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6480771852515576468, guid: 441945e8a4aa644b3ac6600c6712f79c,
@@ -3388,7 +3460,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -4121,6 +4193,18 @@ CapsuleCollider:
   m_Height: 0.509002
   m_Direction: 1
   m_Center: {x: 0, y: 0.254501, z: 0}
+--- !u!114 &929469888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 929469882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
 --- !u!1 &935397127 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100000, guid: 1fd38e57f739fbf42bf469d68e31eb37,
@@ -4507,6 +4591,18 @@ CapsuleCollider:
   m_Height: 0.40855008
   m_Direction: 1
   m_Center: {x: 0, y: 0.20427504, z: 0}
+--- !u!114 &1115537292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115537286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
 --- !u!1 &1116478600 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -9070493210130169274, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
@@ -4609,6 +4705,18 @@ CapsuleCollider:
   m_Height: 0.27567756
   m_Direction: 1
   m_Center: {x: 0, y: 0.13783878, z: 0}
+--- !u!114 &1116478606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1116478600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
 --- !u!1 &1128636894 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 117280, guid: 9a7a5471175b6614aabaa0e419ed7ccc,
@@ -5440,6 +5548,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.3731575, y: 0.283684, z: 0.27638134}
   m_Center: {x: 0.0002296567, y: 0.08867444, z: -0.026047587}
+--- !u!114 &1433642323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1433642318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
 --- !u!1 &1438390158 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5622676508644462732, guid: 8c4884cda648eec4a81ce895bbbf1fb4,
@@ -6321,6 +6441,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.093289375
   m_Center: {x: 0, y: 0.093289375, z: 0}
+--- !u!114 &1718691178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1718691172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
 --- !u!1 &1727353301
 GameObject:
   m_ObjectHideFlags: 0
@@ -7057,6 +7189,18 @@ CapsuleCollider:
   m_Height: 0.60676193
   m_Direction: 1
   m_Center: {x: 0, y: 0.30338097, z: 0}
+--- !u!114 &1945614409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1945614403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 993fdf9e9e230994e8dec955afce13d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RagdollPhysicsHandler
 --- !u!1 &1954431318
 GameObject:
   m_ObjectHideFlags: 0
