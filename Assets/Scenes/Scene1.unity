@@ -1173,10 +1173,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 742292357}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
-        type: 3}
-      insertIndex: -1
       addedObject: {fileID: 742292356}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
         type: 3}
@@ -1194,6 +1190,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 742292352}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 742292360}
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
         type: 3}
       insertIndex: -1
@@ -3431,53 +3431,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &742292357
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 742292350}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce8041249b123a34689e90adaa0ef7de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ZombieBrain
-  deathDecayTime: 5
-  maxhealth: 100
-  currentHealth: 0
-  player: {fileID: 0}
-  fieldOfView: 120
-  eyeHeight: 1.6
-  visionMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  walkSpeed: 3
-  investigateRunMultiplier: 1.5
-  lookRadius: 8
-  attackRange: 2
-  attackDamage: 10
-  attackCooldown: 2
-  attackHitBox: {fileID: 0}
-  hearingSensitivity: 1
-  minAudibleLoudness: 0.05
-  useSoundOcclusion: 1
-  soundOcclusionMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  occludedLoudnessMultiplier: 0.5
-  distractionHearingRange: 6
-  footstepHearingRange: 10
-  objectBreakHearingRange: 14
-  reloadHearingRange: 12
-  gunshotHearingRange: 30
-  explosionHearingRange: 40
-  investigateLingerTime: 3
-  investigateArrivalThreshold: 1.5
-  speedVariation: 0.1
-  maxAttackDelay: 0.3
-  pathSpread: 3
-  state: 0
 --- !u!95 &742292358
 Animator:
   serializedVersion: 7
@@ -3487,8 +3440,8 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 742292350}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: e5d954e497dc6ef4c8701c5dfec909be, type: 3}
+  m_Controller: {fileID: 9100000, guid: 8f8bfc873e532d244854abb849215be7, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -3527,6 +3480,53 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &742292360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 742292350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce8041249b123a34689e90adaa0ef7de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ZombieBrain
+  deathDecayTime: 100
+  maxhealth: 30
+  currentHealth: 0
+  player: {fileID: 348407938}
+  fieldOfView: 120
+  eyeHeight: 1.6
+  visionMask:
+    serializedVersion: 2
+    m_Bits: 28030
+  walkSpeed: 3
+  investigateRunMultiplier: 1.5
+  lookRadius: 15
+  attackRange: 1.5
+  attackDamage: 10
+  attackCooldown: 2
+  attackHitBox: {fileID: 742292353}
+  hearingSensitivity: 1
+  minAudibleLoudness: 0.05
+  useSoundOcclusion: 1
+  soundOcclusionMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  occludedLoudnessMultiplier: 0.5
+  distractionHearingRange: 6
+  footstepHearingRange: 10
+  objectBreakHearingRange: 14
+  reloadHearingRange: 12
+  gunshotHearingRange: 30
+  explosionHearingRange: 40
+  investigateLingerTime: 3
+  investigateArrivalThreshold: 1.5
+  speedVariation: 0.1
+  maxAttackDelay: 0.3
+  pathSpread: 3
+  state: 0
 --- !u!1 &801902543 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8622617452924778745, guid: eb2165edd3e7844999a55b305c92b541,
