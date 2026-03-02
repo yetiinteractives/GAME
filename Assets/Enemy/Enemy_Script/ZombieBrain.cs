@@ -99,7 +99,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
     private bool attackInProgress;
     private float attackTimer;
-    private bool attackWindUpDone;  // tracks whether the wind-up delay has elapsed
+    private bool attackWindUpDone;
 
     // Investigation bookkeeping
     private Vector3 investigateTarget;
@@ -114,13 +114,13 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     private Collider[] allColliders;
     private RagdollPhysicsHandler[] ragdollHandlers;
 
-    // Death-force deferral
+    // Death-force deferral (bullet point-force pipeline; required by IDamageable flow)
     private bool pendingDeathImpulse;
     private Collider pendingHitCollider;
     private Vector3 pendingHitPoint;
     private Vector3 pendingImpulse;
 
-    // Squared-distance caches (computed once in Awake, zero per-frame cost)
+    // Squared-distance caches
     private float lookRadiusSqr;
     private float attackRangeSqr;
     private float arrivalThresholdSqr;
@@ -155,46 +155,28 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
         DisableRagdoll();
         ApplyDesync();
-
-        // Safety net: if OnEnable ran before managers were ready, register now.
-        // (Start runs after all Awake calls, so singletons are guaranteed to exist.)
         TryRegisterWithManagers();
     }
 
-    /// <summary>
-    /// Called once at spawn. Rolls per-instance random values for speed,
-    /// attack delay, animation offset, and agent acceleration.
-    /// All randomness is baked into fields — zero per-frame cost.
-    /// </summary>
     private void ApplyDesync()
     {
-        // ── Speed & acceleration variation ──
         speedMultiplier = Random.Range(1f - speedVariation, 1f + speedVariation);
 
         if (agent != null)
             agent.acceleration *= Random.Range(1f - speedVariation, 1f + speedVariation);
 
-        // ── Attack wind-up delay (unique per zombie) ──
         attackWindUpDelay = Random.Range(0f, maxAttackDelay);
 
-        // ── Path offset (unique approach vector per zombie) ──
-        // Random angle around the target so zombies don't all walk the same line.
         float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
         float radius = Random.Range(0f, pathSpread);
         pathOffset = new Vector3(Mathf.Cos(angle) * radius, 0f, Mathf.Sin(angle) * radius);
 
-        // ── Animation phase offset ──
-        // Play the current state at a random normalizedTime so walk/idle
-        // cycles are not aligned across zombies sharing the same controller.
         animOffsetNormalized = Random.Range(0f, 1f);
 
         if (anim != null)
         {
             AnimatorStateInfo info = anim.GetCurrentAnimatorStateInfo(0);
             anim.Play(info.fullPathHash, 0, animOffsetNormalized);
-
-            // Slight animator speed jitter (±3%) makes even looping anims
-            // drift apart over time without being visually noticeable.
             anim.speed = Random.Range(0.97f, 1.03f);
         }
     }
@@ -215,10 +197,6 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         registeredWithTickManager = false;
     }
 
-    /// <summary>
-    /// Attempts to register with SoundManager and AITickManager.
-    /// Safe to call multiple times — managers ignore duplicate registrations.
-    /// </summary>
     private void TryRegisterWithManagers()
     {
         if (SoundManager.Instance != null)
@@ -235,16 +213,10 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     //  UPDATE SPLIT
     // ════════════════════════════════════════════════
 
-    /// <summary>
-    /// Override base Update so HandleAI() is NOT called every frame.
-    /// FrameUpdate runs per-frame for cheap work (rotation, timers).
-    /// If no AITickManager exists, we self-tick decisions on a timer.
-    /// </summary>
     protected override void Update()
     {
         if (isDead) return;
 
-        // Fallback: if no AITickManager, drive slow ticks ourselves
         if (!registeredWithTickManager)
         {
             selfTickTimer += Time.deltaTime;
@@ -258,17 +230,8 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         FrameUpdate();
     }
 
-    /// <summary>
-    /// Required by base class — intentionally empty.
-    /// Logic is split between SlowAITick (decisions) and FrameUpdate (execution).
-    /// </summary>
     protected override void HandleAI() { }
 
-    /// <summary>
-    /// Called by AITickManager ~5× per second, staggered so only a few zombies
-    /// tick each frame. Contains ALL expensive work: vision raycast, distance
-    /// calculations, state transitions, NavMesh destination updates.
-    /// </summary>
     public void SlowAITick()
     {
         if (isDead || player == null || agent == null) return;
@@ -276,7 +239,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     }
 
     // ════════════════════════════════════════════════
-    //  SLOW TICK — DECISION MAKING  (~5×/sec)
+    //  SLOW TICK — DECISION MAKING
     // ════════════════════════════════════════════════
 
     private void EvaluateState()
@@ -285,9 +248,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
         float sqrDist = (player.position - transform.position).sqrMagnitude;
 
-        // Priority: Attack > Chase > Investigate > Idle
         ZombieState newState;
-
         if (sqrDist <= attackRangeSqr)
             newState = ZombieState.Attack;
         else if (canSeePlayer)
@@ -297,36 +258,26 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         else
             newState = ZombieState.Idle;
 
-        // Apply state change (setup happens once on transition)
         if (newState != state)
         {
             state = newState;
             OnStateEnter(newState);
         }
 
-        // Refresh NavMesh destinations for moving states
         if (state == ZombieState.Chase)
             agent.SetDestination(GetOffsetDestination(player.position));
         else if (state == ZombieState.Investigate)
             agent.SetDestination(investigateTarget);
     }
 
-    /// <summary>
-    /// Returns the target position offset by this zombie's unique pathOffset.
-    /// The offset fades out when close so zombies still converge for melee.
-    /// </summary>
     private Vector3 GetOffsetDestination(Vector3 target)
     {
         float sqrDist = (target - transform.position).sqrMagnitude;
-        // Fade offset from full at >lookRadius to zero at attackRange
-        float fade = Mathf.Clamp01((sqrDist - attackRangeSqr) / (lookRadiusSqr - attackRangeSqr));
+        float denom = Mathf.Max(0.0001f, (lookRadiusSqr - attackRangeSqr));
+        float fade = Mathf.Clamp01((sqrDist - attackRangeSqr) / denom);
         return target + pathOffset * fade;
     }
 
-    /// <summary>
-    /// One-time setup when transitioning into a new state.
-    /// Sets agent speed, stops/starts movement, and picks the right animation.
-    /// </summary>
     private void OnStateEnter(ZombieState newState)
     {
         attackInProgress = false;
@@ -360,14 +311,9 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     }
 
     // ════════════════════════════════════════════════
-    //  FAST UPDATE — EXECUTION  (every frame)
+    //  FAST UPDATE — EXECUTION
     // ════════════════════════════════════════════════
 
-    /// <summary>
-    /// Runs every frame. Only cheap operations:
-    /// smooth rotation, attack cooldown timer, investigation linger timer.
-    /// NavMeshAgent movement is automatic — no per-frame cost here.
-    /// </summary>
     private void FrameUpdate()
     {
         switch (state)
@@ -380,9 +326,6 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
             case ZombieState.Investigate:
                 UpdateInvestigate();
                 break;
-
-                // Chase & Idle: NavMeshAgent + animations are already set by OnStateEnter.
-                // Nothing expensive to do per-frame.
         }
     }
 
@@ -397,8 +340,6 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
         attackTimer += Time.deltaTime;
 
-        // Random wind-up delay before the animation fires
-        // (prevents all zombies attacking on the exact same frame)
         if (!attackWindUpDone && attackTimer >= attackWindUpDelay)
         {
             attackWindUpDone = true;
@@ -415,7 +356,6 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
         if (sqrToTarget <= arrivalThresholdSqr)
         {
-            // Arrived — linger at location
             StopAgent();
             PlayIdleAnimation();
 
@@ -430,8 +370,8 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     }
 
     // ════════════════════════════════════════════════
-    //  VISION  (called inside SlowAITick only)
-    // ════════════════════════════════════════════════
+    //  VISION
+    // ══��═════════════════════════════════════════════
 
     private bool CheckVision()
     {
@@ -445,7 +385,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
             return false;
 
         float distance = Mathf.Sqrt(sqrDistance);
-        direction /= distance;
+        direction /= Mathf.Max(distance, 0.0001f);
 
         if (Vector3.Dot(transform.forward, direction) < minDot)
             return false;
@@ -464,7 +404,6 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     {
         if (isDead) return;
         if (canSeePlayer) return;
-
         if (!CanHearStimulus(stimulus)) return;
 
         bool shouldOverride = !hasInvestigateTarget
@@ -491,7 +430,6 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
         float baseRange = GetBaseHearingRange(stimulus.Type) * hearingSensitivity;
         float effectiveRange = baseRange * loudness;
-
         if (effectiveRange <= 0f) return false;
 
         float sqrDist = (stimulus.Position - transform.position).sqrMagnitude;
@@ -557,6 +495,8 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
     private void FacePlayer()
     {
+        if (player == null) return;
+
         Vector3 direction = (player.position - transform.position).normalized;
         direction.y = 0f;
         if (direction == Vector3.zero) return;
@@ -567,17 +507,19 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
     private void StopAgent()
     {
+        if (agent == null) return;
         agent.isStopped = true;
         agent.ResetPath();
     }
 
     private void MoveAgent(float speed)
     {
+        if (agent == null) return;
         agent.isStopped = false;
         agent.speed = speed;
     }
 
-    // ════════════════════════════════════════════════
+    // ═══════════════���════════════════════════════════
     //  IDamageable
     // ════════════════════════════════════════════════
 
@@ -587,71 +529,13 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
         currentHealth -= damage;
 
-        if (currentHealth <= 0)
+        if (currentHealth <= 0f)
             Die();
         else
             knockback?.TriggerKnockback();
     }
 
-    // ════════════════════════════════════════════════
-    //  DEATH & RAGDOLL
-    // ════════════════════════════════════════════════
-
-    protected override void HandleDeathVisuals()
-    {
-        if (anim != null)
-            anim.enabled = false;
-
-        if (mainCollider != null)
-            mainCollider.enabled = false;
-
-        EnableRagdoll();
-
-        if (pendingDeathImpulse)
-        {
-            pendingDeathImpulse = false;
-            ApplyDeathForceInternal(pendingHitCollider, pendingHitPoint, pendingImpulse);
-        }
-    }
-
-    protected override void OnEnemyDeath()
-    {
-        enabled = false;
-    }
-
-    private void EnableRagdoll()
-    {
-        for (int i = 0; i < ragdollHandlers.Length; i++)
-            ragdollHandlers[i].EnableRagdoll();
-
-        SetCollidersRagdollState(isTrigger: false);
-
-        if (attackHitBox != null)
-            attackHitBox.enabled = false;
-    }
-
-    private void DisableRagdoll()
-    {
-        for (int i = 0; i < ragdollHandlers.Length; i++)
-            ragdollHandlers[i].DisableRagdoll();
-
-        SetCollidersRagdollState(isTrigger: true);
-
-        if (mainCollider != null)
-            mainCollider.enabled = true;
-    }
-
-    private void SetCollidersRagdollState(bool isTrigger)
-    {
-        for (int i = 0; i < allColliders.Length; i++)
-        {
-            Collider col = allColliders[i];
-            if (col == null || col == mainCollider) continue;
-            col.isTrigger = isTrigger;
-            col.enabled = true;
-        }
-    }
-
+    // Required by IDamageable: bullet/point-force pipeline
     public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
     {
         if (!isDead)
@@ -701,6 +585,129 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         }
 
         return nearest;
+    }
+
+    // Grenade-only helper: true explosion force on ragdoll
+    public void ApplyExplosionRagdollForce(
+    Vector3 explosionOrigin,
+    float explosionRadius,
+    float explosionForce,
+    float upwardsModifier,
+    ForceMode mode = ForceMode.Impulse)
+    {
+        // Ensure dead first so ragdoll gets enabled by death pipeline
+        if (!isDead)
+        {
+            currentHealth = 0f;
+            Die();
+        }
+
+        // Safety
+        EnableRagdoll();
+
+        // Small nudge: if origin is exactly at torso, Unity sometimes gives weak-looking motion.
+        // Slightly lower origin usually gives better lift/throw.
+        Vector3 adjustedOrigin = explosionOrigin + Vector3.down * 0.15f;
+
+        int appliedCount = 0;
+
+        for (int i = 0; i < ragdollHandlers.Length; i++)
+        {
+            var handler = ragdollHandlers[i];
+            if (handler == null) continue;
+
+            Rigidbody rb = handler.Rigidbody;
+            if (rb == null) continue;
+
+            // Force activation even if some script left it kinematic
+            if (rb.isKinematic) rb.isKinematic = false;
+            rb.constraints = RigidbodyConstraints.None;
+
+            // Reset sleeping / damped state
+            rb.WakeUp();
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+
+            // Mass-aware scale so heavy bones still move
+            float massScale = Mathf.Clamp(rb.mass, 0.5f, 5f);
+
+            rb.AddExplosionForce(
+                explosionForce * massScale,
+                adjustedOrigin,
+                explosionRadius,
+                upwardsModifier,
+                mode
+            );
+
+            appliedCount++;
+        }
+
+#if UNITY_EDITOR
+        if (appliedCount == 0)
+            Debug.LogWarning($"[ZombieBrain] Explosion force applied to 0 bodies on {name}");
+#endif
+    }
+    // ════════════════════════════════════════════════
+    //  DEATH & RAGDOLL
+    // ════════════════════════════════════════════════
+
+    protected override void HandleDeathVisuals()
+    {
+        if (anim != null)
+            anim.enabled = false;
+
+        if (mainCollider != null)
+            mainCollider.enabled = false;
+
+        EnableRagdoll();
+
+        // Consume deferred bullet impulse, if one was queued pre-death
+        if (pendingDeathImpulse)
+        {
+            pendingDeathImpulse = false;
+            ApplyDeathForceInternal(pendingHitCollider, pendingHitPoint, pendingImpulse);
+        }
+
+        if (attackHitBox != null)
+            attackHitBox.enabled = false;
+    }
+
+    protected override void OnEnemyDeath()
+    {
+        enabled = false;
+    }
+
+    private void EnableRagdoll()
+    {
+        for (int i = 0; i < ragdollHandlers.Length; i++)
+            ragdollHandlers[i]?.EnableRagdoll();
+
+        SetCollidersRagdollState(isTrigger: false);
+
+        if (attackHitBox != null)
+            attackHitBox.enabled = false;
+    }
+
+    private void DisableRagdoll()
+    {
+        for (int i = 0; i < ragdollHandlers.Length; i++)
+            ragdollHandlers[i]?.DisableRagdoll();
+
+        SetCollidersRagdollState(isTrigger: true);
+
+        if (mainCollider != null)
+            mainCollider.enabled = true;
+    }
+
+    private void SetCollidersRagdollState(bool isTrigger)
+    {
+        for (int i = 0; i < allColliders.Length; i++)
+        {
+            Collider col = allColliders[i];
+            if (col == null || col == mainCollider) continue;
+            col.isTrigger = isTrigger;
+            col.enabled = true;
+        }
     }
 
     // ════════════════════════════════════════════════
