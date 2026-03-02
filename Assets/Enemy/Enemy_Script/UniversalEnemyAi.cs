@@ -49,8 +49,14 @@ public abstract class UniversalEnemyAi : MonoBehaviour
 
         if (agent != null)
         {
-            agent.isStopped = true;
-            agent.enabled = false;
+            if (agent.isActiveAndEnabled && agent.isOnNavMesh)
+            {
+                agent.isStopped = true;
+                agent.ResetPath();
+            }
+
+            if (agent.enabled)
+                agent.enabled = false;
         }
 
         HandleDeathVisuals();

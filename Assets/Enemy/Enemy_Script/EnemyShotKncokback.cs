@@ -18,7 +18,7 @@ public class EnemyShotKnockback : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
-        knockbackLayerIndex = animator.GetLayerIndex("Knockback Layer");
+        //  knockbackLayerIndex = animator.GetLayerIndex("Knockback Layer");
 
         if (knockbackLayerIndex == -1)
         {

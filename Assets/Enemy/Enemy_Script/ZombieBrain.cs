@@ -10,27 +10,14 @@ using UnityEngine;
 /// </summary>
 public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITickableAI
 {
-    // ──────────── Vision ────────────
-
     [Header("Vision")]
     public float fieldOfView = 120f;
     public float eyeHeight = 1.6f;
-
-    [Tooltip("Layers that block vision raycasts (exclude zombie / ragdoll layers).")]
     [SerializeField] private LayerMask visionMask = ~0;
-
-    private float minDot;
-    private bool canSeePlayer;
-
-    // ──────────── Movement ────────────
 
     [Header("Movement")]
     public float walkSpeed = 3f;
-
-    [Tooltip("Speed multiplier when rushing toward a gunshot.")]
     public float investigateRunMultiplier = 1.5f;
-
-    // ──────────── Detection & Combat ────────────
 
     [Header("Detection & Combat")]
     public float lookRadius = 8f;
@@ -39,22 +26,11 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     public float attackCooldown = 2f;
     public BoxCollider attackHitBox;
 
-    // ──────────── Hearing ────────────
-
     [Header("Hearing")]
-    [Tooltip("Master multiplier applied to all hearing ranges.")]
     [SerializeField] private float hearingSensitivity = 1f;
-
-    [Tooltip("Minimum loudness required to react to a sound.")]
     [SerializeField] private float minAudibleLoudness = 0.05f;
-
-    [Tooltip("If true, hearing is reduced when line-of-sight to sound is blocked.")]
     [SerializeField] private bool useSoundOcclusion = true;
-
-    [Tooltip("Layers that block sound raycasts.")]
     [SerializeField] private LayerMask soundOcclusionMask = ~0;
-
-    [Tooltip("Multiplier applied to loudness when sound is occluded.")]
     [SerializeField] private float occludedLoudnessMultiplier = 0.5f;
 
     [Header("Hearing Ranges (base meters at loudness = 1)")]
@@ -65,85 +41,70 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     [SerializeField] private float gunshotHearingRange = 30f;
     [SerializeField] private float explosionHearingRange = 40f;
 
-    // ──────────── Investigation ────────────
-
     [Header("Investigation")]
-    [Tooltip("How long the zombie lingers at the sound location before returning to idle.")]
     public float investigateLingerTime = 3f;
-
-    [Tooltip("How close the zombie must get to the investigation point to consider it 'reached'.")]
     public float investigateArrivalThreshold = 1.5f;
 
-    // ──────────── Desynchronization ────────────
-
     [Header("Desync (applied once at spawn)")]
-    [Tooltip("Max ± fraction applied to walkSpeed and agent.acceleration. 0.1 = ±10%.")]
     [SerializeField] private float speedVariation = 0.1f;
-
-    [Tooltip("Max random delay (seconds) added before each attack animation.")]
     [SerializeField] private float maxAttackDelay = 0.3f;
-
-    [Tooltip("Max offset (meters) from the target position. Creates varied approach paths.")]
     [SerializeField] private float pathSpread = 3f;
-
-    // Per-instance random values (computed once, zero per-frame cost)
-    private float speedMultiplier;      // [1-variation .. 1+variation]
-    private float attackWindUpDelay;    // [0 .. maxAttackDelay]
-    private float animOffsetNormalized; // [0..1] random phase for animation desync
-    private Vector3 pathOffset;         // unique XZ offset so zombies take different routes
-
-    // ──────────── State ────────────
 
     public enum ZombieState { Idle, Investigate, Chase, Attack }
     public ZombieState state;
+
+    private float minDot;
+    private bool canSeePlayer;
+
+    private float speedMultiplier;
+    private float attackWindUpDelay;
+    private Vector3 pathOffset;
 
     private bool attackInProgress;
     private float attackTimer;
     private bool attackWindUpDone;
 
-    // Investigation bookkeeping
     private Vector3 investigateTarget;
     private SoundType investigateSoundType;
     private float investigateTimer;
     private bool hasInvestigateTarget;
-
-    // ──────────── Cached components ────────────
 
     private EnemyShotKnockback knockback;
     private Collider mainCollider;
     private Collider[] allColliders;
     private RagdollPhysicsHandler[] ragdollHandlers;
 
-    // Death-force deferral (bullet point-force pipeline; required by IDamageable flow)
+    // Bullet pipeline deferral (IDamageable ApplyDeathForce)
     private bool pendingDeathImpulse;
     private Collider pendingHitCollider;
     private Vector3 pendingHitPoint;
     private Vector3 pendingImpulse;
 
-    // Squared-distance caches
+    
+    private bool pendingExplosionForce;
+    private Vector3 pendingExplosionOrigin;
+    private float pendingExplosionRadius;
+    private float pendingExplosionForceValue;
+    private float pendingExplosionUpward;
+    private ForceMode pendingExplosionMode = ForceMode.Impulse;
+
     private float lookRadiusSqr;
     private float attackRangeSqr;
     private float arrivalThresholdSqr;
 
-    // Self-tick fallback when AITickManager is absent
     private bool registeredWithTickManager;
     private float selfTickTimer;
     private const float SELF_TICK_INTERVAL = 0.2f;
 
     public bool IsDead() => isDead;
 
-    // ════════════════════════════════════════════════
-    //  LIFECYCLE
-    // ════════════════════════════════════════════════
-
     protected override void OnEnemyAwake()
     {
-        if (attackHitBox != null)
-            attackHitBox.enabled = false;
+        if (attackHitBox != null) attackHitBox.enabled = false;
 
         state = ZombieState.Idle;
-
         minDot = Mathf.Cos(fieldOfView * 0.5f * Mathf.Deg2Rad);
+
         lookRadiusSqr = lookRadius * lookRadius;
         attackRangeSqr = attackRange * attackRange;
         arrivalThresholdSqr = investigateArrivalThreshold * investigateArrivalThreshold;
@@ -171,36 +132,27 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         float radius = Random.Range(0f, pathSpread);
         pathOffset = new Vector3(Mathf.Cos(angle) * radius, 0f, Mathf.Sin(angle) * radius);
 
-        animOffsetNormalized = Random.Range(0f, 1f);
-
         if (anim != null)
         {
+            float animOffset = Random.Range(0f, 1f);
             AnimatorStateInfo info = anim.GetCurrentAnimatorStateInfo(0);
-            anim.Play(info.fullPathHash, 0, animOffsetNormalized);
+            anim.Play(info.fullPathHash, 0, animOffset);
             anim.speed = Random.Range(0.97f, 1.03f);
         }
     }
 
-    private void OnEnable()
-    {
-        TryRegisterWithManagers();
-    }
+    private void OnEnable() => TryRegisterWithManagers();
 
     private void OnDisable()
     {
-        if (SoundManager.Instance != null)
-            SoundManager.Instance.Unregister(this);
-
-        if (AITickManager.Instance != null)
-            AITickManager.Instance.Unregister(this);
-
+        if (SoundManager.Instance != null) SoundManager.Instance.Unregister(this);
+        if (AITickManager.Instance != null) AITickManager.Instance.Unregister(this);
         registeredWithTickManager = false;
     }
 
     private void TryRegisterWithManagers()
     {
-        if (SoundManager.Instance != null)
-            SoundManager.Instance.Register(this);
+        if (SoundManager.Instance != null) SoundManager.Instance.Register(this);
 
         if (AITickManager.Instance != null)
         {
@@ -208,10 +160,6 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
             registeredWithTickManager = true;
         }
     }
-
-    // ════════════════════════════════════════════════
-    //  UPDATE SPLIT
-    // ════════════════════════════════════════════════
 
     protected override void Update()
     {
@@ -238,25 +186,16 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         EvaluateState();
     }
 
-    // ════════════════════════════════════════════════
-    //  SLOW TICK — DECISION MAKING
-    // ════════════════════════════════════════════════
-
     private void EvaluateState()
     {
         canSeePlayer = CheckVision();
-
         float sqrDist = (player.position - transform.position).sqrMagnitude;
 
         ZombieState newState;
-        if (sqrDist <= attackRangeSqr)
-            newState = ZombieState.Attack;
-        else if (canSeePlayer)
-            newState = ZombieState.Chase;
-        else if (hasInvestigateTarget)
-            newState = ZombieState.Investigate;
-        else
-            newState = ZombieState.Idle;
+        if (sqrDist <= attackRangeSqr) newState = ZombieState.Attack;
+        else if (canSeePlayer) newState = ZombieState.Chase;
+        else if (hasInvestigateTarget) newState = ZombieState.Investigate;
+        else newState = ZombieState.Idle;
 
         if (newState != state)
         {
@@ -273,8 +212,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     private Vector3 GetOffsetDestination(Vector3 target)
     {
         float sqrDist = (target - transform.position).sqrMagnitude;
-        float denom = Mathf.Max(0.0001f, (lookRadiusSqr - attackRangeSqr));
-        float fade = Mathf.Clamp01((sqrDist - attackRangeSqr) / denom);
+        float fade = Mathf.Clamp01((sqrDist - attackRangeSqr) / Mathf.Max(0.0001f, (lookRadiusSqr - attackRangeSqr)));
         return target + pathOffset * fade;
     }
 
@@ -310,10 +248,6 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         }
     }
 
-    // ════════════════════════════════════════════════
-    //  FAST UPDATE — EXECUTION
-    // ════════════════════════════════════════════════
-
     private void FrameUpdate()
     {
         switch (state)
@@ -322,7 +256,6 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
                 FacePlayer();
                 UpdateAttack();
                 break;
-
             case ZombieState.Investigate:
                 UpdateInvestigate();
                 break;
@@ -369,10 +302,6 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         }
     }
 
-    // ════════════════════════════════════════════════
-    //  VISION
-    // ══��═════════════════════════════════════════════
-
     private bool CheckVision()
     {
         if (player == null) return false;
@@ -381,14 +310,12 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         Vector3 direction = player.position - origin;
 
         float sqrDistance = direction.sqrMagnitude;
-        if (sqrDistance > lookRadiusSqr)
-            return false;
+        if (sqrDistance > lookRadiusSqr) return false;
 
         float distance = Mathf.Sqrt(sqrDistance);
         direction /= Mathf.Max(distance, 0.0001f);
 
-        if (Vector3.Dot(transform.forward, direction) < minDot)
-            return false;
+        if (Vector3.Dot(transform.forward, direction) < minDot) return false;
 
         if (Physics.Raycast(origin, direction, out RaycastHit hit, lookRadius, visionMask, QueryTriggerInteraction.Ignore))
             return hit.transform == player || hit.transform.IsChildOf(player);
@@ -396,18 +323,13 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         return false;
     }
 
-    // ════════════════════════════════════════════════
-    //  ISoundListener
-    // ════════════════════════════════════════════════
-
     public void HearSound(SoundStimulus stimulus)
     {
-        if (isDead) return;
-        if (canSeePlayer) return;
+        if (isDead || canSeePlayer) return;
         if (!CanHearStimulus(stimulus)) return;
 
-        bool shouldOverride = !hasInvestigateTarget
-            || GetSoundPriority(stimulus.Type) > GetSoundPriority(investigateSoundType);
+        bool shouldOverride = !hasInvestigateTarget ||
+                              GetSoundPriority(stimulus.Type) > GetSoundPriority(investigateSoundType);
 
         if (shouldOverride)
         {
@@ -489,10 +411,6 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         }
     }
 
-    // ════════════════════════════════════════════════
-    //  HELPERS
-    // ════════════════════════════════════════════════
-
     private void FacePlayer()
     {
         if (player == null) return;
@@ -519,10 +437,45 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         agent.speed = speed;
     }
 
-    // ═══════════════���════════════════════════════════
-    //  IDamageable
-    // ════════════════════════════════════════════════
 
+
+
+    public void QueueExplosionForce(Vector3 origin, float radius, float force, float upward, ForceMode mode)
+    {
+        pendingExplosionForce = true;
+        pendingExplosionOrigin = origin;
+        pendingExplosionRadius = radius;
+        pendingExplosionForceValue = force;
+        pendingExplosionUpward = upward;
+        pendingExplosionMode = mode;
+    }
+
+    // ADD this private method:
+    private void ApplyQueuedExplosionForce()
+    {
+        if (!pendingExplosionForce) return;
+        pendingExplosionForce = false;
+
+        for (int i = 0; i < ragdollHandlers.Length; i++)
+        {
+            var handler = ragdollHandlers[i];
+            if (handler == null) continue;
+
+            Rigidbody rb = handler.Rigidbody;
+            if (rb == null || rb.isKinematic) continue;
+
+            rb.AddExplosionForce(
+                pendingExplosionForceValue,
+                pendingExplosionOrigin,
+                pendingExplosionRadius,
+                pendingExplosionUpward,
+                pendingExplosionMode
+            );
+
+            rb.WakeUp();
+        }
+    }
+    // ===== IDamageable contract (UNCHANGED) =====
     public void TakeDamage(float damage)
     {
         if (isDead) return;
@@ -535,7 +488,6 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
             knockback?.TriggerKnockback();
     }
 
-    // Required by IDamageable: bullet/point-force pipeline
     public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
     {
         if (!isDead)
@@ -587,69 +539,48 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         return nearest;
     }
 
-    // Grenade-only helper: true explosion force on ragdoll
-    public void ApplyExplosionRagdollForce(
-    Vector3 explosionOrigin,
-    float explosionRadius,
-    float explosionForce,
-    float upwardsModifier,
-    ForceMode mode = ForceMode.Impulse)
+    /// <summary>
+    /// Grenade-only helper (not interface): returns all ragdoll RBs ready for AddExplosionForce.
+    /// </summary>
+    public Rigidbody[] GetExplosionRagdollBodies()
     {
-        // Ensure dead first so ragdoll gets enabled by death pipeline
         if (!isDead)
         {
             currentHealth = 0f;
             Die();
         }
 
-        // Safety
         EnableRagdoll();
 
-        // Small nudge: if origin is exactly at torso, Unity sometimes gives weak-looking motion.
-        // Slightly lower origin usually gives better lift/throw.
-        Vector3 adjustedOrigin = explosionOrigin + Vector3.down * 0.15f;
+        if (ragdollHandlers == null || ragdollHandlers.Length == 0)
+            return System.Array.Empty<Rigidbody>();
 
-        int appliedCount = 0;
+        int count = 0;
+        for (int i = 0; i < ragdollHandlers.Length; i++)
+        {
+            if (ragdollHandlers[i] != null && ragdollHandlers[i].Rigidbody != null)
+                count++;
+        }
+
+        Rigidbody[] result = new Rigidbody[count];
+        int idx = 0;
 
         for (int i = 0; i < ragdollHandlers.Length; i++)
         {
-            var handler = ragdollHandlers[i];
-            if (handler == null) continue;
+            var h = ragdollHandlers[i];
+            if (h == null || h.Rigidbody == null) continue;
 
-            Rigidbody rb = handler.Rigidbody;
-            if (rb == null) continue;
-
-            // Force activation even if some script left it kinematic
-            if (rb.isKinematic) rb.isKinematic = false;
+            Rigidbody rb = h.Rigidbody;
+            rb.isKinematic = false;
             rb.constraints = RigidbodyConstraints.None;
-
-            // Reset sleeping / damped state
+            rb.detectCollisions = true;
             rb.WakeUp();
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
 
-            // Mass-aware scale so heavy bones still move
-            float massScale = Mathf.Clamp(rb.mass, 0.5f, 5f);
-
-            rb.AddExplosionForce(
-                explosionForce * massScale,
-                adjustedOrigin,
-                explosionRadius,
-                upwardsModifier,
-                mode
-            );
-
-            appliedCount++;
+            result[idx++] = rb;
         }
 
-#if UNITY_EDITOR
-        if (appliedCount == 0)
-            Debug.LogWarning($"[ZombieBrain] Explosion force applied to 0 bodies on {name}");
-#endif
+        return result;
     }
-    // ════════════════════════════════════════════════
-    //  DEATH & RAGDOLL
-    // ════════════════════════════════════════════════
 
     protected override void HandleDeathVisuals()
     {
@@ -661,7 +592,9 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
         EnableRagdoll();
 
-        // Consume deferred bullet impulse, if one was queued pre-death
+        // NEW: apply queued grenade blast right after ragdoll activation
+        ApplyQueuedExplosionForce();
+
         if (pendingDeathImpulse)
         {
             pendingDeathImpulse = false;
@@ -710,10 +643,6 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         }
     }
 
-    // ════════════════════════════════════════════════
-    //  ATTACK HITBOX
-    // ════════════════════════════════════════════════
-
     public void CreateHitBox()
     {
         if (attackHitBox != null)
@@ -735,10 +664,6 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         if (playerHealth != null)
             playerHealth.TakeDamage(attackDamage);
     }
-
-    // ════════════════════════════════════════════════
-    //  GIZMOS
-    // ════════════════════════════════════════════════
 
     private void OnDrawGizmosSelected()
     {
