@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 /// <summary>
 /// Zombie AI with split update:
@@ -92,6 +93,29 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     private float animOffsetNormalized; // [0..1] random phase for animation desync
     private Vector3 pathOffset;         // unique XZ offset so zombies take different routes
 
+    // ──────────── Idle Behavior ────────────
+
+    public enum IdleType { StandStill, Patrol }
+
+    [Header("Idle Behavior")]
+    [Tooltip("StandStill: zombie stays in place during Idle. Patrol: zombie wanders within a radius.")]
+    [SerializeField] private IdleType idleType = IdleType.StandStill;
+
+    [Tooltip("Center of the patrol area. If unset, uses the zombie's spawn position.")]
+    [SerializeField] private Transform patrolCenter;
+
+    [Tooltip("Radius around patrolCenter in which the zombie can wander.")]
+    [SerializeField] private float patrolRadius = 8f;
+
+    [Tooltip("Speed multiplier for patrol movement (relative to walkSpeed).")]
+    [SerializeField] private float patrolSpeedMultiplier = 0.4f;
+
+    [Tooltip("How long the zombie waits at each patrol waypoint before picking a new one.")]
+    [SerializeField] private float patrolWaitTime = 3f;
+
+    [Tooltip("How close the zombie must get to a patrol waypoint to consider it reached.")]
+    [SerializeField] private float patrolArrivalThreshold = 1.5f;
+
     // ──────────── State ────────────
 
     public enum ZombieState { Idle, Investigate, Chase, Attack }
@@ -106,6 +130,15 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     private SoundType investigateSoundType;
     private float investigateTimer;
     private bool hasInvestigateTarget;
+
+    // Patrol bookkeeping
+    private Vector3 patrolCenterPoint;
+    private Vector3 patrolDestination;
+    private float patrolRadiusSqr;
+    private float patrolArrivalSqr;
+    private float patrolWaitTimer;
+    private bool isPatrolWaiting;
+    private bool hasPatrolDestination;
 
     // ──────────── Cached components ────────────
 
@@ -147,6 +180,10 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         lookRadiusSqr = lookRadius * lookRadius;
         attackRangeSqr = attackRange * attackRange;
         arrivalThresholdSqr = investigateArrivalThreshold * investigateArrivalThreshold;
+
+        patrolRadiusSqr = patrolRadius * patrolRadius;
+        patrolArrivalSqr = patrolArrivalThreshold * patrolArrivalThreshold;
+        patrolCenterPoint = patrolCenter != null ? patrolCenter.position : transform.position;
 
         mainCollider = GetComponent<Collider>();
         allColliders = GetComponentsInChildren<Collider>(true);
@@ -335,8 +372,18 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         switch (newState)
         {
             case ZombieState.Idle:
-                StopAgent();
-                PlayIdleAnimation();
+                if (idleType == IdleType.Patrol)
+                {
+                    isPatrolWaiting = false;
+                    hasPatrolDestination = false;
+                    patrolWaitTimer = 0f;
+                    PickPatrolDestination();
+                }
+                else
+                {
+                    StopAgent();
+                    PlayIdleAnimation();
+                }
                 break;
 
             case ZombieState.Investigate:
@@ -381,7 +428,12 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
                 UpdateInvestigate();
                 break;
 
-                // Chase & Idle: NavMeshAgent + animations are already set by OnStateEnter.
+            case ZombieState.Idle:
+                if (idleType == IdleType.Patrol)
+                    UpdatePatrol();
+                break;
+
+                // Chase & StandStill Idle: NavMeshAgent + animations already set by OnStateEnter.
                 // Nothing expensive to do per-frame.
         }
     }
@@ -426,6 +478,79 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
                 state = ZombieState.Idle;
                 PlayIdleAnimation();
             }
+        }
+    }
+
+    // ════════════════════════════════════════════════
+    //  PATROL  (runs inside FrameUpdate, Idle state only)
+    // ════════════════════════════════════════════════
+
+    /// <summary>
+    /// Lightweight per-frame patrol driver. Only runs when Idle + Patrol mode.
+    /// Alternates between walking to a waypoint and waiting at it.
+    /// No raycasts, no allocations — just a timer and a squared-distance check.
+    /// </summary>
+    private void UpdatePatrol()
+    {
+        if (isPatrolWaiting)
+        {
+            patrolWaitTimer += Time.deltaTime;
+            if (patrolWaitTimer >= patrolWaitTime)
+            {
+                isPatrolWaiting = false;
+                hasPatrolDestination = false;
+            }
+            return;
+        }
+
+        if (!hasPatrolDestination)
+        {
+            PickPatrolDestination();
+            return;
+        }
+
+        // Squared-distance arrival check (no sqrt)
+        float sqrDist = (transform.position - patrolDestination).sqrMagnitude;
+        if (sqrDist <= patrolArrivalSqr)
+        {
+            StopAgent();
+            PlayIdleAnimation();
+            isPatrolWaiting = true;
+            patrolWaitTimer = 0f;
+        }
+    }
+
+    /// <summary>
+    /// Picks a random point within patrolRadius of patrolCenterPoint,
+    /// snaps it to the NavMesh, and starts walking there.
+    /// Called only when a new waypoint is needed (every few seconds).
+    /// One NavMesh.SamplePosition call — no per-frame cost.
+    /// </summary>
+    private void PickPatrolDestination()
+    {
+        float angle = Random.Range(0f, Mathf.PI * 2f);
+        float radius = Random.Range(0f, patrolRadius);
+
+        Vector3 candidate = patrolCenterPoint + new Vector3(
+            Mathf.Cos(angle) * radius,
+            0f,
+            Mathf.Sin(angle) * radius
+        );
+
+        if (NavMesh.SamplePosition(candidate, out NavMeshHit navHit, patrolRadius, NavMesh.AllAreas))
+        {
+            patrolDestination = navHit.position;
+            hasPatrolDestination = true;
+            MoveAgent(walkSpeed * patrolSpeedMultiplier * speedMultiplier);
+            PlayIdleAnimation();
+            agent.SetDestination(patrolDestination);
+        }
+        else
+        {
+            // No valid NavMesh point found — stay idle, retry next frame
+            hasPatrolDestination = false;
+            StopAgent();
+            PlayIdleAnimation();
         }
     }
 
@@ -750,6 +875,22 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(investigateTarget, 0.5f);
             Gizmos.DrawLine(transform.position, investigateTarget);
+        }
+
+        if (idleType == IdleType.Patrol)
+        {
+            Gizmos.color = Color.green;
+            Vector3 center = Application.isPlaying
+                ? patrolCenterPoint
+                : (patrolCenter != null ? patrolCenter.position : transform.position);
+            Gizmos.DrawWireSphere(center, patrolRadius);
+
+            if (hasPatrolDestination)
+            {
+                Gizmos.color = Color.white;
+                Gizmos.DrawWireSphere(patrolDestination, 0.3f);
+                Gizmos.DrawLine(transform.position, patrolDestination);
+            }
         }
     }
 }

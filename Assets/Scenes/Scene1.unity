@@ -2023,6 +2023,12 @@ MonoBehaviour:
   speedVariation: 0.1
   maxAttackDelay: 0.3
   pathSpread: 3
+  idleType: 0
+  patrolCenter: {fileID: 0}
+  patrolRadius: 8
+  patrolSpeedMultiplier: 0.4
+  patrolWaitTime: 3
+  patrolArrivalThreshold: 1.5
   state: 0
 --- !u!54 &480430982
 Rigidbody:
@@ -3598,6 +3604,12 @@ MonoBehaviour:
   speedVariation: 0.1
   maxAttackDelay: 0.3
   pathSpread: 3
+  idleType: 1
+  patrolCenter: {fileID: 0}
+  patrolRadius: 8
+  patrolSpeedMultiplier: 0.3
+  patrolWaitTime: 0.7
+  patrolArrivalThreshold: 1.5
   state: 0
 --- !u!1 &801902543 stripped
 GameObject:
