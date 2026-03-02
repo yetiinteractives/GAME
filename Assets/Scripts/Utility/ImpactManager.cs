@@ -19,89 +19,92 @@ public class ImpactManager : MonoBehaviour
     public GameObject pistolConcrete;
     public GameObject pistolMetal;
     public GameObject pistolWood;
-    public GameObject pistolFlesh;
+    public GameObject pistolFlesh; // particles-only preferred
 
     [Header("SHOTGUN IMPACTS")]
     public GameObject shotgunConcrete;
     public GameObject shotgunMetal;
     public GameObject shotgunWood;
-    public GameObject shotgunFlesh;
+    public GameObject shotgunFlesh; // particles-only preferred
 
     [Header("SNIPER IMPACTS")]
     public GameObject sniperConcrete;
     public GameObject sniperMetal;
     public GameObject sniperWood;
-    public GameObject sniperFlesh;
+    public GameObject sniperFlesh; // particles-only preferred
+
+    [Header("Flesh Decal (World)")]
+    [Tooltip("Decal-only prefab. Spawned at hit point and NOT parented to zombie.")]
+    [SerializeField] private GameObject bloodDecalPrefab;
+    [SerializeField] private float bloodDecalLifetime = 25f;
+    [SerializeField] private float decalSurfaceOffset = 0.005f;
+
+    [Header("Lifetimes")]
+    [SerializeField] private float fleshImpactLifetime = 0.5f;
+    [SerializeField] private float pistolImpactLifetime = 4f;
+    [SerializeField] private float shotgunImpactLifetime = 6f;
+    [SerializeField] private float sniperImpactLifetime = 8f;
 
     public void SpawnImpact(GunTypeEnum gunType, RaycastHit hit)
     {
         if (hit.collider == null) return;
 
         Surface surface = hit.collider.GetComponentInParent<Surface>();
+        SurfaceTypeEnum surfaceType = surface != null ? surface.surfaceType : SurfaceTypeEnum.Default;
 
-        SurfaceTypeEnum surfaceType = surface != null
-            ? surface.surfaceType
-            : SurfaceTypeEnum.Default;
-
-        // If Default, do not instantiate anything
         if (surfaceType == SurfaceTypeEnum.Default)
             return;
 
         GameObject prefab = GetImpactPrefab(gunType, surfaceType);
-
         if (prefab == null)
         {
             Debug.LogWarning($"No impact prefab found for GunType: {gunType} and SurfaceType: {surfaceType}");
             return;
         }
 
-        GameObject impact = Instantiate(prefab, hit.point, Quaternion.LookRotation(hit.normal));
+        Vector3 spawnPos = hit.point + hit.normal * 0.01f;
+        Quaternion spawnRot = Quaternion.LookRotation(-hit.normal);
 
-        // Apply size variation per gun
+        GameObject impact = Instantiate(prefab, spawnPos, spawnRot);
+
         float sizeMultiplier = GetSizeMultiplier(gunType);
         impact.transform.localScale *= sizeMultiplier;
 
-        // Flesh special handling (BloodFXInstance first, fallback to particle timing)
         if (surfaceType == SurfaceTypeEnum.Flesh)
         {
-            var bloodFx = impact.GetComponentInChildren<KnowerCoder.BloodFX.BloodFXInstance>();
-            if (bloodFx != null)
-            {
-                bloodFx.Play();
-                Destroy(impact, GetLifetime(gunType, surfaceType));
-                return;
-            }
+            // Particles follow zombie movement
+            impact.transform.SetParent(hit.collider.transform, true);
+            Destroy(impact, fleshImpactLifetime);
 
-            // fallback to old behavior
-            ParticleSystem ps = impact.GetComponentInChildren<ParticleSystem>();
-            if (ps != null)
-            {
-                float totalDuration = ps.main.duration + ps.main.startLifetime.constantMax;
-                Destroy(impact, totalDuration);
-                return;
-            }
+            // Decal stays in world (NOT parented)
+            SpawnWorldBloodDecal(hit);
+
+            return;
         }
 
-        // Non-flesh lifetime
-        float lifetime = GetLifetime(gunType, surfaceType);
-        Destroy(impact, lifetime);
+        Destroy(impact, GetLifetime(gunType, surfaceType));
+    }
+
+    private void SpawnWorldBloodDecal(RaycastHit hit)
+    {
+        if (bloodDecalPrefab == null) return;
+
+        Vector3 decalPos = hit.point + hit.normal * decalSurfaceOffset;
+        Quaternion decalRot = Quaternion.LookRotation(-hit.normal);
+
+        GameObject decal = Instantiate(bloodDecalPrefab, decalPos, decalRot);
+        Destroy(decal, bloodDecalLifetime);
     }
 
     private GameObject GetImpactPrefab(GunTypeEnum gunType, SurfaceTypeEnum surfaceType)
     {
         switch (gunType)
         {
-            case GunTypeEnum.Pistol:
-                return GetPistolImpact(surfaceType);
-
-            case GunTypeEnum.Shotgun:
-                return GetShotgunImpact(surfaceType);
-
-            case GunTypeEnum.Sniper:
-                return GetSniperImpact(surfaceType);
+            case GunTypeEnum.Pistol: return GetPistolImpact(surfaceType);
+            case GunTypeEnum.Shotgun: return GetShotgunImpact(surfaceType);
+            case GunTypeEnum.Sniper: return GetSniperImpact(surfaceType);
+            default: return null;
         }
-
-        return null;
     }
 
     private GameObject GetPistolImpact(SurfaceTypeEnum type)
@@ -154,14 +157,14 @@ public class ImpactManager : MonoBehaviour
     private float GetLifetime(GunTypeEnum gunType, SurfaceTypeEnum surfaceType)
     {
         if (surfaceType == SurfaceTypeEnum.Flesh)
-            return 1.2f;
+            return fleshImpactLifetime;
 
         switch (gunType)
         {
-            case GunTypeEnum.Pistol: return 10f;
-            case GunTypeEnum.Shotgun: return 20f;
-            case GunTypeEnum.Sniper: return 25f;
-            default: return 10f;
+            case GunTypeEnum.Pistol: return pistolImpactLifetime;
+            case GunTypeEnum.Shotgun: return shotgunImpactLifetime;
+            case GunTypeEnum.Sniper: return sniperImpactLifetime;
+            default: return pistolImpactLifetime;
         }
     }
 }
