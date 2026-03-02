@@ -4323,6 +4323,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6795229403012262239, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: freeSpeed.walkByDefault
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6795229403012262239, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: freeSpeed.rotateWithCamera
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8823724606015440329, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
       propertyPath: silencer
