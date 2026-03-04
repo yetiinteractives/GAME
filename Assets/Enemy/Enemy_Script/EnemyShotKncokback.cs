@@ -20,10 +20,7 @@ public class EnemyShotKnockback : MonoBehaviour
         animator = GetComponent<Animator>();
         knockbackLayerIndex = animator.GetLayerIndex("Knockback Layer");
 
-        if (knockbackLayerIndex == -1)
-        {
-            Debug.LogError("Knockback Layer not found in Animator!");
-        }
+        
     }
 
     private void Update()

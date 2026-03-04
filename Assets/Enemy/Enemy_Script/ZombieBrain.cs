@@ -142,7 +142,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
     // ──────────── Cached components ────────────
 
-    private EnemyShotKnockback knockback;
+   
     private Collider mainCollider;
     private Collider[] allColliders;
     private RagdollPhysicsHandler[] ragdollHandlers;
@@ -198,7 +198,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         mainCollider = GetComponent<Collider>();
         allColliders = GetComponentsInChildren<Collider>(true);
         ragdollHandlers = GetComponentsInChildren<RagdollPhysicsHandler>(true);
-        knockback = GetComponent<EnemyShotKnockback>();
+       
 
         DisableRagdoll();
         ApplyDesync();
@@ -724,8 +724,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
         if (currentHealth <= 0)
             Die();
-        else
-            knockback?.TriggerKnockback();
+        
     }
 
     // ════════════════════════════════════════════════
