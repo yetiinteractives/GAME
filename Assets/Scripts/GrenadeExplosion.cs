@@ -37,7 +37,7 @@ public class GrenadeExplosion : MonoBehaviour
         yield return new WaitForSeconds(fuseTime - .125f);
         if (explosionPrefab != null)
         {
-            var fx = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            var fx = Instantiate(explosionPrefab, transform.position + Vector3.up, Quaternion.identity);
             Destroy(fx, explosionFxLifetime);
         }
         yield return new WaitForSeconds(.125f);

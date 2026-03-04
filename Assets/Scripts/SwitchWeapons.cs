@@ -79,7 +79,7 @@ public class SwitchWeapons : MonoBehaviour
         shotgun.SetActive(false);   
         sniper.SetActive(false);
         grenade.SetActive(false);
-        //landmine.SetActive(false);
+        landmine.SetActive(false);
     }
 
     public void OnPistolSelected()

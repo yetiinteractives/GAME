@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LandmineExplosion : MonoBehaviour
+public class Landmine : MonoBehaviour
 {
+    [Header("Trigger")]
+    [SerializeField] private float triggerDelay = 1.5f;
+
     [Header("Explosion Settings")]
     [SerializeField] private float radius = 3f;
     [SerializeField] private float killDamage = 99999f;
@@ -16,20 +19,26 @@ public class LandmineExplosion : MonoBehaviour
 
     [Header("FX")]
     [SerializeField] private GameObject explosionPrefab;
-    [SerializeField] private float explosionFxLifetime = 3f;
+    [SerializeField] private float explosionFxLifetime = 5f;
 
     private bool exploded;
+    private bool triggered;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (exploded) return;
+        if (exploded || triggered) return;
 
        
-
-        
         if (other.GetComponentInParent<IDamageable>() == null)
             return;
 
+        triggered = true;
+        StartCoroutine(TriggerDelayRoutine());
+    }
+
+    private IEnumerator TriggerDelayRoutine()
+    {
+        yield return new WaitForSeconds(triggerDelay);
         Explode();
     }
 
@@ -38,10 +47,9 @@ public class LandmineExplosion : MonoBehaviour
         if (exploded) return;
         exploded = true;
 
-        // Spawn FX
         if (explosionPrefab != null)
         {
-            var fx = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            var fx = Instantiate(explosionPrefab, transform.position + Vector3.up, Quaternion.identity);
             Destroy(fx, explosionFxLifetime);
         }
 
@@ -51,14 +59,12 @@ public class LandmineExplosion : MonoBehaviour
 
         foreach (Collider hit in hits)
         {
-            // Apply force
             Rigidbody rb = hit.GetComponent<Rigidbody>();
             if (rb != null)
             {
                 rb.AddExplosionForce(explosionForce, transform.position, radius, upwardsModifier, forceMode);
             }
 
-            // Damage
             IDamageable d = hit.GetComponentInParent<IDamageable>();
             if (d == null || !unique.Add(d)) continue;
 
