@@ -147,11 +147,21 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     private Collider[] allColliders;
     private RagdollPhysicsHandler[] ragdollHandlers;
 
-    // Death-force deferral
+    // Bullet death-force deferral (IDamageable ApplyDeathForce)
     private bool pendingDeathImpulse;
     private Collider pendingHitCollider;
     private Vector3 pendingHitPoint;
     private Vector3 pendingImpulse;
+
+    // ──────────── Grenade explosion-force deferral ────────────
+    // Queued by GrenadeExplosion BEFORE TakeDamage so the blast
+    // is applied at the exact moment ragdoll bodies become active.
+    private bool pendingExplosionForce;
+    private Vector3 pendingExplosionOrigin;
+    private float pendingExplosionRadius;
+    private float pendingExplosionForceValue;
+    private float pendingExplosionUpward;
+    private ForceMode pendingExplosionMode = ForceMode.Impulse;
 
     // Squared-distance caches (computed once in Awake, zero per-frame cost)
     private float lookRadiusSqr;
@@ -719,9 +729,78 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     }
 
     // ════════════════════════════════════════════════
+    //  GRENADE EXPLOSION FORCE PIPELINE
+    // ════════════════════════════════════════════════
+    //
+    // Why queued instead of immediate?
+    // During normal life ragdoll bodies are kinematic. AddExplosionForce
+    // only works on active non-kinematic Rigidbodies.
+    // HandleDeathVisuals() enables ragdoll THEN consumes the queue,
+    // guaranteeing force is applied at the exact right moment.
+    //
+    // Flow: GrenadeExplosion.Explode()
+    //   → QueueExplosionForce(...)   ← stores blast params
+    //   → TakeDamage(killDamage)     ← triggers Die() → HandleDeathVisuals()
+    //     → EnableRagdoll()          ← bodies become non-kinematic
+    //     → ApplyQueuedExplosionForce() ← blast applied NOW
+    //
+
+    /// <summary>
+    /// Called by GrenadeExplosion BEFORE TakeDamage.
+    /// Stores explosion parameters so they can be applied once ragdoll is active.
+    /// </summary>
+    public void QueueExplosionForce(Vector3 origin, float radius, float force, float upward, ForceMode mode)
+    {
+        pendingExplosionForce = true;
+        pendingExplosionOrigin = origin;
+        pendingExplosionRadius = radius;
+        pendingExplosionForceValue = force;
+        pendingExplosionUpward = upward;
+        pendingExplosionMode = mode;
+    }
+
+    /// <summary>
+    /// Consumes queued explosion data and applies AddExplosionForce to every
+    /// active ragdoll rigidbody. Called inside HandleDeathVisuals right after
+    /// EnableRagdoll so bodies are guaranteed non-kinematic.
+    /// </summary>
+    private void ApplyQueuedExplosionForce()
+    {
+        if (!pendingExplosionForce) return;
+        pendingExplosionForce = false;
+
+        for (int i = 0; i < ragdollHandlers.Length; i++)
+        {
+            var handler = ragdollHandlers[i];
+            if (handler == null) continue;
+
+            Rigidbody rb = handler.Rigidbody;
+            if (rb == null || rb.isKinematic) continue;
+
+            rb.AddExplosionForce(
+                pendingExplosionForceValue,
+                pendingExplosionOrigin,
+                pendingExplosionRadius,
+                pendingExplosionUpward,
+                pendingExplosionMode
+            );
+
+            rb.WakeUp();
+        }
+    }
+
+    // ════════════════════════════════════════════════
     //  DEATH & RAGDOLL
     // ════════════════════════════════════════════════
 
+    /// <summary>
+    /// Death visuals pipeline — order matters:
+    /// 1) Disable animator (stop animation-driven bone movement)
+    /// 2) Disable main nav collider
+    /// 3) Enable ragdoll (bodies become non-kinematic)
+    /// 4) Apply queued grenade explosion force (Point B pipeline)
+    /// 5) Apply queued bullet death impulse (existing pipeline)
+    /// </summary>
     protected override void HandleDeathVisuals()
     {
         if (anim != null)
@@ -732,6 +811,10 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
         EnableRagdoll();
 
+        // Grenade blast — applied right after ragdoll activation
+        ApplyQueuedExplosionForce();
+
+        // Bullet point-impulse — existing deferred pipeline
         if (pendingDeathImpulse)
         {
             pendingDeathImpulse = false;
@@ -744,39 +827,10 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         enabled = false;
     }
 
-    private void EnableRagdoll()
-    {
-        for (int i = 0; i < ragdollHandlers.Length; i++)
-            ragdollHandlers[i].EnableRagdoll();
-
-        SetCollidersRagdollState(isTrigger: false);
-
-        if (attackHitBox != null)
-            attackHitBox.enabled = false;
-    }
-
-    private void DisableRagdoll()
-    {
-        for (int i = 0; i < ragdollHandlers.Length; i++)
-            ragdollHandlers[i].DisableRagdoll();
-
-        SetCollidersRagdollState(isTrigger: true);
-
-        if (mainCollider != null)
-            mainCollider.enabled = true;
-    }
-
-    private void SetCollidersRagdollState(bool isTrigger)
-    {
-        for (int i = 0; i < allColliders.Length; i++)
-        {
-            Collider col = allColliders[i];
-            if (col == null || col == mainCollider) continue;
-            col.isTrigger = isTrigger;
-            col.enabled = true;
-        }
-    }
-
+    /// <summary>
+    /// Bullet death-force deferral: if called before death, queue it;
+    /// if called after death (ragdoll already active), apply immediately.
+    /// </summary>
     public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
     {
         if (!isDead)
@@ -826,6 +880,41 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         }
 
         return nearest;
+    }
+
+    // ──────────── Ragdoll management ────────────
+
+    private void EnableRagdoll()
+    {
+        for (int i = 0; i < ragdollHandlers.Length; i++)
+            ragdollHandlers[i].EnableRagdoll();
+
+        SetCollidersRagdollState(isTrigger: false);
+
+        if (attackHitBox != null)
+            attackHitBox.enabled = false;
+    }
+
+    private void DisableRagdoll()
+    {
+        for (int i = 0; i < ragdollHandlers.Length; i++)
+            ragdollHandlers[i].DisableRagdoll();
+
+        SetCollidersRagdollState(isTrigger: true);
+
+        if (mainCollider != null)
+            mainCollider.enabled = true;
+    }
+
+    private void SetCollidersRagdollState(bool isTrigger)
+    {
+        for (int i = 0; i < allColliders.Length; i++)
+        {
+            Collider col = allColliders[i];
+            if (col == null || col == mainCollider) continue;
+            col.isTrigger = isTrigger;
+            col.enabled = true;
+        }
     }
 
     // ════════════════════════════════════════════════

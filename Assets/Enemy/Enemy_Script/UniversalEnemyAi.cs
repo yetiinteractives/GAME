@@ -49,8 +49,17 @@ public abstract class UniversalEnemyAi : MonoBehaviour
 
         if (agent != null)
         {
-            agent.isStopped = true;
-            agent.enabled = false;
+            // Safe NavMesh shutdown — prevents "Stop can only be called on
+            // an active agent that has been placed on a NavMesh" exception,
+            // which would interrupt the death → ragdoll → explosion chain.
+            if (agent.isActiveAndEnabled && agent.isOnNavMesh)
+            {
+                agent.isStopped = true;
+                agent.ResetPath();
+            }
+
+            if (agent.enabled)
+                agent.enabled = false;
         }
 
         HandleDeathVisuals();
