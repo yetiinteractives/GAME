@@ -1,70 +1,65 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.UI.Image;
 
-public class GrenadeExplosion : MonoBehaviour
+public class LandmineExplosion : MonoBehaviour
 {
-    [SerializeField] private float fuseTime = 2f;
+    [Header("Explosion Settings")]
     [SerializeField] private float radius = 3f;
     [SerializeField] private float killDamage = 99999f;
     [SerializeField] private LayerMask damageMask = ~0;
 
+    [Header("Force Settings")]
     [SerializeField] private float explosionForce = 30f;
     [SerializeField] private float upwardsModifier = 2f;
     [SerializeField] private ForceMode forceMode = ForceMode.Impulse;
 
+    [Header("FX")]
     [SerializeField] private GameObject explosionPrefab;
     [SerializeField] private float explosionFxLifetime = 3f;
 
     private bool exploded;
 
-
-    
-
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
         if (exploded) return;
 
-        StartCoroutine(FuseRoutine());
+       
+
+        
+        if (other.GetComponentInParent<IDamageable>() == null)
+            return;
+
+        Explode();
     }
-    
 
-
-
-    private IEnumerator FuseRoutine()
+    private void Explode()
     {
-        yield return new WaitForSeconds(fuseTime - .125f);
+        if (exploded) return;
+        exploded = true;
+
+        // Spawn FX
         if (explosionPrefab != null)
         {
             var fx = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
             Destroy(fx, explosionFxLifetime);
         }
-        yield return new WaitForSeconds(.125f);
-        Explode();
-    }
-
-    public void Explode()
-    {
-        if (exploded) return;
-        exploded = true;
 
         Collider[] hits = Physics.OverlapSphere(transform.position, radius, damageMask, QueryTriggerInteraction.Collide);
-        foreach (Collider hit in hits)
-        {
-            Rigidbody rb = hit.GetComponent<Rigidbody>();
-            if(rb != null)
-            {
-                rb.AddExplosionForce(explosionForce, transform.position, radius, upwardsModifier, forceMode);
-            }
-        }
-
 
         HashSet<IDamageable> unique = new HashSet<IDamageable>();
 
-        for (int i = 0; i < hits.Length; i++)
+        foreach (Collider hit in hits)
         {
-            IDamageable d = hits[i].GetComponentInParent<IDamageable>();
+            // Apply force
+            Rigidbody rb = hit.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.AddExplosionForce(explosionForce, transform.position, radius, upwardsModifier, forceMode);
+            }
+
+            // Damage
+            IDamageable d = hit.GetComponentInParent<IDamageable>();
             if (d == null || !unique.Add(d)) continue;
 
             Component comp = d as Component;
@@ -73,15 +68,11 @@ public class GrenadeExplosion : MonoBehaviour
                 ZombieBrain zb = comp.GetComponent<ZombieBrain>();
                 if (zb != null)
                 {
-                    // Queue blast first, then kill.
                     zb.QueueExplosionForce(transform.position, radius, explosionForce, upwardsModifier, forceMode);
                 }
             }
 
             d.TakeDamage(killDamage);
-
-
-
         }
 
         Destroy(gameObject);
