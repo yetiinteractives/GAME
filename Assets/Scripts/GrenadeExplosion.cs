@@ -6,33 +6,40 @@ using static UnityEngine.UI.Image;
 public class GrenadeExplosion : MonoBehaviour
 {
     [SerializeField] private float fuseTime = 2f;
-    [SerializeField] private float radius = 8f;
+    [SerializeField] private float radius = 3f;
     [SerializeField] private float killDamage = 99999f;
     [SerializeField] private LayerMask damageMask = ~0;
 
-    [SerializeField] private float explosionForce = 1800f;
-    [SerializeField] private float upwardsModifier = 0.7f;
+    [SerializeField] private float explosionForce = 30f;
+    [SerializeField] private float upwardsModifier = 2f;
     [SerializeField] private ForceMode forceMode = ForceMode.Impulse;
 
     [SerializeField] private GameObject explosionPrefab;
     [SerializeField] private float explosionFxLifetime = 3f;
 
     private bool exploded;
-    Vector3 origin;
+  
 
-    private void Start() => StartCoroutine(FuseRoutine());
+    
 
-    void Awake() => origin = transform.position;
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (exploded) return;
+
+        StartCoroutine(FuseRoutine());
+    }
+
+    
 
     private IEnumerator FuseRoutine()
     {
-        yield return new WaitForSeconds(fuseTime - .25f);
+        yield return new WaitForSeconds(fuseTime - .125f);
         if (explosionPrefab != null)
         {
-            var fx = Instantiate(explosionPrefab, origin, Quaternion.identity);
+            var fx = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
             Destroy(fx, explosionFxLifetime);
         }
-        yield return new WaitForSeconds(.25f);
+        yield return new WaitForSeconds(.125f);
         Explode();
     }
 
@@ -41,7 +48,7 @@ public class GrenadeExplosion : MonoBehaviour
         if (exploded) return;
         exploded = true;
 
-        Collider[] hits = Physics.OverlapSphere(origin, radius, damageMask, QueryTriggerInteraction.Collide);
+        Collider[] hits = Physics.OverlapSphere(transform.position, radius, damageMask, QueryTriggerInteraction.Collide);
 
         HashSet<IDamageable> unique = new HashSet<IDamageable>();
 
@@ -57,7 +64,7 @@ public class GrenadeExplosion : MonoBehaviour
                 if (zb != null)
                 {
                     // Queue blast first, then kill.
-                    zb.QueueExplosionForce(origin, radius, explosionForce, upwardsModifier, forceMode);
+                    zb.QueueExplosionForce(transform.position, radius, explosionForce, upwardsModifier, forceMode);
                 }
             }
 
