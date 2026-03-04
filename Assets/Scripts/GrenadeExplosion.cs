@@ -49,6 +49,15 @@ public class GrenadeExplosion : MonoBehaviour
         exploded = true;
 
         Collider[] hits = Physics.OverlapSphere(transform.position, radius, damageMask, QueryTriggerInteraction.Collide);
+        foreach (Collider hit in hits)
+        {
+            Rigidbody rb = hit.GetComponent<Rigidbody>();
+            if(rb != null)
+            {
+                rb.AddExplosionForce(explosionForce, transform.position, radius, upwardsModifier, forceMode);
+            }
+        }
+
 
         HashSet<IDamageable> unique = new HashSet<IDamageable>();
 
@@ -69,6 +78,9 @@ public class GrenadeExplosion : MonoBehaviour
             }
 
             d.TakeDamage(killDamage);
+
+
+
         }
 
         Destroy(gameObject);

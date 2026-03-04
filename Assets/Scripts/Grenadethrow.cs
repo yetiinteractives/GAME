@@ -1,7 +1,10 @@
+using System.Collections;
 using UnityEngine;
 
 public class GrenadeThrow : MonoBehaviour
 {
+    [SerializeField] private Animator animator;
+
     [Header("Grenade Settings")]
     [SerializeField] private GameObject grenadePrefab;
     [SerializeField] private Transform throwPoint;
@@ -23,10 +26,20 @@ public class GrenadeThrow : MonoBehaviour
     [SerializeField] private Color lineStartColor = new Color(1f, 1f, 1f, 0.9f);
     [SerializeField] private Color lineEndColor = new Color(1f, 1f, 1f, 0.3f);
 
+
+
     private float currentChargeForce = 0f;
     private bool isCharging = false;
 
+    int grenadeLayerIndex;
+
     [SerializeField]FreeLookADS  freeLookAds;
+
+    private void Awake()
+    {
+        animator = GetComponentInParent<Animator>();
+        grenadeLayerIndex = animator.GetLayerIndex("Grenade Layer");
+    }
 
     void Start()
     {
@@ -40,7 +53,7 @@ public class GrenadeThrow : MonoBehaviour
             lineObj.transform.localPosition = Vector3.zero;
             trajectoryLine = lineObj.AddComponent<LineRenderer>();
 
-            // Thin TLOU2-style line renderer settings
+            //  renderer settings
             trajectoryLine.startWidth = lineWidth;
             trajectoryLine.endWidth = lineWidth * 0.5f; // Even thinner at the end
             trajectoryLine.material = new Material(Shader.Find("Sprites/Default"));
@@ -84,6 +97,7 @@ public class GrenadeThrow : MonoBehaviour
             currentChargeForce += chargeRate * Time.deltaTime;
             currentChargeForce = Mathf.Clamp(currentChargeForce, minThrowForce, maxThrowForce);
 
+
             // Update trajectory preview
             DrawTrajectory();
 
@@ -93,6 +107,8 @@ public class GrenadeThrow : MonoBehaviour
                 ThrowGrenade();
                 isCharging = false;
                 trajectoryLine.enabled = false;
+
+                StartCoroutine(PlayThrowAnimation());
             }
 
             if (freeLookAds)
@@ -115,6 +131,16 @@ public class GrenadeThrow : MonoBehaviour
             }
         }
     }
+
+    IEnumerator PlayThrowAnimation()
+    {
+        animator.SetLayerWeight(grenadeLayerIndex, 1f);
+        yield return new WaitForSeconds(0.5f);
+        //animator.SetTrigger("GrenadeThrow");
+        yield return new WaitForSeconds(1f);
+        animator.SetLayerWeight(grenadeLayerIndex, 0f);
+    }
+    
 
     void ThrowGrenade()
     {
