@@ -18,7 +18,7 @@ public class GrenadeExplosion : MonoBehaviour
     [SerializeField] private float explosionFxLifetime = 3f;
 
     private bool exploded;
-  
+
 
     
 

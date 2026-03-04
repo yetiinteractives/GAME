@@ -13,22 +13,29 @@ public class SwitchWeapons : MonoBehaviour
     [SerializeField] private GameObject pistol;
     [SerializeField] private GameObject shotgun;
     [SerializeField] private GameObject sniper;
+    [SerializeField] private GameObject grenade;
+    [SerializeField] private GameObject landmine;
 
     // Reference to the weapon switch UI
     [SerializeField] private GameObject switchWeaponWheel;
 
-    private int currentWeaponIndex = 1;
+    private int currentWeaponIndex;
     private bool isWheelOpen = false;
 
     [SerializeField] PlayerHealth playerHealth;
 
+    
     private void Start()
     {
         if(switchWeaponWheel != null)
         {
             switchWeaponWheel.SetActive(false);
         }
+
+        OnPistolSelected();
+
     }
+
 
     void Update()
     {
@@ -71,6 +78,8 @@ public class SwitchWeapons : MonoBehaviour
         pistol.SetActive(false);
         shotgun.SetActive(false);   
         sniper.SetActive(false);
+        grenade.SetActive(false);
+        //landmine.SetActive(false);
     }
 
     public void OnPistolSelected()
@@ -118,6 +127,33 @@ public class SwitchWeapons : MonoBehaviour
             
         }
     }
+
+    public void OnGrenadeSelected()
+    {
+        if (currentWeaponIndex != 4) 
+        {
+            OnWeaponSwitch?.Invoke(4);
+            DisableWeapons();
+            currentWeaponIndex = 4;
+            grenade.SetActive(true);
+            CloseWheel();
+            
+            
+        }
+    }
+
+    public void OnLandmineSelected()
+    {
+        if (currentWeaponIndex != 5)
+        {
+            OnWeaponSwitch?.Invoke(5);
+            DisableWeapons();
+            currentWeaponIndex = 5;
+            landmine.SetActive(true);
+            CloseWheel();
+        }
+    }
+
     public void OnHealingSelected()
     {
         playerHealth.HealPlayer(25); // Heal player 
