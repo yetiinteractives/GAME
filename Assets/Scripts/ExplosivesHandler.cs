@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class ExplosivesHandler : MonoBehaviour
 {
+
+    public event Action<int> OnExplosivesCountChanged; 
+
     [Header("Refrences")]
     [SerializeField] private GrenadeThrow grenade;
     [SerializeField] private LandminePlacement landmine;
@@ -66,11 +69,20 @@ public class ExplosivesHandler : MonoBehaviour
     {
         grenade.gameObject.SetActive(isTrue);
         grenadeModel.SetActive(isTrue);
+        if(isTrue)
+        {
+            OnExplosivesCountChanged?.Invoke(currentGrenadeCount);
+        }
     }
     private void ToggleLandmine(bool isTrue)
     {
             landmine.gameObject.SetActive(isTrue);
             landmineModel.SetActive(isTrue);
+
+        if(isTrue)
+        {
+            OnExplosivesCountChanged?.Invoke(currentLandmineCount);
+        }
     }
 
 
@@ -85,6 +97,8 @@ public class ExplosivesHandler : MonoBehaviour
 
         ToggleGrenade(hasGrenades && currentWeaponIndex == 4);
 
+        OnExplosivesCountChanged?.Invoke(currentGrenadeCount);
+
 
     }
     public void ConsumeLandmine()
@@ -96,6 +110,7 @@ public class ExplosivesHandler : MonoBehaviour
 
         ToggleLandmine(hasLandmine && currentWeaponIndex == 5 );
 
+        OnExplosivesCountChanged?.Invoke(currentLandmineCount);
 
     }
      public void AddGrenades(int amount)
@@ -104,6 +119,8 @@ public class ExplosivesHandler : MonoBehaviour
         CheckIfHasExplosives();
 
         ToggleGrenade(hasGrenades && currentWeaponIndex == 4);
+
+        OnExplosivesCountChanged?.Invoke(currentGrenadeCount);
     }
     public void AddLandmines(int amount)
     {
@@ -111,6 +128,8 @@ public class ExplosivesHandler : MonoBehaviour
         CheckIfHasExplosives();
 
         ToggleLandmine(hasLandmine && currentWeaponIndex == 5);
+
+        OnExplosivesCountChanged?.Invoke(currentLandmineCount);
     }
 
 

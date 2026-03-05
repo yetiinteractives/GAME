@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System;
 
 public class WeaponsUI : MonoBehaviour
 {
@@ -7,13 +8,16 @@ public class WeaponsUI : MonoBehaviour
     [SerializeField] private GameObject pistolIcon;
     [SerializeField] private GameObject shotgunIcon;
     [SerializeField] private GameObject sniperIcon;
+    [SerializeField] private GameObject grenadeIcon;
+    [SerializeField] private GameObject landmineIcon;
     [SerializeField] private TMP_Text ammoText;
-    [SerializeField] private TMP_Text weaponStatusText;
+    
 
     [Header("Weapon References")]
     [SerializeField] private Weapon pistolWeapon;
     [SerializeField] private Weapon shotgunWeapon;
     [SerializeField] private Weapon sniperWeapon;
+    [SerializeField] private ExplosivesHandler explosivesHandler;
 
     private Weapon currentWeapon;
 
@@ -25,11 +29,17 @@ public class WeaponsUI : MonoBehaviour
     private void OnEnable()
     {
         SwitchWeapons.OnWeaponSwitch += OnWeaponSwitch;
+        explosivesHandler.OnExplosivesCountChanged += OnExplosiveCountChanged;
+
+
     }
+
+  
 
     private void OnDisable()
     {
         SwitchWeapons.OnWeaponSwitch -= OnWeaponSwitch;
+        explosivesHandler.OnExplosivesCountChanged -= OnExplosiveCountChanged;
         UnsubscribeFromWeapon();
     }
 
@@ -45,6 +55,8 @@ public class WeaponsUI : MonoBehaviour
         pistolIcon.SetActive(false);
         shotgunIcon.SetActive(false);
         sniperIcon.SetActive(false);
+        grenadeIcon.SetActive(false);
+        landmineIcon.SetActive(false);
 
         switch (weaponIndex)
         {
@@ -60,6 +72,15 @@ public class WeaponsUI : MonoBehaviour
                 currentWeapon = sniperWeapon;
                 sniperIcon.SetActive(true);
                 break;
+            case 4:
+                currentWeapon = null; 
+                grenadeIcon.SetActive(true);
+                break;
+            case 5:
+                currentWeapon = null;
+                landmineIcon.SetActive(true);
+                break;
+
             default:
                 Debug.LogWarning($"Unknown weapon index: {weaponIndex}");
                 return;
@@ -73,7 +94,7 @@ public class WeaponsUI : MonoBehaviour
         if (currentWeapon != null)
         {
             currentWeapon.OnAmmoChanged += UpdateAmmoDisplay;
-            currentWeapon.OnWeaponStatusChanged += UpdateWeaponStatus;
+            
         }
     }
 
@@ -82,26 +103,24 @@ public class WeaponsUI : MonoBehaviour
         if (currentWeapon != null)
         {
             currentWeapon.OnAmmoChanged -= UpdateAmmoDisplay;
-            currentWeapon.OnWeaponStatusChanged -= UpdateWeaponStatus;
+            
         }
     }
 
     private void UpdateAmmoDisplay(int bulletOnMag, int totalBullet)
     {
         if (ammoText != null)
-            ammoText.text = $"{bulletOnMag} / {totalBullet}";
-    }
-
-    private void UpdateWeaponStatus(string status)
-    {
-        if (weaponStatusText != null)
         {
-            weaponStatusText.text = status;
-
-            if (status == "Ready" || status == "Aiming") weaponStatusText.color = Color.green;
-            else if (status == "Reloading...") weaponStatusText.color = Color.yellow;
-            else if (status == "Out of Ammo!") weaponStatusText.color = Color.red;
-            else weaponStatusText.color = Color.white;
+            ammoText.text = $"{bulletOnMag} / {totalBullet}";
         }
     }
+
+    private void OnExplosiveCountChanged(int count)
+    {
+        if(ammoText != null)
+        {
+            ammoText.text = $"<pos=20%><size=140%>{count}</size>";
+        }
+    }
+
 }
