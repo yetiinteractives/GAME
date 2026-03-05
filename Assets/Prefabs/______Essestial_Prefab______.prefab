@@ -1285,7 +1285,7 @@ Transform:
   m_GameObject: {fileID: 1523081259481972291}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.527, y: 1.205, z: -0.282}
+  m_LocalPosition: {x: 0.374, y: 1.215, z: -0.443}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1303,7 +1303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3b65972fa859244493bcda9c1d9dd42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GrenadeThrow
-  animator: {fileID: 0}
+  animator: {fileID: 8930276811858278080}
   grenadePrefab: {fileID: 6010481275654033353, guid: ff99d1c21402eff4d80c4c56a28c93e3,
     type: 3}
   throwPoint: {fileID: 5066498096176609477}
@@ -1311,6 +1311,9 @@ MonoBehaviour:
   maxThrowForce: 13
   chargeRate: 7
   throwAngle: 30
+  animationStartDelay: 0.05
+  grenadeSpawnDelay: 0.65
+  animationResetDelay: 0.3
   trajectoryLine: {fileID: 0}
   trajectoryResolution: 30
   trajectoryTimeStep: 0.1
@@ -1320,6 +1323,7 @@ MonoBehaviour:
   lineWidth: 0.05
   lineStartColor: {r: 1, g: 1, b: 1, a: 0.9}
   lineEndColor: {r: 1, g: 1, b: 1, a: 0.3}
+  aimLayerController: {fileID: 4174537501895710193}
   freeLookAds: {fileID: 7676398414137314393}
 --- !u!1 &1548925704628991510
 GameObject:
@@ -1936,6 +1940,7 @@ MonoBehaviour:
   shotgunAimRig: {fileID: 3532214738485243528}
   shotgunIdleRig: {fileID: 3267118408061520667}
   blendSpeed: 5
+  explosiveLayerBlendSpeed: 8
 --- !u!1 &2063238131181459543
 GameObject:
   m_ObjectHideFlags: 0
@@ -3370,8 +3375,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3255314731135957485}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.123229444, y: 0.0349513, z: -0.009631075, w: -0.9917158}
-  m_LocalPosition: {x: -197.08543, y: 538.86444, z: -357.20908}
+  m_LocalRotation: {x: 0.1521297, y: 0.000000005900302, z: -9.0818203e-10, w: 0.9883606}
+  m_LocalPosition: {x: -2293.7935, y: 10.45638, z: -750.35297}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3633,13 +3638,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LandminePlacement
   landminePrefab: {fileID: 1330759755480050805, guid: d12ffacd114a82a48bd1b376860b423c,
     type: 3}
+  animator: {fileID: 8930276811858278080}
+  aimLayerController: {fileID: 4174537501895710193}
+  freeLookAds: {fileID: 7676398414137314393}
   forwardDistance: 1
   rayHeight: 1
   rayDistance: 5
   groundMask:
     serializedVersion: 2
     m_Bits: 2363
-  freeLookAds: {fileID: 7676398414137314393}
+  animationStartDelay: 0.05
+  landmineSpawnDelay: 0.6
+  animationResetDelay: 0.3
 --- !u!1 &3436943218144094682
 GameObject:
   m_ObjectHideFlags: 0
@@ -5462,7 +5472,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7335671606088658595
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6505,8 +6515,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6748496026950744590}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.12322943, y: 0.0349513, z: -0.009631075, w: -0.9917158}
-  m_LocalPosition: {x: -196.99846, y: 539.1828, z: -358.46545}
+  m_LocalRotation: {x: 0.15212971, y: 0.0000000059258944, z: -0.0000000010744483,
+    w: 0.9883606}
+  m_LocalPosition: {x: -2293.7935, y: 10.45638, z: -750.35297}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11165,37 +11176,37 @@ PrefabInstance:
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -197.59921
+      value: -2293.3293
       objectReference: {fileID: 0}
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 537.2216
+      value: 8.391022
       objectReference: {fileID: 0}
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -356.526
+      value: -748.29333
       objectReference: {fileID: 0}
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.99983233
+      value: -0.2593075
       objectReference: {fileID: 0}
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.007092786
+      value: 0.011548665
       objectReference: {fileID: 0}
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.016849501
+      value: -0.96517885
       objectReference: {fileID: 0}
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0010983265
+      value: -0.03249942
       objectReference: {fileID: 0}
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}

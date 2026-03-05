@@ -18,7 +18,7 @@ public class GrenadeThrow : MonoBehaviour
     [Header("Animation Timing")]
     [SerializeField] private float animationStartDelay = 0.05f;
     [SerializeField] private float grenadeSpawnDelay = 0.5f;
-    [SerializeField] private float animationResetDelay = 0.3f; // Time to hold before resetting layer
+    [SerializeField] private float animationResetDelay = 0.5f; // Time to hold before resetting layer
 
     [Header("Trajectory Settings")]
     [SerializeField] private LineRenderer trajectoryLine;
@@ -148,6 +148,7 @@ public class GrenadeThrow : MonoBehaviour
         // Small delay before starting animation
         yield return new WaitForSeconds(animationStartDelay);
 
+
         // Smoothly enable grenade layer (will lerp in Update)
         if (aimLayerController != null)
         {
@@ -172,6 +173,7 @@ public class GrenadeThrow : MonoBehaviour
             aimLayerController.SetGrenadeLayerWeight(0f);
         }
 
+        freeLookAds.SetNormalState();
         // Reset state
         currentChargeForce = 0f;
         isThrowing = false;

@@ -38,7 +38,7 @@ public class AimLayerController : MonoBehaviour
         pistolAimLayerIndex = animator.GetLayerIndex("Pistol Aim Layer");
         shotgunAimLayerIndex = animator.GetLayerIndex("Shotgun Aim Layer");
         shotgunIdleLayerIndex = animator.GetLayerIndex("Shotgun Idle Layer");
-        grenadeLayerIndex = animator.GetLayerIndex("Grenade Layer");
+        grenadeLayerIndex = animator.GetLayerIndex("grenade layer");
         landmineLayerIndex = animator.GetLayerIndex("Landmine Layer");
 
         SwitchWeapons.OnWeaponSwitch += HandleWeaponSwitch;
