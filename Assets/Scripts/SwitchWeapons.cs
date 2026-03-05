@@ -13,8 +13,7 @@ public class SwitchWeapons : MonoBehaviour
     [SerializeField] private GameObject pistol;
     [SerializeField] private GameObject shotgun;
     [SerializeField] private GameObject sniper;
-    [SerializeField] private GameObject grenade;
-    [SerializeField] private GameObject landmine;
+    [SerializeField] private ExplosivesHandler explosivesHandler;
 
     // Reference to the weapon switch UI
     [SerializeField] private GameObject switchWeaponWheel;
@@ -78,8 +77,7 @@ public class SwitchWeapons : MonoBehaviour
         pistol.SetActive(false);
         shotgun.SetActive(false);   
         sniper.SetActive(false);
-        grenade.SetActive(false);
-        landmine.SetActive(false);
+       
     }
 
     public void OnPistolSelected()
@@ -135,7 +133,7 @@ public class SwitchWeapons : MonoBehaviour
             OnWeaponSwitch?.Invoke(4);
             DisableWeapons();
             currentWeaponIndex = 4;
-            grenade.SetActive(true);
+            
             CloseWheel();
             
             
@@ -149,7 +147,7 @@ public class SwitchWeapons : MonoBehaviour
             OnWeaponSwitch?.Invoke(5);
             DisableWeapons();
             currentWeaponIndex = 5;
-            landmine.SetActive(true);
+            
             CloseWheel();
         }
     }

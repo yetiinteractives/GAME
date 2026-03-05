@@ -1209,6 +1209,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 996040727}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1685009774 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6625623158948479575, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+    type: 3}
+  m_PrefabInstance: {fileID: 1944799424}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3613f688d2c73e441aa94f763b87f0f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ExplosivesHandler
 --- !u!1 &1696120857
 GameObject:
   m_ObjectHideFlags: 0
@@ -1522,6 +1534,11 @@ PrefabInstance:
       propertyPath: explosiveText
       value: 
       objectReference: {fileID: 133433369}
+    - target: {fileID: 7192881889195495623, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: explosivesHandler
+      value: 
+      objectReference: {fileID: 1685009774}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
