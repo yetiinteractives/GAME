@@ -30,6 +30,10 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
     public GameObject larva;
     public Transform larvaSpawnPoint;
 
+    [Header("Hitbox System")]
+    public BoxCollider attack1HitBox;
+    public BoxCollider attack2HitBox;
+
     public bool IsDead()
     {
         return isDead;
@@ -40,6 +44,12 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
         state = BossState.Idle;
         PlayStartAnimation();
         PlayIdleAnimation();
+
+        // Disable hitboxes initially
+        if (attack1HitBox != null)
+            attack1HitBox.enabled = false;
+        if (attack2HitBox != null)
+            attack2HitBox.enabled = false;
     }
 
     protected override void HandleAI()
@@ -48,7 +58,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
         float dist = distanceToPlayer;
 
          if (dist <= attackRange*attackRange){
-           if((currentHealth==maxhealth* 0.5f ||dist <= playerTOOCloseRange*playerTOOCloseRange ) && !larvaSpawned){
+           if((currentHealth==maxhealth* 0.5f && !larvaSpawned ) ||dist <= playerTOOCloseRange*playerTOOCloseRange){
            state = BossState.SpawnLarva;
            }
            else
@@ -96,6 +106,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
 
              if (!isAttacking)
               {
+                larvaSpawned = false;
                StartCoroutine(AttackCycle());
               }
                 break;
@@ -143,10 +154,9 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
 
     yield return new WaitForSeconds(1f); // wait for animation timing
 
-    for (int i = 0; i < 10; i++)
-    {
+  
         Instantiate(larva, larvaSpawnPoint.position, larvaSpawnPoint.rotation);
-    }
+    
 
     yield return new WaitForSeconds(2f);
 
@@ -179,6 +189,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
 
     yield return new WaitForSeconds(attackCooldown);
 
+    ResetHitBoxes();
     isAttacking = false;
     }
 
@@ -213,5 +224,51 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
     public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
     {
         // override interface
-     }
+    }
+
+    // ──────────── Attack Hitbox System ────────────
+
+    public void CreateAttack1HitBox()
+    {
+        if (attack1HitBox != null)
+            attack1HitBox.enabled = true;
+    }
+
+    public void DestroyAttack1HitBox()
+    {
+        if (attack1HitBox != null)
+            attack1HitBox.enabled = false;
+    }
+
+    public void CreateAttack2HitBox()
+    {
+        if (attack2HitBox != null)
+            attack2HitBox.enabled = true;
+    }
+
+    public void DestroyAttack2HitBox()
+    {
+        if (attack2HitBox != null)
+            attack2HitBox.enabled = false;
+    }
+
+    public void ResetHitBoxes()
+    {
+        DestroyAttack1HitBox();
+        DestroyAttack2HitBox();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.CompareTag("Player")) return;
+
+        // Check if either hitbox is active and hitting
+        bool hitBoxActive = (attack1HitBox != null && attack1HitBox.enabled) || 
+                           (attack2HitBox != null && attack2HitBox.enabled);
+        if (!hitBoxActive) return;
+
+        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+            playerHealth.TakeDamage(attackDamage);
+    }
 }
