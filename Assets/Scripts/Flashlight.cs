@@ -6,13 +6,13 @@ public class Flashlight : MonoBehaviour
     [SerializeField] GameObject flashlightOn;
     [SerializeField] GameObject flashlightOff;
 
-    bool isFlashlightOn = true;
+    bool isFlashlightOn;
 
     private void Start()
     {
-        flashlightOff.SetActive(false);
-        flashlightOn.SetActive(true);
-        isFlashlightOn=true;
+        flashlightOff.SetActive(true);
+        flashlightOn.SetActive(false);
+        isFlashlightOn=false;
     }
 
     private void Update()
