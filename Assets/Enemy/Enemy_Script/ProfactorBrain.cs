@@ -49,7 +49,6 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
 
          if (dist <= attackRange*attackRange){
            if((currentHealth==maxhealth* 0.5f ||dist <= playerTOOCloseRange*playerTOOCloseRange ) && !larvaSpawned){
-            larvaSpawned=true;
            state = BossState.SpawnLarva;
            }
            else
