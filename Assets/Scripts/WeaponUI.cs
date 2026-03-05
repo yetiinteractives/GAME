@@ -11,6 +11,7 @@ public class WeaponsUI : MonoBehaviour
     [SerializeField] private GameObject grenadeIcon;
     [SerializeField] private GameObject landmineIcon;
     [SerializeField] private TMP_Text ammoText;
+    [SerializeField] private TMP_Text explosiveText;
     
 
     [Header("Weapon References")]
@@ -45,6 +46,9 @@ public class WeaponsUI : MonoBehaviour
 
     private void OnWeaponSwitch(int weaponIndex)
     {
+        ammoText.gameObject.SetActive(weaponIndex<=3);
+        explosiveText.gameObject.SetActive(weaponIndex>=4);
+
         SwitchToWeapon(weaponIndex);
     }
 
@@ -117,9 +121,9 @@ public class WeaponsUI : MonoBehaviour
 
     private void OnExplosiveCountChanged(int count)
     {
-        if(ammoText != null)
+        if(explosiveText != null)
         {
-            ammoText.text = $"<pos=20%><size=140%>{count}</size>";
+            explosiveText.text = $"{count}";
         }
     }
 
