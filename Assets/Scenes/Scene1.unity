@@ -4093,7 +4093,7 @@ PrefabInstance:
     - target: {fileID: 6525841962447563962, guid: 9f547c76a5f7400408a230e40b7f93a1,
         type: 3}
       propertyPath: m_Layer
-      value: 16
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6822463253777828677, guid: 9f547c76a5f7400408a230e40b7f93a1,
         type: 3}
@@ -4148,7 +4148,7 @@ PrefabInstance:
     - target: {fileID: 8397480760484223049, guid: 9f547c76a5f7400408a230e40b7f93a1,
         type: 3}
       propertyPath: m_Layer
-      value: 16
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8698818597179819385, guid: 9f547c76a5f7400408a230e40b7f93a1,
         type: 3}
@@ -4222,10 +4222,18 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1157754438}
+    - targetCorrespondingSourceObject: {fileID: 8397480760484223049, guid: 9f547c76a5f7400408a230e40b7f93a1,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1157754439}
     - targetCorrespondingSourceObject: {fileID: 6525841962447563962, guid: 9f547c76a5f7400408a230e40b7f93a1,
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1063343285}
+    - targetCorrespondingSourceObject: {fileID: 6525841962447563962, guid: 9f547c76a5f7400408a230e40b7f93a1,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1063343286}
   m_SourcePrefab: {fileID: 100100000, guid: 9f547c76a5f7400408a230e40b7f93a1, type: 3}
 --- !u!1 &856840091
 GameObject:
@@ -4781,10 +4789,10 @@ MonoBehaviour:
   state: 0
   WalkSpeed: 3
   lookRadius: 100
-  attackRange: 50
-  attackDamage: 100
-  attackCooldown: 7
-  playerTOOCloseRange: 10
+  attackRange: 20
+  attackDamage: 10
+  attackCooldown: 3
+  playerTOOCloseRange: 4
   larva: {fileID: 2484535308614885599}
   larvaSpawnPoint: {fileID: 925279635}
   attack1HitBox: {fileID: 1063343285}
@@ -4910,12 +4918,24 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 10, y: 10, z: 10}
+  m_Size: {x: 20, y: 20, z: 20}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1063343286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1063343283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 166364c8bfd132448975432e4e8b31bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitBoxScript
 --- !u!1 &1073103781 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3545214096280420045, guid: 8c4884cda648eec4a81ce895bbbf1fb4,
@@ -5354,12 +5374,24 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 10, y: 10, z: 10}
+  m_Size: {x: 20, y: 20, z: 20}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1157754439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1157754436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 166364c8bfd132448975432e4e8b31bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitBoxScript
 --- !u!1001 &1172622672
 PrefabInstance:
   m_ObjectHideFlags: 0

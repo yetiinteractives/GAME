@@ -258,17 +258,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
         DestroyAttack2HitBox();
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!other.CompareTag("Player")) return;
 
-        // Check if either hitbox is active and hitting
-        bool hitBoxActive = (attack1HitBox != null && attack1HitBox.enabled) || 
-                           (attack2HitBox != null && attack2HitBox.enabled);
-        if (!hitBoxActive) return;
 
-        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
-        if (playerHealth != null)
-            playerHealth.TakeDamage(attackDamage);
     }
-}
+
