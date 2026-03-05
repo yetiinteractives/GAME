@@ -37,6 +37,7 @@ public class GrenadeThrow : MonoBehaviour
 
     [SerializeField] private AimLayerController aimLayerController;
     [SerializeField] private FreeLookADS freeLookAds;
+    [SerializeField] private ExplosivesHandler explosivesHandler;
 
     private void Awake()
     {
@@ -45,6 +46,10 @@ public class GrenadeThrow : MonoBehaviour
         if (aimLayerController == null)
         {
             aimLayerController = GetComponentInParent<AimLayerController>();
+        }
+        if(explosivesHandler == null)
+        {
+            explosivesHandler = GetComponentInParent<ExplosivesHandler>();
         }
     }
 
@@ -177,6 +182,9 @@ public class GrenadeThrow : MonoBehaviour
         // Reset state
         currentChargeForce = 0f;
         isThrowing = false;
+
+        explosivesHandler.ConsumeGrenade();
+
     }
 
     void InstantiateGrenade(float force)

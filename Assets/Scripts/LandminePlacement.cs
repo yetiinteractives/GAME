@@ -9,6 +9,7 @@ public class LandminePlacement : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private AimLayerController aimLayerController;
     [SerializeField] private FreeLookADS freeLookAds;
+    [SerializeField] private ExplosivesHandler explosivesHandler;
 
     [Header("Placement")]
     [SerializeField] private float forwardDistance = 2f;
@@ -32,11 +33,20 @@ public class LandminePlacement : MonoBehaviour
         {
             aimLayerController = GetComponentInParent<AimLayerController>();
         }
+        if(explosivesHandler == null)
+        {
+            explosivesHandler = GetComponentInParent<ExplosivesHandler>();
+        }
     }
 
-    private void Start()
+    private void OnEnable()
     {
         SwitchWeapons.OnToggleWeaponSwitchUI += isWeaponSwitchUIActive;
+    }
+    private void OnDisable()
+    {
+        SwitchWeapons.OnToggleWeaponSwitchUI -= isWeaponSwitchUIActive;
+
     }
 
     private void isWeaponSwitchUIActive(bool isActive)
@@ -74,7 +84,7 @@ public class LandminePlacement : MonoBehaviour
     {
         isPlacing = true;
 
-        
+
         if (aimLayerController != null)
         {
             aimLayerController.ForceDisableAllRigs();
@@ -110,6 +120,9 @@ public class LandminePlacement : MonoBehaviour
         }
 
         isPlacing = false;
+
+        explosivesHandler.ConsumeLandmine();
+
     }
 
     private void PlaceMine()
