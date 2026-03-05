@@ -153,6 +153,8 @@ MonoBehaviour:
   forceMode: 1
   explosionPrefab: {fileID: 9111320563476075686, guid: c6fb71e58ec36784687d958bc39de3f2,
     type: 3}
+  grenadeAudioSource: {fileID: 6231696446565988001}
+  explosionSound: {fileID: 8300000, guid: 8b2b7a99a563fe645aabdf5aa559e970, type: 3}
   explosionFxLifetime: 3
 --- !u!54 &2998159413933965099
 Rigidbody:
@@ -218,13 +220,13 @@ AudioSource:
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
-  m_Pitch: 1
+  m_Pitch: 2.45
   Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
+  Priority: 126
+  DopplerLevel: 2.13
   MinDistance: 1
   MaxDistance: 500
   Pan2D: 0
@@ -276,7 +278,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 0.1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

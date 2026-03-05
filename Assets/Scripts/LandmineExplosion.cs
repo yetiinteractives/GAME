@@ -20,9 +20,18 @@ public class Landmine : MonoBehaviour
     [Header("FX")]
     [SerializeField] private GameObject explosionPrefab;
     [SerializeField] private float explosionFxLifetime = 5f;
+    [SerializeField] private AudioSource landmineAudioSource;
+    [SerializeField] private AudioClip triggerSound;
+    [SerializeField] private AudioClip explosionSound;
 
     private bool exploded;
     private bool triggered;
+
+
+    private void Start()
+    {
+        landmineAudioSource = GetComponent<AudioSource>();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -38,6 +47,10 @@ public class Landmine : MonoBehaviour
 
     private IEnumerator TriggerDelayRoutine()
     {
+        if(triggerSound != null)
+        {
+            landmineAudioSource.PlayOneShot(triggerSound);  
+        }
         yield return new WaitForSeconds(triggerDelay);
         Explode();
     }
@@ -52,7 +65,10 @@ public class Landmine : MonoBehaviour
             var fx = Instantiate(explosionPrefab, transform.position + Vector3.up, Quaternion.identity);
             Destroy(fx, explosionFxLifetime);
         }
-
+        if (explosionSound != null)
+        {
+            landmineAudioSource.PlayOneShot(explosionSound);
+        }
         Collider[] hits = Physics.OverlapSphere(transform.position, radius, damageMask, QueryTriggerInteraction.Collide);
 
         HashSet<IDamageable> unique = new HashSet<IDamageable>();

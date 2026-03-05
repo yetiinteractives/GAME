@@ -15,12 +15,17 @@ public class GrenadeExplosion : MonoBehaviour
     [SerializeField] private ForceMode forceMode = ForceMode.Impulse;
 
     [SerializeField] private GameObject explosionPrefab;
+    [SerializeField] private AudioSource grenadeAudioSource;
+    [SerializeField] private AudioClip explosionSound;
     [SerializeField] private float explosionFxLifetime = 3f;
 
     private bool exploded;
 
+    private void Start()
+    {
+        grenadeAudioSource = GetComponent<AudioSource>();
+    }
 
-    
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -39,6 +44,10 @@ public class GrenadeExplosion : MonoBehaviour
         {
             var fx = Instantiate(explosionPrefab, transform.position + Vector3.up, Quaternion.identity);
             Destroy(fx, explosionFxLifetime);
+        }
+        if(grenadeAudioSource != null && explosionSound != null)
+        {
+            grenadeAudioSource.PlayOneShot(explosionSound);
         }
         yield return new WaitForSeconds(.125f);
         Explode();
