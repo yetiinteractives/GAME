@@ -11,14 +11,22 @@ public class AimLayerController : MonoBehaviour
     public Rig shotgunIdleRig;
 
     public float blendSpeed = 5f;
+    public float explosiveLayerBlendSpeed = 8f; // Faster blend for grenade/landmine
 
     private float targetWeight = 0f;
     private int pistolAimLayerIndex;
     private int shotgunAimLayerIndex;
     private int shotgunIdleLayerIndex;
+    private int grenadeLayerIndex;
+    private int landmineLayerIndex;
+
     private float aimRigWeight;
     private float shotgunAimRigWeight;
     private float shotgunIdleRigWeight;
+
+    // Target weights for explosive layers
+    private float targetGrenadeLayerWeight = 0f;
+    private float targetLandmineLayerWeight = 0f;
 
     private int currentWeaponIndex = 1;
 
@@ -30,6 +38,8 @@ public class AimLayerController : MonoBehaviour
         pistolAimLayerIndex = animator.GetLayerIndex("Pistol Aim Layer");
         shotgunAimLayerIndex = animator.GetLayerIndex("Shotgun Aim Layer");
         shotgunIdleLayerIndex = animator.GetLayerIndex("Shotgun Idle Layer");
+        grenadeLayerIndex = animator.GetLayerIndex("Grenade Layer");
+        landmineLayerIndex = animator.GetLayerIndex("Landmine Layer");
 
         SwitchWeapons.OnWeaponSwitch += HandleWeaponSwitch;
 
@@ -38,7 +48,7 @@ public class AimLayerController : MonoBehaviour
         shotgunIdleRig.weight = 0f;
     }
 
-    
+
     public void SetReloading(bool reloading)
     {
         isReloading = reloading;
@@ -59,6 +69,7 @@ public class AimLayerController : MonoBehaviour
     {
         if (currentWeaponIndex != weaponIndex)
         {
+            // Reset ALL gun layers and rigs
             animator.SetLayerWeight(pistolAimLayerIndex, 0f);
             pistolAimRig.weight = 0f;
             aimRigWeight = 0f;
@@ -70,7 +81,12 @@ public class AimLayerController : MonoBehaviour
             shotgunAimRigWeight = 0f;
             shotgunIdleRigWeight = 0f;
 
-           
+            // Reset grenade and landmine layers
+            animator.SetLayerWeight(grenadeLayerIndex, 0f);
+            animator.SetLayerWeight(landmineLayerIndex, 0f);
+            targetGrenadeLayerWeight = 0f;
+            targetLandmineLayerWeight = 0f;
+
             isReloading = false;
         }
 
@@ -100,13 +116,13 @@ public class AimLayerController : MonoBehaviour
         }
         else if (currentWeaponIndex == 2 || currentWeaponIndex == 3) // Shotgun or Sniper
         {
-           
+
             if (isReloading)
             {
                 shotgunIdleRigWeight = 0f;
                 shotgunIdleRig.weight = 0f;
 
-                
+
                 shotgunAimRig.weight = Mathf.Lerp(
                     shotgunAimRig.weight,
                     shotgunAimRigWeight,
@@ -142,12 +158,69 @@ public class AimLayerController : MonoBehaviour
             shotgunAimRig.weight = Mathf.Lerp(shotgunAimRig.weight, shotgunAimRigWeight, Time.deltaTime * 25f);
             shotgunIdleRig.weight = Mathf.Lerp(shotgunIdleRig.weight, shotgunIdleRigWeight, Time.deltaTime * 25f);
         }
+        else if (currentWeaponIndex == 4) // Grenade
+        {
+            // FORCE all gun rigs to 0 while on grenade
+            pistolAimRig.weight = 0f;
+            shotgunAimRig.weight = 0f;
+            shotgunIdleRig.weight = 0f;
+
+            // Smoothly lerp grenade layer weight
+            float currentGrenadeWeight = animator.GetLayerWeight(grenadeLayerIndex);
+            float newGrenadeWeight = Mathf.Lerp(currentGrenadeWeight, targetGrenadeLayerWeight, Time.deltaTime * explosiveLayerBlendSpeed);
+            animator.SetLayerWeight(grenadeLayerIndex, newGrenadeWeight);
+        }
+        else if (currentWeaponIndex == 5) // Landmine
+        {
+            // FORCE all gun rigs to 0 while on landmine
+            pistolAimRig.weight = 0f;
+            shotgunAimRig.weight = 0f;
+            shotgunIdleRig.weight = 0f;
+
+            // Smoothly lerp landmine layer weight
+            float currentLandmineWeight = animator.GetLayerWeight(landmineLayerIndex);
+            float newLandmineWeight = Mathf.Lerp(currentLandmineWeight, targetLandmineLayerWeight, Time.deltaTime * explosiveLayerBlendSpeed);
+            animator.SetLayerWeight(landmineLayerIndex, newLandmineWeight);
+        }
     }
 
     private IEnumerator AimRigWeightDelay()
     {
         yield return new WaitForSeconds(0.25f);
         aimRigWeight = 0.75f;
+    }
+
+    // PUBLIC METHODS FOR GRENADE AND LANDMINE
+
+    /// <summary>
+    /// Sets the target Grenade Layer weight (will lerp smoothly in Update)
+    /// Only arms move via avatar mask. No animation rigging.
+    /// </summary>
+    public void SetGrenadeLayerWeight(float weight)
+    {
+        targetGrenadeLayerWeight = Mathf.Clamp01(weight);
+    }
+
+    /// <summary>
+    /// Sets the target Landmine Layer weight (will lerp smoothly in Update)
+    /// Full body override. No animation rigging.
+    /// </summary>
+    public void SetLandmineLayerWeight(float weight)
+    {
+        targetLandmineLayerWeight = Mathf.Clamp01(weight);
+    }
+
+    /// <summary>
+    /// Forces immediate reset of all rigs - useful when switching to explosives
+    /// </summary>
+    public void ForceDisableAllRigs()
+    {
+        pistolAimRig.weight = 0f;
+        shotgunAimRig.weight = 0f;
+        shotgunIdleRig.weight = 0f;
+        aimRigWeight = 0f;
+        shotgunAimRigWeight = 0f;
+        shotgunIdleRigWeight = 0f;
     }
 
     private void OnDestroy()

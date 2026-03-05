@@ -1,35 +1,115 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class LandminePlacement : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private GameObject landminePrefab;
+    [SerializeField] private Animator animator;
+    [SerializeField] private AimLayerController aimLayerController;
+    [SerializeField] private FreeLookADS freeLookAds;
 
     [Header("Placement")]
     [SerializeField] private float forwardDistance = 2f;
     [SerializeField] private float rayHeight = 2f;
     [SerializeField] private float rayDistance = 5f;
     [SerializeField] private LayerMask groundMask;
-    [SerializeField]private FreeLookADS freeLookAds;
 
+    [Header("Animation Timing")]
+    [SerializeField] private float animationStartDelay = 0.05f;
+    [SerializeField] private float landmineSpawnDelay = 0.6f;
+    [SerializeField] private float animationResetDelay = 0.3f; // Time to hold before resetting layer
 
+    private bool isWeaponSwitchUIOn;
+    private bool isPlacing = false;
+
+    private void Awake()
+    {
+        animator = GetComponentInParent<Animator>();
+
+        if (aimLayerController == null)
+        {
+            aimLayerController = GetComponentInParent<AimLayerController>();
+        }
+    }
+
+    private void Start()
+    {
+        SwitchWeapons.OnToggleWeaponSwitchUI += isWeaponSwitchUIActive;
+    }
+
+    private void isWeaponSwitchUIActive(bool isActive)
+    {
+        isWeaponSwitchUIOn = isActive;
+    }
 
     private void Update()
     {
+        // Prevent input during placement animation
+        if (isPlacing) return;
 
         if (Input.GetMouseButton(1))
         {
-            freeLookAds.SetADSState();
+            if (freeLookAds != null)
+            {
+                freeLookAds.SetADSState();
+            }
         }
         else
         {
-            freeLookAds.SetNormalState();
+            if (freeLookAds != null)
+            {
+                freeLookAds.SetNormalState();
+            }
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !isWeaponSwitchUIOn)
         {
-            PlaceMine();
+            StartCoroutine(PlaceLandmineCoroutine());
         }
+    }
+
+    private IEnumerator PlaceLandmineCoroutine()
+    {
+        isPlacing = true;
+
+        
+        if (aimLayerController != null)
+        {
+            aimLayerController.ForceDisableAllRigs();
+        }
+
+        // Small delay before starting animation
+        yield return new WaitForSeconds(animationStartDelay);
+
+        
+        if (aimLayerController != null)
+        {
+            aimLayerController.SetLandmineLayerWeight(1f);
+        }
+        freeLookAds.SetADSState();
+        
+        
+
+        
+        yield return new WaitForSeconds(landmineSpawnDelay);
+
+        
+        PlaceMine();
+
+        
+        yield return new WaitForSeconds(animationResetDelay);
+        freeLookAds.SetNormalState();
+
+
+        
+        if (aimLayerController != null)
+        {
+            aimLayerController.SetLandmineLayerWeight(0f);
+        }
+
+        isPlacing = false;
     }
 
     private void PlaceMine()
@@ -50,5 +130,10 @@ public class LandminePlacement : MonoBehaviour
 
             Instantiate(landminePrefab, spawnPos, rotation);
         }
+    }
+
+    private void OnDestroy()
+    {
+        SwitchWeapons.OnToggleWeaponSwitchUI -= isWeaponSwitchUIActive;
     }
 }
