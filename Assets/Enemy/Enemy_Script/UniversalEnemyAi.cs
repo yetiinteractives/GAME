@@ -26,6 +26,11 @@ public abstract class UniversalEnemyAi : MonoBehaviour
         currentHealth = maxhealth;
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
+
+        if(player == null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player").transform;
+        }
     }
 
     protected virtual void Start()
