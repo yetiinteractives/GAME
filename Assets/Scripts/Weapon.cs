@@ -169,6 +169,11 @@ public abstract class Weapon : MonoBehaviour
 
         OnShoot(hit);
 
+        IExplodable explodable = hit.collider.GetComponentInParent<IExplodable>();
+        if(explodable != null)
+            explodable.Explode();
+
+
         if (bulletOnMag <= 0)
             UpdateStatus("Out of Ammo!");
         else

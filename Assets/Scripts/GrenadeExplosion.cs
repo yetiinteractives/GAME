@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.UI.Image;
 
-public class GrenadeExplosion : MonoBehaviour
+
+public class GrenadeExplosion : MonoBehaviour , IExplodable
 {
     [SerializeField] private float fuseTime = 2f;
     [SerializeField] private float radius = 3f;
@@ -19,6 +19,8 @@ public class GrenadeExplosion : MonoBehaviour
     [SerializeField] private AudioClip explosionSound;
     [SerializeField] private float explosionFxLifetime = 3f;
 
+    private bool hasCollided = false;
+
     private bool exploded;
 
     private void Start()
@@ -31,12 +33,18 @@ public class GrenadeExplosion : MonoBehaviour
     {
         if (exploded) return;
 
-        StartCoroutine(FuseRoutine());
+        Explode();
+        hasCollided = true;
     }
     
+    public void Explode()
+    {
+        if (hasCollided) return;   
+         StartCoroutine(FuseRoutine());
+    }
 
 
-
+    
     private IEnumerator FuseRoutine()
     {
         yield return new WaitForSeconds(fuseTime - .125f);
@@ -50,10 +58,10 @@ public class GrenadeExplosion : MonoBehaviour
             grenadeAudioSource.PlayOneShot(explosionSound);
         }
         yield return new WaitForSeconds(.125f);
-        Explode();
+        ExplodePhysics();
     }
 
-    public void Explode()
+    public void ExplodePhysics()
     {
         if (exploded) return;
         exploded = true;
@@ -61,6 +69,13 @@ public class GrenadeExplosion : MonoBehaviour
         Collider[] hits = Physics.OverlapSphere(transform.position, radius, damageMask, QueryTriggerInteraction.Collide);
         foreach (Collider hit in hits)
         {
+            IExplodable explodable = hit.GetComponent<IExplodable>();
+            if (explodable != null)
+            {
+                explodable.Explode();
+            }
+
+
             Rigidbody rb = hit.GetComponent<Rigidbody>();
             if(rb != null)
             {
@@ -101,4 +116,7 @@ public class GrenadeExplosion : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, radius);
     }
+
+
+    
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Landmine : MonoBehaviour
+public class Landmine : MonoBehaviour, IExplodable
 {
     [Header("Trigger")]
     [SerializeField] private float triggerDelay = 1.5f;
@@ -45,6 +45,12 @@ public class Landmine : MonoBehaviour
         StartCoroutine(TriggerDelayRoutine());
     }
 
+    public void Explode()
+    {
+        if (exploded || triggered) return;
+        ExplodePhysics();
+    }
+
     private IEnumerator TriggerDelayRoutine()
     {
         if(triggerSound != null)
@@ -52,10 +58,10 @@ public class Landmine : MonoBehaviour
             landmineAudioSource.PlayOneShot(triggerSound);  
         }
         yield return new WaitForSeconds(triggerDelay);
-        Explode();
+        ExplodePhysics();
     }
 
-    private void Explode()
+    private void ExplodePhysics()
     {
         if (exploded) return;
         exploded = true;
@@ -75,6 +81,12 @@ public class Landmine : MonoBehaviour
 
         foreach (Collider hit in hits)
         {
+            IExplodable explodable = hit.GetComponent<IExplodable>();
+            if (explodable != null)
+            {
+                explodable.Explode();
+            }
+
             Rigidbody rb = hit.GetComponent<Rigidbody>();
             if (rb != null)
             {

@@ -96,7 +96,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 3df2f2a0247a617419fa2fb1d7458481,
         type: 3}
       propertyPath: m_Name
-      value: grenade
+      value: Grenade
       objectReference: {fileID: 0}
     - target: {fileID: 7656107787233967424, guid: 3df2f2a0247a617419fa2fb1d7458481,
         type: 3}
@@ -154,7 +154,7 @@ MonoBehaviour:
   explosionPrefab: {fileID: 9111320563476075686, guid: c6fb71e58ec36784687d958bc39de3f2,
     type: 3}
   grenadeAudioSource: {fileID: 6231696446565988001}
-  explosionSound: {fileID: 8300000, guid: 8b2b7a99a563fe645aabdf5aa559e970, type: 3}
+  explosionSound: {fileID: 8300000, guid: fb7831e51d3bdd041be74c5078730b24, type: 3}
   explosionFxLifetime: 3
 --- !u!54 &2998159413933965099
 Rigidbody:
