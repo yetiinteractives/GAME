@@ -142,4 +142,29 @@ public class GameInput : MonoBehaviour
         actionMap?.Dispose();
         if (Instance == this) Instance = null;
     }
+
+
+    public void OnPlayerDeath()
+    {
+        if (actionMap != null && actionMap.enabled)
+            actionMap.Disable();
+
+        // Reset all states
+        Aim = false;
+        AimDown = false;
+        AimUp = false;
+
+        Fire = false;
+        FireDown = false;
+        FireUp = false;
+
+        ReloadDown = false;
+
+        WeaponWheelDown = false;
+        WeaponWheelUp = false;
+
+        FlashlightDown = false;
+
+        ScopeToggleDown = false;
+    }
 }

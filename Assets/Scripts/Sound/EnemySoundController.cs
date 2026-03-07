@@ -26,6 +26,16 @@ public class EnemySoundController : MonoBehaviour
 {
     // ──────────── Sound Group Definition ────────────
 
+
+    private void OnEnable()
+    {
+        PlayerHealth.OnPlayerDie += StopAll;
+    }
+    private void OnDisable()
+    {
+        PlayerHealth.OnPlayerDie -= StopAll;
+    }
+
     [System.Serializable]
     public class SoundGroup
     {

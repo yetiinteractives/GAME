@@ -123,4 +123,24 @@ public abstract class UniversalEnemyAi : MonoBehaviour
 
     protected void PlayDieAnimation() =>
         anim.SetTrigger("Death");
+
+    private void OnEnable()
+    {
+        PlayerHealth.OnPlayerDie += HandlePlayerDeath;
+    }
+    private void OnDisable()
+    {
+        PlayerHealth.OnPlayerDie -= HandlePlayerDeath;
+    }
+    private void HandlePlayerDeath()
+    {
+        // Stop all enemy actions when player dies
+        if (agent != null && agent.isActiveAndEnabled && agent.isOnNavMesh)
+        {
+            agent.isStopped = true;
+            agent.ResetPath();
+        }
+        PlayIdleAnimation();
+    }
+
 }

@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -142,7 +143,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
     // ──────────── Cached components ────────────
 
-   
+
     private Collider mainCollider;
     private Collider[] allColliders;
     private RagdollPhysicsHandler[] ragdollHandlers;
@@ -201,7 +202,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         mainCollider = GetComponent<Collider>();
         allColliders = GetComponentsInChildren<Collider>(true);
         ragdollHandlers = GetComponentsInChildren<RagdollPhysicsHandler>(true);
-       
+
 
         DisableRagdoll();
         ApplyDesync();
@@ -254,7 +255,9 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     private void OnEnable()
     {
         TryRegisterWithManagers();
+        PlayerHealth.OnPlayerDie += HandlePlayerDeath;
     }
+
 
     private void OnDisable()
     {
@@ -265,6 +268,20 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
             AITickManager.Instance.Unregister(this);
 
         registeredWithTickManager = false;
+
+        PlayerHealth.OnPlayerDie -= HandlePlayerDeath;
+    }
+
+    private void HandlePlayerDeath()
+    {
+        // Stop all AI activity on player death
+        state = ZombieState.Idle;
+        StopAgent();
+        if (anim != null) anim.SetBool("Walk", false);
+        canSeePlayer = false;
+        hasInvestigateTarget = false;
+        
+        canSeePlayer = false;
     }
 
     /// <summary>
@@ -992,3 +1009,4 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         }
     }
 }
+    
