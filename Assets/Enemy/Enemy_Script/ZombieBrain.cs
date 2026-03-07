@@ -168,6 +168,9 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     private float attackRangeSqr;
     private float arrivalThresholdSqr;
 
+    // ──────────── Sound ────────────
+    private EnemySoundController soundController;
+
     // Self-tick fallback when AITickManager is absent
     private bool registeredWithTickManager;
     private float selfTickTimer;
@@ -202,6 +205,8 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
         DisableRagdoll();
         ApplyDesync();
+
+        soundController = GetComponent<EnemySoundController>();
 
         // Safety net: if OnEnable ran before managers were ready, register now.
         // (Start runs after all Awake calls, so singletons are guaranteed to exist.)
@@ -394,18 +399,21 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
                     StopAgent();
                     PlayIdleAnimation();
                 }
+                if (soundController != null) soundController.PlayIdleSound();
                 break;
 
             case ZombieState.Investigate:
                 investigateTimer = 0f;
                 MoveAgent(GetInvestigateSpeed() * speedMultiplier);
                 PlayWalkAnimation();
+                if (soundController != null) soundController.PlayInvestigateSound();
                 break;
 
             case ZombieState.Chase:
                 hasInvestigateTarget = false;
                 MoveAgent(walkSpeed * speedMultiplier);
                 PlayWalkAnimation();
+                if (soundController != null) soundController.PlayChaseSound();
                 break;
 
             case ZombieState.Attack:
@@ -465,6 +473,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         {
             attackWindUpDone = true;
             PlayAttackAnimation();
+            if (soundController != null) soundController.PlayAttackSound();
         }
 
         if (attackTimer >= attackCooldown + attackWindUpDelay)
@@ -721,10 +730,10 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         if (isDead) return;
 
         currentHealth -= damage;
+        if (soundController != null) soundController.PlayHurtSound();
 
         if (currentHealth <= 0)
             Die();
-        
     }
 
     // ════════════════════════════════════════════════
@@ -823,6 +832,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
     protected override void OnEnemyDeath()
     {
+        if (soundController != null) soundController.PlayDeathSound();
         enabled = false;
     }
 
