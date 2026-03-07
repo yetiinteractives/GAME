@@ -27,6 +27,8 @@ public class LarvaBrain : UniversalEnemyAi, IDamageable
     private float lookRadiusSqr;
     private float attackRangeSqr;
 
+    private EnemySoundController soundController;
+
     // ──────────── Lifecycle ────────────
 
     protected override void OnEnemyAwake()
@@ -43,6 +45,8 @@ public class LarvaBrain : UniversalEnemyAi, IDamageable
         ragdollHandlers = GetComponentsInChildren<RagdollPhysicsHandler>(true);
 
         DisableRagdoll();
+
+        soundController = GetComponent<EnemySoundController>();
 
         state = BossState.Idle;
         PlayStartAnimation();
@@ -69,6 +73,7 @@ public class LarvaBrain : UniversalEnemyAi, IDamageable
             case BossState.Idle:
                 agent.isStopped = true;
                 PlayIdleAnimation();
+                if (soundController != null) soundController.PlayIdleSound();
                 attackInProgress = false;
                 break;
 
@@ -77,6 +82,7 @@ public class LarvaBrain : UniversalEnemyAi, IDamageable
                 agent.speed = walkSpeed;
                 agent.SetDestination(player.position);
                 PlayWalkAnimation();
+                if (soundController != null) soundController.PlayChaseSound();
                 attackInProgress = false;
                 break;
 
@@ -92,6 +98,8 @@ public class LarvaBrain : UniversalEnemyAi, IDamageable
                         PlayAttackAnimation();
                     else
                         PlayAttack2Animation();
+
+                    if (soundController != null) soundController.PlayAttackSound();
                 }
 
                 attackTimer += Time.deltaTime;
@@ -112,6 +120,7 @@ public class LarvaBrain : UniversalEnemyAi, IDamageable
         if (isDead) return;
 
         currentHealth -= damage;
+        if (soundController != null) soundController.PlayHurtSound();
 
         if (currentHealth <= 0f)
             Die();
@@ -128,6 +137,7 @@ public class LarvaBrain : UniversalEnemyAi, IDamageable
 
     protected override void HandleDeathVisuals()
     {
+        if (soundController != null) soundController.PlayDeathSound();
         PlayDieAnimation();
     }
 

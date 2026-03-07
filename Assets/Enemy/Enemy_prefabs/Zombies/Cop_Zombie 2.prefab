@@ -149,6 +149,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 4998857361071418124}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a89f2a25cb825fc4dadcb8ac47070807,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2543948859889617515}
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: a89f2a25cb825fc4dadcb8ac47070807,
         type: 3}
       insertIndex: -1
@@ -1142,6 +1146,69 @@ MonoBehaviour:
   knockbackDuration: 0.4
   blendSpeed: 8
   targetWeight: 1
+--- !u!114 &2543948859889617515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4606455391047647706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac913a7e47e0b5740a3f378855a9080c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySoundController
+  idle:
+    clips:
+    - {fileID: 8300000, guid: 676e2a437447c0a40a9b6278c2534d3a, type: 3}
+    volume: 0.4
+    volumeVariation: 0.05
+    pitch: 1
+    pitchVariation: 0.1
+    cooldown: 4
+  investigate:
+    clips:
+    - {fileID: 8300000, guid: a733d08940935ae4ca9cdbade1608c5c, type: 3}
+    volume: 0.6
+    volumeVariation: 0.05
+    pitch: 1
+    pitchVariation: 0.1
+    cooldown: 2
+  chase:
+    clips: []
+    volume: 0.7
+    volumeVariation: 0.05
+    pitch: 1
+    pitchVariation: 0.1
+    cooldown: 2
+  attack:
+    clips:
+    - {fileID: 8300000, guid: 96620b38c0541c047885a6d09874bc03, type: 3}
+    volume: 0.8
+    volumeVariation: 0.05
+    pitch: 1
+    pitchVariation: 0.1
+    cooldown: 0.5
+  hurt:
+    clips: []
+    volume: 0.8
+    volumeVariation: 0.05
+    pitch: 1
+    pitchVariation: 0.1
+    cooldown: 0.3
+  death:
+    clips: []
+    volume: 1
+    volumeVariation: 0.05
+    pitch: 1
+    pitchVariation: 0.1
+    cooldown: 0
+  audioSource: {fileID: 0}
+  spatialBlend: 1
+  minDistance: 1
+  maxDistance: 40
+  globalCooldown: 0.15
+  maxRandomDelay: 0.1
 --- !u!1 &5249806381820363636 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -290750445479886849, guid: a89f2a25cb825fc4dadcb8ac47070807,

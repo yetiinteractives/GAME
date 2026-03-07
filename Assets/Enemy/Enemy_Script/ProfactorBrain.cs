@@ -14,6 +14,8 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
     private int attackIndex = 0;
     private bool isAttacking = false;
 
+    private EnemySoundController soundController;
+
 
     [Header("Movement")]
     public float WalkSpeed = 0f;
@@ -44,6 +46,8 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
         state = BossState.Idle;
         PlayStartAnimation();
         PlayIdleAnimation();
+
+        soundController = GetComponent<EnemySoundController>();
 
         // Disable hitboxes initially
         if (attack1HitBox != null)
@@ -83,6 +87,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
             if(isDead) break;
                 agent.isStopped = true;
                 PlayIdleAnimation();
+                if (soundController != null) soundController.PlayIdleSound();
                 attackInProgress = false; // reset attack when leaving attack range
                 break;
 
@@ -95,6 +100,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
 
                
                 PlayWalkAnimation();
+                if (soundController != null) soundController.PlayChaseSound();
                 
                 attackInProgress = false;
                 break;
@@ -140,6 +146,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
     {
          if (isDead) return;
         currentHealth -= damage;
+        if (soundController != null) soundController.PlayHurtSound();
          
         if (currentHealth <= 0)
         {
@@ -166,6 +173,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
     IEnumerator AttackCycle()
     {
         isAttacking = true;
+        if (soundController != null) soundController.PlayAttackSound();
             switch (attackIndex)
     {
         case 0:
@@ -217,6 +225,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
     }
     protected override void OnEnemyDeath()
     {
+       if (soundController != null) soundController.PlayDeathSound();
        //for loot and some items
     }
 
