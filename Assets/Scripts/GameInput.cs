@@ -167,4 +167,28 @@ public class GameInput : MonoBehaviour
 
         ScopeToggleDown = false;
     }
+
+    public void OnPlayerRespawn()
+    {
+        if (actionMap != null && !actionMap.enabled)
+            actionMap.Enable();
+
+        Aim = true;
+        AimDown = true;
+        AimUp = true;
+
+        Fire = true;
+        FireDown = true;
+        FireUp = true;
+
+        ReloadDown = true;
+
+        WeaponWheelDown = true;
+        WeaponWheelUp = true;
+
+        FlashlightDown = true;
+
+        ScopeToggleDown = true;
+    }
+
 }

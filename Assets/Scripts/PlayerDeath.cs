@@ -1,6 +1,8 @@
-using System;
-using UnityEngine;
 using Invector.vCharacterController;
+using System;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerDeath : MonoBehaviour
@@ -8,6 +10,7 @@ public class PlayerDeath : MonoBehaviour
     [SerializeField]private vThirdPersonController playerController;
     [SerializeField]private vThirdPersonInput playerInput;
     [SerializeField]private Image deathScreen;
+    bool isRespawnScreenOn = false;
 
     private void Start()
     {
@@ -31,6 +34,7 @@ public class PlayerDeath : MonoBehaviour
         playerController.enabled = false;
         playerInput.enabled = false;
         ActivateDeathScreen();
+        StartCoroutine(OnPlayerDie());
     }
 
     private void ActivateDeathScreen() 
@@ -38,5 +42,36 @@ public class PlayerDeath : MonoBehaviour
 
         deathScreen.gameObject.SetActive(true);
         Time.timeScale = 0.4f; 
+    }
+
+    private void Update()
+    {
+        if ((Input.GetKeyDown(KeyCode.Space)) && isRespawnScreenOn)
+        {
+            Respawn();
+        }
+
+    }
+
+    private void Respawn()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        Time.timeScale = 1f;
+        playerController.enabled = true;
+        playerInput.enabled = true; 
+
+    }
+
+    IEnumerator OnPlayerDie()
+    {
+        yield return new WaitForSeconds(2f);
+        isRespawnScreenOn = true;
+        Time.timeScale = 0f;
+    }
+
+
+    void OnDestroy()
+    {
+        PlayerHealth.OnPlayerDie -= HandlePlayerDeath;
     }
 }
