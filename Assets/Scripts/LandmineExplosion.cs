@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Landmine : MonoBehaviour, IExplodable
 {
+    
+
     [Header("Trigger")]
     [SerializeField] private float triggerDelay = 1.5f;
     [SerializeField] private float setupDelay = 3f;
@@ -24,6 +27,9 @@ public class Landmine : MonoBehaviour, IExplodable
     [SerializeField] private AudioSource landmineAudioSource;
     [SerializeField] private AudioClip triggerSound;
     [SerializeField] private AudioClip explosionSound;
+
+
+    [SerializeField] private GameObject[] landmineModels;
 
     private bool exploded;
     private bool triggered;
@@ -57,6 +63,23 @@ public class Landmine : MonoBehaviour, IExplodable
     public void Explode()
     {
         if (exploded || triggered) return;
+
+
+        if (exploded) return;
+        exploded = true;
+
+        if (explosionPrefab != null)
+        {
+            var fx = Instantiate(explosionPrefab, transform.position + Vector3.up, Quaternion.identity);
+            Destroy(fx, explosionFxLifetime);
+        }
+        if (explosionSound != null)
+        {
+            landmineAudioSource.PlayOneShot(explosionSound);
+        }
+
+        CinemachineShake.Instance.Shake(5f, 1f);
+
         ExplodePhysics();
     }
 
@@ -72,18 +95,7 @@ public class Landmine : MonoBehaviour, IExplodable
 
     private void ExplodePhysics()
     {
-        if (exploded) return;
-        exploded = true;
-
-        if (explosionPrefab != null)
-        {
-            var fx = Instantiate(explosionPrefab, transform.position + Vector3.up, Quaternion.identity);
-            Destroy(fx, explosionFxLifetime);
-        }
-        if (explosionSound != null)
-        {
-            landmineAudioSource.PlayOneShot(explosionSound);
-        }
+        
         Collider[] hits = Physics.OverlapSphere(transform.position, radius, damageMask, QueryTriggerInteraction.Collide);
 
         HashSet<IDamageable> unique = new HashSet<IDamageable>();
@@ -118,7 +130,12 @@ public class Landmine : MonoBehaviour, IExplodable
             d.TakeDamage(killDamage);
         }
 
-        Destroy(gameObject);
+
+        for(int i = 0; i < landmineModels.Length; i++)
+        {
+            landmineModels[i].SetActive(false);
+        }
+        Destroy(gameObject , 4f);
     }
 
     private void OnDrawGizmosSelected()

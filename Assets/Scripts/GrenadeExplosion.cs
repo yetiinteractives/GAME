@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,9 @@ using UnityEngine;
 
 public class GrenadeExplosion : MonoBehaviour , IExplodable
 {
+  
+
+
     [SerializeField] private float fuseTime = 2f;
     [SerializeField] private float radius = 3f;
     [SerializeField] private float killDamage = 99999f;
@@ -18,6 +22,9 @@ public class GrenadeExplosion : MonoBehaviour , IExplodable
     [SerializeField] private AudioSource grenadeAudioSource;
     [SerializeField] private AudioClip explosionSound;
     [SerializeField] private float explosionFxLifetime = 3f;
+
+
+    [SerializeField] private GameObject[] gernadeModels; 
 
     private bool hasCollided = false;
 
@@ -57,6 +64,8 @@ public class GrenadeExplosion : MonoBehaviour , IExplodable
         {
             grenadeAudioSource.PlayOneShot(explosionSound);
         }
+        CinemachineShake.Instance.Shake(8f, 1.25f);
+
         yield return new WaitForSeconds(.125f);
         ExplodePhysics();
     }
@@ -108,7 +117,13 @@ public class GrenadeExplosion : MonoBehaviour , IExplodable
 
         }
 
-        Destroy(gameObject);
+        
+        for(int i = 0; i < gernadeModels.Length;i++)
+        {
+            gernadeModels[i].SetActive(false);
+        }
+
+        Destroy(gameObject,5f);
     }
 
     private void OnDrawGizmosSelected()
