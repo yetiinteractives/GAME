@@ -13,7 +13,8 @@ public class GameInput : MonoBehaviour
     private InputAction reloadAction;
     private InputAction weaponWheelAction;
     private InputAction flashlightAction;
-    private InputAction scopeToggleAction;
+    
+
 
     // ── Public per-frame state ──────────────────────────────────────
     public static bool Aim { get; private set; }
@@ -29,11 +30,10 @@ public class GameInput : MonoBehaviour
     public static bool WeaponWheelUp { get; private set; }
     public static bool FlashlightDown { get; private set; }
 
-    // ScopeToggleDown kept for any other scripts that still poll it
-    public static bool ScopeToggleDown { get; private set; }
+  
 
-    // ── NEW: event fired once on the leading edge of E / rightStickPress ──
-    public static event Action OnScopeToggle;
+
+
 
     // ── Auto-bootstrap ──────��──────────────────────────────────────
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -77,12 +77,10 @@ public class GameInput : MonoBehaviour
         flashlightAction.AddBinding("<Keyboard>/t");
         flashlightAction.AddBinding("<Gamepad>/rightShoulder");
 
-        scopeToggleAction = actionMap.AddAction("ScopeToggle", type: InputActionType.Button);
-        scopeToggleAction.AddBinding("<Keyboard>/e");
-        scopeToggleAction.AddBinding("<Gamepad>/rightStickPress");
+       
 
-        // ── Scope: fire event on leading edge only (tap, not hold/release) ──
-        scopeToggleAction.started += _ => OnScopeToggle?.Invoke();
+
+
     }
 
     void Update()
@@ -103,8 +101,7 @@ public class GameInput : MonoBehaviour
         WeaponWheelUp = weaponWheelAction.WasReleasedThisFrame();
         FlashlightDown = flashlightAction.WasPressedThisFrame();
 
-        // ScopeToggleDown still updated for any legacy polling consumers
-        ScopeToggleDown = scopeToggleAction.WasPressedThisFrame();
+
     }
 
     void OnEnable() => actionMap?.Enable();
@@ -138,6 +135,7 @@ public class GameInput : MonoBehaviour
         ReloadDown = false;
         WeaponWheelDown = WeaponWheelUp = false;
         FlashlightDown = false;
-        ScopeToggleDown = false;
+       
+
     }
 }

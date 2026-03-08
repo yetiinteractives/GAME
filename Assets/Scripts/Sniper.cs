@@ -3,14 +3,17 @@ using UnityEngine;
 using Unity.Cinemachine;
 
 /// <summary>
-/// Sniper rifle.
-/// 
-/// Scope input is 100% self-contained — no GameInput, no New Input System.
-/// Uses Input.GetKeyDown (tap only — one fire per physical press, ignores hold/release).
-/// 
-/// Visibility rule (single source of truth — ApplyCullingMask):
-///   Hide player body  =  isAiming AND isScopeActive
-///   Show player body  =  everything else
+/// Sniper rifle — extends Weapon.
+///
+/// Aim:   inherited from Weapon (GameInput.AimDown / AimUp → StartAiming / StopAiming)
+/// Scope: ScopeCheck() override — Input.GetKeyDown(E) tap only, guarded against hold.
+///
+/// Visibility uses TWO layers of protection:
+///   1. Camera.cullingMask  — strips the layer from rendering
+///   2. SkinnedMeshRenderer.enabled — disables renderer directly
+/// This way SetActive() calls on flashlight/children can never accidentally restore visibility.
+///
+/// FAILSAFE: StopAiming() force-restores player visibility unconditionally on RMB release.
 /// </summary>
 public class Sniper : Weapon
 {
@@ -22,8 +25,9 @@ public class Sniper : Weapon
     [SerializeField] private LayerMask playerBodyLayer;
     [SerializeField] private GameObject sniperStock;
 
-    [Header("Scope Key")]
-    [SerializeField] private KeyCode scopeKey = KeyCode.E;
+    [Header("Player Body Renderers")]
+    [Tooltip("Drag every SkinnedMeshRenderer on the player body here. These get disabled when scoped so SetActive() calls on children can't restore visibility.")]
+    [SerializeField] private SkinnedMeshRenderer[] playerBodyRenderers;
 
     // ── Public event for HUD / other systems ─────────────────────────────
     public static event Action<bool> OnSniperStatusUpdate;
@@ -31,72 +35,77 @@ public class Sniper : Weapon
     // ── Internal state ────────────────────────────────────────────────────
     private bool _isScopeActive = false;
 
-    // ── Culling masks, computed once in Awake ─────────────────────────────
+    /// <summary>
+    /// Consumed on first GetKeyDown, cleared only on GetKeyUp.
+    /// Guarantees exactly one toggle per physical press no matter how long E is held.
+    /// </summary>
+    private bool _scopeKeyConsumed = false;
+
+    // ── Culling masks, computed once ──────────────────────────────────────
     private int _defaultMask;
     private int _scopedMask;
 
-    // ─────────────────────────────────────────────────────────���───────────
+    // ─────────────────────────────────────────────────────────────────────
     protected override void Awake()
     {
         base.Awake();
 
         if (cameraController == null)
-            cameraController = FindFirstObjectByType<FreeLookADS>();
+            cameraController = freeLookAds; // reuse what Weapon.Awake() already found
 
         _defaultMask = Camera.main.cullingMask;
         _scopedMask = _defaultMask & ~playerBodyLayer.value;
 
-        // Clean initial state
         if (sniperScopeUI != null) sniperScopeUI.SetActive(false);
         if (sniperStock != null) sniperStock.SetActive(true);
-        ApplyCullingMask(hideBody: false);
+
+        SetPlayerBodyVisible(true); // guarantee clean start
     }
 
     // ─────────────────────────────────────────────────────────────────────
-    protected override void Update()
+    // Called by Weapon.Update() every frame while isAiming is true
+    // ─────────────────────────────────────────────────────────────────────
+    protected override void ScopeCheck()
     {
-        base.Update();
-
-        // TAP only — Input.GetKeyDown is true for exactly one frame per press.
-        // Hold and release are completely ignored.
-        if (Input.GetKeyDown(scopeKey))
+        // ── Release always clears the lock first ──
+        if (Input.GetKeyUp(KeyCode.E))
         {
-            // Silently ignore if not aiming — no state mutation at all
-            if (isAiming)
-            {
-                if (_isScopeActive) DisableScope();
-                else EnableScope();
-            }
+            _scopeKeyConsumed = false;
+            return;
         }
 
-        // Failsafe: if aim was dropped while scope was on,
-        // kill scope. This handles any edge case where StopAiming
-        // didn't fire (e.g. weapon swap mid-aim, death, etc.)
-        if (_isScopeActive && !isAiming)
-            DisableScope();
+        // ── One toggle per tap — hold does nothing after first frame ──
+        if (Input.GetKeyDown(KeyCode.E) && !_scopeKeyConsumed)
+        {
+            _scopeKeyConsumed = true;
+
+            if (_isScopeActive) DisableScope();
+            else EnableScope();
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────
-    // Base-class aim overrides
+    // Aim overrides
     // ─────────────────────────────────────────────────────────────────────
     protected override void StartAiming()
     {
-        base.StartAiming();
-        cameraController?.SetADSState();
-        ApplyCullingMask(hideBody: false); // Not scoped yet — body visible
+        base.StartAiming(); // sets isAiming = true, calls freeLookAds.SetADSState()
+        SetPlayerBodyVisible(true); // not scoped yet — body visible
     }
 
     protected override void StopAiming()
     {
-        base.StopAiming();
-
+        // Kill scope before aim dies
         if (_isScopeActive)
-            DisableScope();             // Handles mask + camera restore
-        else
-        {
-            ApplyCullingMask(hideBody: false);
-            cameraController?.SetNormalState();
-        }
+            DisableScope();
+
+        base.StopAiming(); // sets isAiming = false, calls freeLookAds.SetNormalState()
+
+        // ── FAILSAFE ─────────────────────────────────────────────────────
+        // Unconditional hard restore on RMB release.
+        // Runs last — overrides anything that glitched before it.
+        SetPlayerBodyVisible(true);
+        // ─────────────────────────────────────────────────────────────────
     }
 
     // ─────────────────────────────────────────────────────────────────────
@@ -111,7 +120,7 @@ public class Sniper : Weapon
         if (sniperStock != null) sniperStock.SetActive(false);
 
         cameraController?.SetScopedState();
-        ApplyCullingMask(hideBody: true);
+        SetPlayerBodyVisible(false); // hide
 
         OnSniperStatusUpdate?.Invoke(true);
     }
@@ -120,43 +129,54 @@ public class Sniper : Weapon
     {
         if (!_isScopeActive) return;
         _isScopeActive = false;
+        _scopeKeyConsumed = false; // reset lock so next aim-in works cleanly
 
         if (sniperScopeUI != null) sniperScopeUI.SetActive(false);
         if (sniperStock != null) sniperStock.SetActive(true);
 
-        // Restore camera to the right state for current aim
+        // isAiming still true here when called from StopAiming (before base call)
         if (isAiming) cameraController?.SetADSState();
         else cameraController?.SetNormalState();
 
-        ApplyCullingMask(hideBody: false);
+        SetPlayerBodyVisible(true); // restore
 
         OnSniperStatusUpdate?.Invoke(false);
     }
 
     // ─────────────────────────────────────────────────────────────────────
-    // Called when weapon is swapped away / object disabled mid-scope
+    // Weapon swapped / disabled mid-scope — hard reset
     // ─────────────────────────────────────────────────────────────────────
     protected override void OnDisable()
     {
-        base.OnDisable();
+        base.OnDisable(); // parent unsubscribes fire event, stops reload coroutine
 
         _isScopeActive = false;
+        _scopeKeyConsumed = false;
 
         if (sniperScopeUI != null) sniperScopeUI.SetActive(false);
         if (sniperStock != null) sniperStock.SetActive(true);
 
-        if (Camera.main != null) Camera.main.cullingMask = _defaultMask;
-
+        SetPlayerBodyVisible(true); // hard restore on disable
         cameraController?.SetNormalState();
         OnSniperStatusUpdate?.Invoke(false);
     }
 
     // ─────────────────────────────────────────────────────────────────────
-    // THE single culling-mask write point — nowhere else touches this
+    // TWO-LAYER visibility — cullingMask + renderer.enabled
+    // Nothing outside this method should touch either of these
     // ─────────────────────────────────────────────────────────────────────
-    private void ApplyCullingMask(bool hideBody)
+    private void SetPlayerBodyVisible(bool visible)
     {
-        if (Camera.main == null) return;
-        Camera.main.cullingMask = hideBody ? _scopedMask : _defaultMask;
+        // Layer 1: camera culling mask
+        if (Camera.main != null)
+            Camera.main.cullingMask = visible ? _defaultMask : _scopedMask;
+
+        // Layer 2: disable the renderers directly
+        // SetActive() on ANY child/sibling cannot restore these once disabled
+        if (playerBodyRenderers == null) return;
+        foreach (var r in playerBodyRenderers)
+        {
+            if (r != null) r.enabled = visible;
+        }
     }
 }

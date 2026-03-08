@@ -1796,7 +1796,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1872295709639458077}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 4d158d038a7708b4d8dbb57722eeaed5, type: 2}
   m_CullingMode: 0
@@ -2046,7 +2046,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1991827044894012805}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2056,8 +2056,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -134.02881, y: 0}
-  m_SizeDelta: {x: 2017.4084, y: 1440}
+  m_AnchoredPosition: {x: -130, y: 0}
+  m_SizeDelta: {x: 1531.7708, y: 1093.3582}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1993894310846619287
 GameObject:
@@ -2449,7 +2449,7 @@ GameObject:
   - component: {fileID: 6688830673627808285}
   - component: {fileID: 8044945063600423065}
   - component: {fileID: 1296088104278592267}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Point Light (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2875,7 +2875,7 @@ GameObject:
   - component: {fileID: 1052687758082479664}
   - component: {fileID: 2511279913320638555}
   - component: {fileID: 5505978676995648708}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3092,16 +3092,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2961389813963830371}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1317117256284009692}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -82.05786, y: 71.11597}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -0, y: 0}
+  m_SizeDelta: {x: 1806.565, y: 1451.6838}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &281774403791047009
 CanvasRenderer:
@@ -3960,9 +3960,11 @@ MonoBehaviour:
   gunType: 2
   sniperScopeUI: {fileID: 1872295709639458077}
   cameraController: {fileID: 7676398414137314393}
-  playerBody: {fileID: 2712737624631219035}
-  sniperBody: {fileID: 7044735598620048529}
+  playerBodyLayer:
+    serializedVersion: 2
+    m_Bits: 64
   sniperStock: {fileID: 7390099048717677476}
+  playerBodyRenderers: []
 --- !u!82 &6319843396064039426
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4540,16 +4542,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3811633216829173619}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.0000070514}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1317117256284009692}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 93, y: 0}
-  m_SizeDelta: {x: -642.0342, y: -98.885254}
+  m_SizeDelta: {x: 1266.3, y: 1415.846}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4725659392501579864
 CanvasRenderer:
@@ -4572,7 +4574,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.23529412, g: 0.57254905, b: 0.16862746, a: 0.078431375}
+  m_Color: {r: 0.23529412, g: 0.57254905, b: 0.16862746, a: 0.039215688}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4975,7 +4977,7 @@ GameObject:
   - component: {fileID: 7319835920346680342}
   - component: {fileID: 1862284755975014556}
   - component: {fileID: 3017703220432283649}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: FaceLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8004,10 +8006,10 @@ RectTransform:
   - {fileID: 6253442796529717812}
   m_Father: {fileID: 7753410300615084270}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 4}
-  m_SizeDelta: {x: 2514.6626, y: 1368.884}
+  m_SizeDelta: {x: 2432.6626, y: 1440.884}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2334670930682620084
 CanvasRenderer:
@@ -8030,7 +8032,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.6666667}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -8133,7 +8135,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 519137827636154459}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: AlwaysOnPointlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9902,27 +9904,27 @@ PrefabInstance:
     - target: {fileID: 1133593461759232493, guid: f0a5bcfb8ad4eb240aa6a65b0f592dfe,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1681291802286368986, guid: f0a5bcfb8ad4eb240aa6a65b0f592dfe,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4487827370138199632, guid: f0a5bcfb8ad4eb240aa6a65b0f592dfe,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4660469447768817296, guid: f0a5bcfb8ad4eb240aa6a65b0f592dfe,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5384052141137513077, guid: f0a5bcfb8ad4eb240aa6a65b0f592dfe,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6188813908813138702, guid: f0a5bcfb8ad4eb240aa6a65b0f592dfe,
         type: 3}
@@ -9952,7 +9954,7 @@ PrefabInstance:
     - target: {fileID: 7006477517754668607, guid: f0a5bcfb8ad4eb240aa6a65b0f592dfe,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7657626376147222513, guid: f0a5bcfb8ad4eb240aa6a65b0f592dfe,
         type: 3}
@@ -10062,7 +10064,7 @@ PrefabInstance:
     - target: {fileID: 9027613658103877965, guid: f0a5bcfb8ad4eb240aa6a65b0f592dfe,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 571786540258156697, guid: f0a5bcfb8ad4eb240aa6a65b0f592dfe, type: 3}
@@ -13094,12 +13096,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6661140718854075039}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2712737624631219035 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8778839821806526916, guid: 1065b7837df3b774f9cb7bc79a988cd6,
-    type: 3}
-  m_PrefabInstance: {fileID: 6661140718854075039}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2757692853214115328 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8805781072720299167, guid: 1065b7837df3b774f9cb7bc79a988cd6,
@@ -14952,12 +14948,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 945c292cf1eda8b41aba3e07f8ca2892, type: 3}
---- !u!1 &7044735598620048529 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1680187361931583328, guid: 945c292cf1eda8b41aba3e07f8ca2892,
-    type: 3}
-  m_PrefabInstance: {fileID: 8544124759594738673}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7390099048717677476 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1160859828529614933, guid: 945c292cf1eda8b41aba3e07f8ca2892,
