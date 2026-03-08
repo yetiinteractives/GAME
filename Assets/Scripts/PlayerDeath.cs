@@ -64,7 +64,7 @@ public class PlayerDeath : MonoBehaviour
 
     IEnumerator OnPlayerDie()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         isRespawnScreenOn = true;
         Time.timeScale = 0f;
     }
