@@ -9,7 +9,9 @@ public class PlayerDeath : MonoBehaviour
 {
     [SerializeField]private vThirdPersonController playerController;
     [SerializeField]private vThirdPersonInput playerInput;
-    [SerializeField]private Image deathScreen;
+    [SerializeField] private Image deathScreen;
+    [SerializeField]private Image[] deathScreenSprites;
+
     bool isRespawnScreenOn = false;
 
     private void Start()
@@ -26,6 +28,15 @@ public class PlayerDeath : MonoBehaviour
         }
 
         deathScreen.gameObject.SetActive(false);
+
+      
+
+        for(int i = 0; i < deathScreenSprites.Length; i++)
+        {
+            deathScreenSprites[i].gameObject.SetActive(false); 
+        }
+        
+
     }
 
     private void HandlePlayerDeath()
@@ -37,11 +48,12 @@ public class PlayerDeath : MonoBehaviour
         StartCoroutine(OnPlayerDie());
     }
 
-    private void ActivateDeathScreen() 
+    private void ActivateDeathScreen()
     {
-
+        
         deathScreen.gameObject.SetActive(true);
-        Time.timeScale = 0.4f; 
+       
+        Time.timeScale = 0.4f;
     }
 
     private void Update()
@@ -66,7 +78,13 @@ public class PlayerDeath : MonoBehaviour
     IEnumerator OnPlayerDie()
     {
         yield return new WaitForSeconds(1.5f);
+
+        int randomIndex = UnityEngine.Random.Range(0, deathScreenSprites.Length);
+        deathScreenSprites[randomIndex].gameObject.SetActive(true);
+
         isRespawnScreenOn = true;
+        yield return new WaitForSeconds(1f);
+
         Time.timeScale = 0f;
     }
 
