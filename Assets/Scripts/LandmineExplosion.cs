@@ -6,6 +6,7 @@ public class Landmine : MonoBehaviour, IExplodable
 {
     [Header("Trigger")]
     [SerializeField] private float triggerDelay = 1.5f;
+    [SerializeField] private float setupDelay = 3f;
 
     [Header("Explosion Settings")]
     [SerializeField] private float radius = 3f;
@@ -26,16 +27,18 @@ public class Landmine : MonoBehaviour, IExplodable
 
     private bool exploded;
     private bool triggered;
+    private bool isSetupComplete = false;
 
 
     private void Start()
     {
         landmineAudioSource = GetComponent<AudioSource>();
+        StartCoroutine(SetUpLandmine());
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (exploded || triggered) return;
+        if (exploded || triggered || !isSetupComplete) return;
 
        
         if (other.GetComponentInParent<IDamageable>() == null)
@@ -43,6 +46,12 @@ public class Landmine : MonoBehaviour, IExplodable
 
         triggered = true;
         StartCoroutine(TriggerDelayRoutine());
+    }
+
+    private IEnumerator SetUpLandmine()
+    {
+        yield return new WaitForSeconds(setupDelay);
+        isSetupComplete = true;
     }
 
     public void Explode()

@@ -109,6 +109,10 @@ public class Pistol : Weapon
 
         nextFireTime = Time.time + fireRate;
 
+        IExplodable explodable = hit.collider.GetComponentInParent<IExplodable>();
+        if (explodable != null)
+            explodable.Explode();
+
         NotifyShotEvent();
 
         if (audioSource && currentShootSound)

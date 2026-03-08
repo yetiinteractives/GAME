@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealth : MonoBehaviour, IDamageable
 {
     [Header("UI")]
     [SerializeField] private Image healthBar;        
@@ -19,6 +19,8 @@ public class PlayerHealth : MonoBehaviour
 
     private float currentHealth;
     public float CurrentHealth => currentHealth;
+
+    private bool isDead = false;
 
     public static event Action OnPlayerDie;
 
@@ -94,5 +96,20 @@ public class PlayerHealth : MonoBehaviour
             );
             yield return null;
         }
+    }
+
+
+
+    //Interface implementation
+
+    
+    public bool IsDead() 
+    { 
+        return isDead;
+    }
+
+    public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
+    {
+
     }
 }
