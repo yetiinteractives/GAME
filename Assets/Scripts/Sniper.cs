@@ -1,167 +1,162 @@
 using System;
-using Unity.Cinemachine;
 using UnityEngine;
+using Unity.Cinemachine;
 
+/// <summary>
+/// Sniper rifle.
+/// 
+/// Scope input is 100% self-contained — no GameInput, no New Input System.
+/// Uses Input.GetKeyDown (tap only — one fire per physical press, ignores hold/release).
+/// 
+/// Visibility rule (single source of truth — ApplyCullingMask):
+///   Hide player body  =  isAiming AND isScopeActive
+///   Show player body  =  everything else
+/// </summary>
 public class Sniper : Weapon
 {
-    [Header("Sniper Specifics")]
+    [Header("Sniper Settings")]
     [SerializeField] private GameObject sniperScopeUI;
     [SerializeField] private FreeLookADS cameraController;
 
-    // Body parts to hide when scoped 
-    [SerializeField] private GameObject playerBody;
-    [SerializeField] private GameObject sniperBody;
+    [Header("Layer References")]
+    [SerializeField] private LayerMask playerBodyLayer;
     [SerializeField] private GameObject sniperStock;
 
-    private bool isScopeActive = false;
+    [Header("Scope Key")]
+    [SerializeField] private KeyCode scopeKey = KeyCode.E;
+
+    // ── Public event for HUD / other systems ─────────────────────────────
     public static event Action<bool> OnSniperStatusUpdate;
 
+    // ── Internal state ────────────────────────────────────────────────────
+    private bool _isScopeActive = false;
+
+    // ── Culling masks, computed once in Awake ─────────────────────────────
+    private int _defaultMask;
+    private int _scopedMask;
+
+    // ─────────────────────────────────────────────────────────���───────────
     protected override void Awake()
     {
         base.Awake();
 
-        if (sniperScopeUI != null)
-        {
-            sniperScopeUI.SetActive(false);
-        }
-
-        // Find camera controller if not assigned
         if (cameraController == null)
-        {
             cameraController = FindFirstObjectByType<FreeLookADS>();
-            if (cameraController == null)
-            {
-                Debug.LogError("FreeLookADS controller not found in scene!");
-            }
-        }
 
-        // Ensure bodies are visible by default
-        if (playerBody != null) playerBody.SetActive(true);
-        if (sniperBody != null) sniperBody.SetActive(true);
+        _defaultMask = Camera.main.cullingMask;
+        _scopedMask = _defaultMask & ~playerBodyLayer.value;
+
+        // Clean initial state
+        if (sniperScopeUI != null) sniperScopeUI.SetActive(false);
+        if (sniperStock != null) sniperStock.SetActive(true);
+        ApplyCullingMask(hideBody: false);
     }
 
-    protected override void ScopeCheck()
-    {
-        if (!isAiming)
-        {
-            if (isScopeActive)
-            {
-                DisableScope();
-            }
-            return;
-        }
-
-        // Weapon is aiming - check for scope toggle
-        if (GameInput.ScopeToggleDown)
-        {
-            if (isScopeActive)
-            {
-                DisableScope();
-            }
-            else
-            {
-                EnableScope();
-            }
-        }
-    }
-
-    private void EnableScope()
-    {
-        if (sniperScopeUI == null || cameraController == null) return;
-
-        isScopeActive = true;
-        sniperScopeUI.SetActive(true);
-        cameraController.SetScopedState();
-
-        // Hide bodies when scoped
-        if (playerBody != null) playerBody.SetActive(false);
-        if (sniperBody != null) sniperBody.SetActive(false);
-
-        OnSniperStatusUpdate?.Invoke(true);
-    }
-
-    private void DisableScope()
-    {
-        if (sniperScopeUI == null || cameraController == null) return;
-
-        isScopeActive = false;
-        sniperScopeUI.SetActive(false);
-
-        // Show bodies when not scoped
-        if (playerBody != null) playerBody.SetActive(true);
-        if (sniperBody != null) sniperBody.SetActive(true);
-
-        // Only go to ADS state if we're still aiming
-        if (isAiming)
-        {
-            cameraController.SetADSState();
-        }
-        else
-        {
-            cameraController.SetNormalState();
-        }
-
-        OnSniperStatusUpdate?.Invoke(false);
-    }
-
+    // ─────────────────────────────────────────────────────────────────────
     protected override void Update()
     {
         base.Update();
 
-        // If we're not aiming anymore but still have scope active, disable it
-        if (!isAiming && isScopeActive)
+        // TAP only — Input.GetKeyDown is true for exactly one frame per press.
+        // Hold and release are completely ignored.
+        if (Input.GetKeyDown(scopeKey))
         {
-            DisableScope();
+            // Silently ignore if not aiming — no state mutation at all
+            if (isAiming)
+            {
+                if (_isScopeActive) DisableScope();
+                else EnableScope();
+            }
         }
 
-
-
+        // Failsafe: if aim was dropped while scope was on,
+        // kill scope. This handles any edge case where StopAiming
+        // didn't fire (e.g. weapon swap mid-aim, death, etc.)
+        if (_isScopeActive && !isAiming)
+            DisableScope();
     }
 
-    protected override void OnDisable()
-    {
-        base.OnDisable();
-
-        // Reset when weapon is switched
-        if (isScopeActive)
-        {
-            DisableScope();
-        }
-
-        // Always reset to normal state when weapon is disabled
-        if (cameraController != null)
-        {
-            cameraController.SetNormalState();
-        }
-    }
-
-    // Override base class methods to update camera controller
+    // ─────────────────────────────────────────────────────────────────────
+    // Base-class aim overrides
+    // ─────────────────────────────────────────────────────────────────────
     protected override void StartAiming()
     {
         base.StartAiming();
-
-        if (cameraController != null)
-        {
-            cameraController.SetADSState();
-        }
-
-        sniperStock.SetActive(false); //avoid clipping
+        cameraController?.SetADSState();
+        ApplyCullingMask(hideBody: false); // Not scoped yet — body visible
     }
 
     protected override void StopAiming()
     {
         base.StopAiming();
 
-        // Disable scope first if it's active
-        if (isScopeActive)
+        if (_isScopeActive)
+            DisableScope();             // Handles mask + camera restore
+        else
         {
-            DisableScope();
+            ApplyCullingMask(hideBody: false);
+            cameraController?.SetNormalState();
         }
-        else if (cameraController != null)
-        {
-            cameraController.SetNormalState();
-        }
+    }
 
-        sniperStock.SetActive(true); //restore stock visibility
+    // ─────────────────────────────────────────────────────────────────────
+    // Scope enable / disable
+    // ─────────────────────────────────────────────────────────────────────
+    private void EnableScope()
+    {
+        if (_isScopeActive) return;
+        _isScopeActive = true;
+
+        if (sniperScopeUI != null) sniperScopeUI.SetActive(true);
+        if (sniperStock != null) sniperStock.SetActive(false);
+
+        cameraController?.SetScopedState();
+        ApplyCullingMask(hideBody: true);
+
+        OnSniperStatusUpdate?.Invoke(true);
+    }
+
+    private void DisableScope()
+    {
+        if (!_isScopeActive) return;
+        _isScopeActive = false;
+
+        if (sniperScopeUI != null) sniperScopeUI.SetActive(false);
+        if (sniperStock != null) sniperStock.SetActive(true);
+
+        // Restore camera to the right state for current aim
+        if (isAiming) cameraController?.SetADSState();
+        else cameraController?.SetNormalState();
+
+        ApplyCullingMask(hideBody: false);
+
+        OnSniperStatusUpdate?.Invoke(false);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Called when weapon is swapped away / object disabled mid-scope
+    // ─────────────────────────────────────────────────────────────────────
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+
+        _isScopeActive = false;
+
+        if (sniperScopeUI != null) sniperScopeUI.SetActive(false);
+        if (sniperStock != null) sniperStock.SetActive(true);
+
+        if (Camera.main != null) Camera.main.cullingMask = _defaultMask;
+
+        cameraController?.SetNormalState();
+        OnSniperStatusUpdate?.Invoke(false);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // THE single culling-mask write point — nowhere else touches this
+    // ─────────────────────────────────────────────────────────────────────
+    private void ApplyCullingMask(bool hideBody)
+    {
+        if (Camera.main == null) return;
+        Camera.main.cullingMask = hideBody ? _scopedMask : _defaultMask;
     }
 }

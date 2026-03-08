@@ -58,13 +58,14 @@ public class PlayerDeath : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1f;
         playerController.enabled = true;
-        playerInput.enabled = true; 
+        playerInput.enabled = true;
+        GameInput.Instance.OnPlayerRespawn();
 
     }
 
     IEnumerator OnPlayerDie()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
         isRespawnScreenOn = true;
         Time.timeScale = 0f;
     }

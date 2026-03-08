@@ -58,17 +58,22 @@ public class PlayerRagdoll : MonoBehaviour
         // Enable all child rigidbodies and colliders, *excluding main*
         foreach (Rigidbody rb in ragdollBodies)
         {
-            if (rb != mainRigidbody)
-            {
-                rb.isKinematic = false;
-                rb.linearVelocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-            }
+            if (rb == null) continue;
+            if (rb == mainRigidbody) continue;
+
+            rb.isKinematic = false;
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            
         }
 
         foreach (Collider col in ragdollColliders)
         {
-            if (col != mainCollider) col.enabled = true;
+            if (col == null) continue;
+            if (col == mainCollider) continue;
+
+                
+            col.enabled = true;
         }
 
         // Disable main Rigidbody and Collider
