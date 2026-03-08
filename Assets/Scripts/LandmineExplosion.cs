@@ -65,20 +65,7 @@ public class Landmine : MonoBehaviour, IExplodable
         if (exploded || triggered) return;
 
 
-        if (exploded) return;
-        exploded = true;
-
-        if (explosionPrefab != null)
-        {
-            var fx = Instantiate(explosionPrefab, transform.position + Vector3.up, Quaternion.identity);
-            Destroy(fx, explosionFxLifetime);
-        }
-        if (explosionSound != null)
-        {
-            landmineAudioSource.PlayOneShot(explosionSound);
-        }
-
-        CinemachineShake.Instance.Shake(5f, 1f);
+        
 
         ExplodePhysics();
     }
@@ -95,7 +82,24 @@ public class Landmine : MonoBehaviour, IExplodable
 
     private void ExplodePhysics()
     {
-        
+
+        if (exploded) return;
+        exploded = true;
+
+        if (explosionPrefab != null)
+        {
+            var fx = Instantiate(explosionPrefab, transform.position + Vector3.up, Quaternion.identity);
+            Destroy(fx, explosionFxLifetime);
+        }
+        if (explosionSound != null)
+        {
+            landmineAudioSource.PlayOneShot(explosionSound);
+        }
+
+        CinemachineShake.Instance.Shake(7f, 1f);
+
+        SoundEmitter.EmitSoundAt(transform.position, SoundType.Explosion, 120 , gameObject);
+
         Collider[] hits = Physics.OverlapSphere(transform.position, radius, damageMask, QueryTriggerInteraction.Collide);
 
         HashSet<IDamageable> unique = new HashSet<IDamageable>();

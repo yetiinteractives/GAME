@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Net.Sockets;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Explosives : MonoBehaviour, IExplodable
@@ -16,9 +18,19 @@ public class Explosives : MonoBehaviour, IExplodable
     [Header("FX")]
     [SerializeField] private GameObject explosionPrefab;
     [SerializeField] private float explosionFxLifetime = 3f;
+    [SerializeField] private AudioClip explosionSound;
+    private AudioSource audioSource;
+
+    private MeshRenderer meshRenderer;
 
     private bool exploded;
 
+
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+        meshRenderer = GetComponent<MeshRenderer>();
+    }
     public void Explode()
     {
         if (exploded) return;
@@ -28,9 +40,18 @@ public class Explosives : MonoBehaviour, IExplodable
 
         if (explosionPrefab != null)
         {
-            GameObject fx = Instantiate(explosionPrefab, pos, Quaternion.identity);
+            GameObject fx = Instantiate(explosionPrefab, pos + Vector3.up, Quaternion.identity);
             Destroy(fx, explosionFxLifetime);
         }
+
+        if(audioSource != null && explosionSound!= null)
+        {
+            audioSource.PlayOneShot(explosionSound);
+        }
+
+        CinemachineShake.Instance.Shake(5f, 1f);
+
+        SoundEmitter.EmitSoundAt(pos, SoundType.Explosion, 100f , gameObject);
 
         Collider[] hits = Physics.OverlapSphere(pos, radius, damageMask, QueryTriggerInteraction.Collide);
 
@@ -60,7 +81,9 @@ public class Explosives : MonoBehaviour, IExplodable
             }
         }
 
-        Destroy(gameObject);
+        meshRenderer.enabled = false;
+
+        Destroy(gameObject, 2.5f);
     }
 
     private void OnDrawGizmosSelected()

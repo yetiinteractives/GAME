@@ -157,7 +157,7 @@ public abstract class Weapon : MonoBehaviour
             audioSource.PlayOneShot(shootSound);
 
         // Notify AI sound system
-        SoundEmitter.EmitSoundAt(transform.position, SoundType.Gunshot, gunshotLoudness, gameObject);
+            
 
         if (muzzleFlash != null)
             StartCoroutine(PlayMuzzleFlash());

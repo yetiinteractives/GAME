@@ -66,6 +66,8 @@ public class GrenadeExplosion : MonoBehaviour , IExplodable
         }
         CinemachineShake.Instance.Shake(8f, 1.25f);
 
+        SoundEmitter.EmitSoundAt(transform.position, SoundType.Explosion, 120, gameObject);
+
         yield return new WaitForSeconds(.125f);
         ExplodePhysics();
     }
