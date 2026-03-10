@@ -15597,7 +15597,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 721f96daf2738ae4eb63b855f8b0ddf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WaveSpawner
-  enemyAi: {fileID: 0}
   spawnPoints:
   - {fileID: 1291207131}
   - {fileID: 1676171212}
@@ -15610,7 +15609,7 @@ MonoBehaviour:
   - {fileID: 1732987924406497947, guid: 3e622bc7f09a864408696a8a21c642dd, type: 3}
   - {fileID: 1150035064311611439, guid: 597f08996151be647889fb229641085a, type: 3}
   enemiesPerWave: 5
-  spawnDelay: 2
+  spawnDelay: 4
   timeBetweenWaves: 5
 --- !u!1001 &1195109319
 PrefabInstance:
