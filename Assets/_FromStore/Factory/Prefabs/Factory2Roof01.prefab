@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 33140494471296606}
   - component: {fileID: 23052106310812986}
   - component: {fileID: 64561066658820716}
+  - component: {fileID: -1677877258417108123}
   m_Layer: 0
   m_Name: Factory2Roof01
   m_TagString: Untagged
@@ -113,3 +114,16 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: c4be1b8514187024e8e7478f3a686ee1, type: 3}
+--- !u!114 &-1677877258417108123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1955525371547290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe2e41c83163c2441b63fe2f01297a76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Surface
+  surfaceType: 2

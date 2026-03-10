@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2372070}
   - component: {fileID: 6549496}
   - component: {fileID: 6531386}
+  - component: {fileID: -5230767286291945452}
   m_Layer: 0
   m_Name: PowerBox01_2
   m_TagString: Untagged
@@ -134,3 +135,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.4246826, y: 0.3210312, z: 0.5205109}
   m_Center: {x: -0.0044784546, y: 0.16076916, z: 0.29170847}
+--- !u!114 &-5230767286291945452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 146606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe2e41c83163c2441b63fe2f01297a76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Surface
+  surfaceType: 2

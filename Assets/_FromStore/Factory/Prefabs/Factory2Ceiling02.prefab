@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 33819746038930770}
   - component: {fileID: 23362129002170096}
   - component: {fileID: 65960119807596980}
+  - component: {fileID: -3927438232029652811}
   m_Layer: 0
   m_Name: Factory2Ceiling02
   m_TagString: Untagged
@@ -112,3 +113,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 12, y: 0.16529942, z: 11.7}
   m_Center: {x: -6, y: 0.08264843, z: 5.85}
+--- !u!114 &-3927438232029652811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1084909886641346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe2e41c83163c2441b63fe2f01297a76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Surface
+  surfaceType: 0

@@ -109,6 +109,7 @@ GameObject:
   - component: {fileID: 33699279594719342}
   - component: {fileID: 23273049822700068}
   - component: {fileID: 64527240732429956}
+  - component: {fileID: 7848431184151657128}
   m_Layer: 0
   m_Name: LampCeiling01Night
   m_TagString: Untagged
@@ -211,3 +212,16 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 9ea3b8e8dc6c6f849895368f3102cecb, type: 3}
+--- !u!114 &7848431184151657128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1554310713445970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe2e41c83163c2441b63fe2f01297a76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Surface
+  surfaceType: 2

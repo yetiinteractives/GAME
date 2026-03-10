@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 33350136739197110}
   - component: {fileID: 23059013991368612}
   - component: {fileID: 65623518215936954}
+  - component: {fileID: 7222960279121316417}
   m_Layer: 0
   m_Name: Factory1Floor02
   m_TagString: Untagged
@@ -112,3 +113,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 18, y: 0.1, z: 17.699999}
   m_Center: {x: -9.299999, y: -0.05, z: 8.849999}
+--- !u!114 &7222960279121316417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139861789165088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe2e41c83163c2441b63fe2f01297a76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Surface
+  surfaceType: 1

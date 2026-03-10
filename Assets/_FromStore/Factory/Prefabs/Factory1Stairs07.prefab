@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23235231146768778}
   - component: {fileID: 65164416061109962}
   - component: {fileID: 65382195290425820}
+  - component: {fileID: 6997458854719827864}
   m_Layer: 0
   m_Name: Factory1Stairs07
   m_TagString: Untagged
@@ -135,3 +136,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.5000014, y: 0.9039792, z: 0.06539178}
   m_Center: {x: -2.2500012, y: 0.2784282, z: 2.468151}
+--- !u!114 &6997458854719827864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1899671981156196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe2e41c83163c2441b63fe2f01297a76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Surface
+  surfaceType: 2

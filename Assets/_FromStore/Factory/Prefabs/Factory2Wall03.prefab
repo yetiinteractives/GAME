@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 33924734807743768}
   - component: {fileID: 23542633716259920}
   - component: {fileID: 64344231472860022}
+  - component: {fileID: 3265812052711713623}
   m_Layer: 0
   m_Name: Factory2Wall03
   m_TagString: Untagged
@@ -115,3 +116,16 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 1fd38e57f739fbf42bf469d68e31eb37, type: 3}
+--- !u!114 &3265812052711713623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1425771521498798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe2e41c83163c2441b63fe2f01297a76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Surface
+  surfaceType: 1

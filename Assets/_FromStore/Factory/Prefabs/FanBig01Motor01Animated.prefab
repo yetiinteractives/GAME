@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4750778014161352}
   - component: {fileID: 111923169093875090}
+  - component: {fileID: 3199908683645385909}
   m_Layer: 0
   m_Name: FanBig01Motor01Animated
   m_TagString: Untagged
@@ -51,6 +52,19 @@ Animation:
   m_AnimatePhysics: 0
   m_UpdateMode: 0
   m_CullingType: 0
+--- !u!114 &3199908683645385909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1026643317633192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe2e41c83163c2441b63fe2f01297a76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Surface
+  surfaceType: 2
 --- !u!1 &1749617874376190
 GameObject:
   m_ObjectHideFlags: 0

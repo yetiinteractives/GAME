@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3341280}
   - component: {fileID: 2306698}
   - component: {fileID: 6458570}
+  - component: {fileID: 5548420380827742075}
   m_Layer: 0
   m_Name: GasBallone01_2
   m_TagString: Untagged
@@ -113,3 +114,16 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: b9fe99ddae0a1a54f9c8d45771329ed4, type: 3}
+--- !u!114 &5548420380827742075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 151602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe2e41c83163c2441b63fe2f01297a76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Surface
+  surfaceType: 1

@@ -13,6 +13,18 @@ PrefabInstance:
       value: GasBallone01_2
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: b9fe99ddae0a1a54f9c8d45771329ed4, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: b9fe99ddae0a1a54f9c8d45771329ed4, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: b9fe99ddae0a1a54f9c8d45771329ed4, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: b9fe99ddae0a1a54f9c8d45771329ed4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.43586
       objectReference: {fileID: 0}
@@ -52,6 +64,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: b9fe99ddae0a1a54f9c8d45771329ed4, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6400000, guid: b9fe99ddae0a1a54f9c8d45771329ed4, type: 3}
     m_RemovedGameObjects: []
@@ -61,6 +77,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 8490428204606337686}
+    - targetCorrespondingSourceObject: {fileID: 100000, guid: b9fe99ddae0a1a54f9c8d45771329ed4,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 978064099900118600}
     - targetCorrespondingSourceObject: {fileID: 100000, guid: b9fe99ddae0a1a54f9c8d45771329ed4,
         type: 3}
       insertIndex: -1
@@ -100,6 +120,33 @@ MonoBehaviour:
     type: 3}
   explosionFxLifetime: 3
   explosionSound: {fileID: 8300000, guid: fb7831e51d3bdd041be74c5078730b24, type: 3}
+--- !u!54 &978064099900118600
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6897118099020057678}
+  serializedVersion: 5
+  m_Mass: 20
+  m_LinearDamping: 0.05
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!136 &5912526081705476715
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -120,7 +167,7 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.24676639
-  m_Height: 0.9
+  m_Height: 1
   m_Direction: 1
   m_Center: {x: 0.000000052154064, y: 0.31, z: -0.000015318394}
 --- !u!82 &7087887938944883858
