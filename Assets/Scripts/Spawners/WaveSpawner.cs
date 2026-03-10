@@ -55,6 +55,8 @@ public class WaveSpawner : MonoBehaviour
     }
     void spawnJinga()
     {
+        int randomSpawnPoint = Random.Range(0, spawnPoints.Length);
+        Instantiate(enemyPrefabs[0], spawnPoints[randomSpawnPoint].position, Quaternion.identity);
         
     }
     void spawnEnemy()
