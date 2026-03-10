@@ -5,7 +5,6 @@ using Unity.VisualScripting;
 
 public class WaveSpawner : MonoBehaviour
 {
-    public  UniversalEnemyAi enemyAi;
 
     public Transform[] spawnPoints;
     public GameObject[] enemyPrefabs;
@@ -22,7 +21,7 @@ public class WaveSpawner : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        enemyAi.OnEnemyDeathEvent += EnemyDied;
+        StartCoroutine(StartWave());
     }
     IEnumerator StartWave()
     {
@@ -56,14 +55,23 @@ public class WaveSpawner : MonoBehaviour
     void spawnJinga()
     {
         int randomSpawnPoint = Random.Range(0, spawnPoints.Length);
-        Instantiate(enemyPrefabs[0], spawnPoints[randomSpawnPoint].position, Quaternion.identity);
-        
+        GameObject enemy = Instantiate(enemyPrefabs[0], spawnPoints[randomSpawnPoint].position, Quaternion.identity);
+        UniversalEnemyAi enemyAi = enemy.GetComponent<UniversalEnemyAi>();
+        if (enemyAi != null)
+        {
+            enemyAi.OnEnemyDeathEvent += EnemyDied;
+        }
     }
     void spawnEnemy()
     {
         int randomEnemy = Random.Range(0, enemyPrefabs.Length);
         int randomSpawnPoint = Random.Range(0, spawnPoints.Length);
-        Instantiate(enemyPrefabs[randomEnemy], spawnPoints[randomSpawnPoint].position, Quaternion.identity);
+        GameObject enemy = Instantiate(enemyPrefabs[randomEnemy], spawnPoints[randomSpawnPoint].position, Quaternion.identity);
+        UniversalEnemyAi enemyAi = enemy.GetComponent<UniversalEnemyAi>();
+        if (enemyAi != null)
+        {
+            enemyAi.OnEnemyDeathEvent += EnemyDied;
+        }
     }
       
     public void EnemyDied()
@@ -74,7 +82,6 @@ public class WaveSpawner : MonoBehaviour
 
     public void OnDisable()
     {
-        enemyAi.OnEnemyDeathEvent -= EnemyDied;
-
+        StopAllCoroutines();
     }
 }
