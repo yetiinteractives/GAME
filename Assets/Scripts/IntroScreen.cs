@@ -7,4 +7,12 @@ public class IntroScreen : MonoBehaviour
     { 
         SceneManager.LoadScene("MainMenu");
     }
+
+    void Update()
+    {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            LoadMainMenu();
+        }
+    }
 }

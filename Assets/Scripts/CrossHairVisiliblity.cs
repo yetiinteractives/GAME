@@ -11,6 +11,8 @@ public class CrossHairVisiliblity : MonoBehaviour
     bool isWeaponSwtichUIActive = false;
     bool isAiming = false;
     bool isScoped = false;
+    bool isPauseMenuOn = false;
+
     int currentWeaponIndex = 1;
 
 
@@ -20,8 +22,14 @@ public class CrossHairVisiliblity : MonoBehaviour
         SwitchWeapons.OnWeaponSwitch += HandleWeaponSwitch;
         MousePosition3D.OnFirePerformed += HandleFirePerformed;
         Sniper.OnSniperStatusUpdate += HandleSniperStatusUpdate;
+        PauseMenuHandler.OnPauseMenuToggled += HandlePauseMenuToggled;
 
 
+    }
+
+    private void HandlePauseMenuToggled(bool isPauseOn)
+    {
+        isPauseMenuOn = isPauseOn;
     }
 
     private void HandleSniperStatusUpdate(bool isScopeOn)
@@ -58,7 +66,7 @@ public class CrossHairVisiliblity : MonoBehaviour
 
 
 
-        if (!isWeaponSwtichUIActive)
+        if (!isWeaponSwtichUIActive && !isPauseMenuOn)
         {
             //to hide cursor 
             Cursor.lockState = CursorLockMode.Locked;
@@ -81,5 +89,6 @@ public class CrossHairVisiliblity : MonoBehaviour
         SwitchWeapons.OnWeaponSwitch -= HandleWeaponSwitch;
         MousePosition3D.OnFirePerformed -= HandleFirePerformed;
         Sniper.OnSniperStatusUpdate -= HandleSniperStatusUpdate;
+        PauseMenuHandler.OnPauseMenuToggled -= HandlePauseMenuToggled;
     }
 }
