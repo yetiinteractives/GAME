@@ -6,7 +6,7 @@ public class MainMenuHandler : MonoBehaviour
 {
     public void OnRampageModePressed()
     {
-        SceneManager.LoadScene("RampageMode1");
+        SceneLoader.Load("RampageMode1");
     }
 
     public void OnQuitToDesktopPressed()

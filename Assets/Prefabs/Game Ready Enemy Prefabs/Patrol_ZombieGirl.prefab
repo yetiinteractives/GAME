@@ -675,8 +675,8 @@ MonoBehaviour:
   idle:
     clips:
     - {fileID: 8300000, guid: 676e2a437447c0a40a9b6278c2534d3a, type: 3}
-    volume: 0.338
-    volumeVariation: 0.038
+    volume: 0.87
+    volumeVariation: 0.05
     pitch: 1
     pitchVariation: 0.1
     cooldown: 4
@@ -684,13 +684,13 @@ MonoBehaviour:
     clips:
     - {fileID: 8300000, guid: a733d08940935ae4ca9cdbade1608c5c, type: 3}
     volume: 0.6
-    volumeVariation: 0.05
+    volumeVariation: 0.118
     pitch: 1
     pitchVariation: 0.1
     cooldown: 2
   chase:
     clips: []
-    volume: 0.7
+    volume: 0.63
     volumeVariation: 0.05
     pitch: 1
     pitchVariation: 0.1
@@ -698,7 +698,7 @@ MonoBehaviour:
   attack:
     clips:
     - {fileID: 8300000, guid: 96620b38c0541c047885a6d09874bc03, type: 3}
-    volume: 0.8
+    volume: 0.77
     volumeVariation: 0.05
     pitch: 1
     pitchVariation: 0.1
@@ -712,7 +712,7 @@ MonoBehaviour:
     cooldown: 0.3
   death:
     clips: []
-    volume: 1
+    volume: 0.23
     volumeVariation: 0.05
     pitch: 1
     pitchVariation: 0.1
@@ -720,7 +720,7 @@ MonoBehaviour:
   audioSource: {fileID: 0}
   spatialBlend: 1
   minDistance: 1
-  maxDistance: 40
+  maxDistance: 20
   globalCooldown: 0.15
   maxRandomDelay: 0.1
 --- !u!1 &2932354504639952723 stripped

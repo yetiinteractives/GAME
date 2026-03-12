@@ -35,25 +35,27 @@ public class PauseMenuHandler : MonoBehaviour
 
 
 
-    private void EnablePauseMenu()
+    public void EnablePauseMenu()
     {
         pauseMenu.gameObject.SetActive(true);
         Time.timeScale = 0f;
+        AudioListener.pause = true;
         isPaused = true;
         OnPauseMenuToggled?.Invoke(true);
     }
 
-    private void DisablePauseMenu()
+    public void DisablePauseMenu()
     {
         pauseMenu.gameObject.SetActive(false);
         Time.timeScale = 1f;
+        AudioListener.pause = false;
         isPaused = false;
         OnPauseMenuToggled?.Invoke(false);
     }
 
     public void OnMainMenuPressed()
     {
-        SceneManager.LoadScene("MainMenu");
+        SceneLoader.Load("MainMenu");
     }
 
     private void OnDisable()
