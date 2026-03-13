@@ -750,8 +750,10 @@ MonoBehaviour:
     pitchVariation: 0.1
     cooldown: 0.3
   death:
-    clips: []
-    volume: 0.23
+    clips:
+    - {fileID: 8300000, guid: 98366945247c53e4fb973fe0366f1374, type: 3}
+    - {fileID: 8300000, guid: 36465ad2a77bca5429d77686932620a8, type: 3}
+    volume: 0.51
     volumeVariation: 0.05
     pitch: 1
     pitchVariation: 0.1
