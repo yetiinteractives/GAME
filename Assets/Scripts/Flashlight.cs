@@ -10,9 +10,9 @@ public class Flashlight : MonoBehaviour
 
     private void Start()
     {
-        flashlightOff.SetActive(true);
-        flashlightOn.SetActive(false);
-        isFlashlightOn=false;
+        flashlightOff.SetActive(false);
+        flashlightOn.SetActive(true);
+        isFlashlightOn=true;
     }
 
     private void Update()

@@ -26,6 +26,9 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     private Coroutine trailCoroutine;
 
+   
+
+
     private void Start()
     {
         currentHealth = maxHealth;
@@ -52,14 +55,20 @@ public class PlayerHealth : MonoBehaviour, IDamageable
    
     public void HealPlayer(float amount)
     {
-        currentHealth = Mathf.Clamp(currentHealth + amount, 0f, maxHealth);
+        if (currentHealth >= maxHealth) return;
 
-        // Trail updates instantly
-        healthBarTrail.fillAmount = currentHealth / maxHealth;
+       
+            currentHealth = Mathf.Clamp(currentHealth + amount, 0f, maxHealth);
 
-        healthBarTrail.color = healColor;
+            // Trail updates instantly
+            healthBarTrail.fillAmount = currentHealth / maxHealth;
 
-        StartTrail(HealTrail());
+            healthBarTrail.color = healColor;
+
+            StartTrail(HealTrail());
+
+           
+        
     }
 
   

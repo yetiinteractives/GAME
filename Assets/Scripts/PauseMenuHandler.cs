@@ -58,6 +58,13 @@ public class PauseMenuHandler : MonoBehaviour
         SceneLoader.Load("MainMenu");
     }
 
+    public void OnReplayPressed()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        DisablePauseMenu() ;
+    }
+
+
     private void OnDisable()
     {
         DisablePauseMenu();

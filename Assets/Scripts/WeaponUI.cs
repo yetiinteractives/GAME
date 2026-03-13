@@ -20,6 +20,9 @@ public class WeaponsUI : MonoBehaviour
     [SerializeField] private Weapon sniperWeapon;
     [SerializeField] private ExplosivesHandler explosivesHandler;
 
+   
+
+
     private Weapon currentWeapon;
 
     private void Start()

@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -23,7 +24,10 @@ public class SwitchWeapons : MonoBehaviour
 
     [SerializeField] PlayerHealth playerHealth;
 
-    
+
+    [SerializeField] private int bandageCount = 4;
+    [SerializeField]private TextMeshProUGUI bandageTMP;
+
     private void Start()
     {
         if(switchWeaponWheel != null)
@@ -154,6 +158,12 @@ public class SwitchWeapons : MonoBehaviour
 
     public void OnHealingSelected()
     {
-        playerHealth.HealPlayer(25); // Heal player 
+       if(bandageCount > 0)
+        {
+            playerHealth.HealPlayer(25); // Heal player 
+            bandageCount--;
+
+           bandageTMP.text = bandageCount.ToString();
+        }
     }
 }
