@@ -1,120 +1,138 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Image))]
 public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
-    [Header("Timing")]
-    [SerializeField] private float holdDuration = 1f;
+    [Header("Target Image")]
+    [SerializeField] private Image targetImage; // main button image
 
-    [Header("Visual (optional)")]
-    [SerializeField] private Image holdProgressImage; // Set to Filled type in Inspector
-    [SerializeField] private bool resetProgressOnExit = true;
+    [Header("Sprites")]
+    [SerializeField] private Sprite normalSprite;
+    [SerializeField] private Sprite hoverSprite;
+    [SerializeField] private Sprite holdSprite;
+
+    [Header("Hold Fill")]
+    [SerializeField] private float holdDuration = 1.5f;
+    [SerializeField] private bool unfillOnCancel = true;
 
     [Header("Events")]
-    public UnityEvent onHoverEnter;
-    public UnityEvent onHoverExit;
-    public UnityEvent<float> onHoldProgress; // 0..1
-    public UnityEvent onHoldStart;
-    public UnityEvent onHoldCanceled;
-    public UnityEvent onCraftComplete; // Fires when hold reaches duration
+    public UnityEvent onCraftComplete;
 
-    private bool isPointerOver;
+    private Coroutine holdRoutine;
+    private bool isHovering;
     private bool isHolding;
-    private bool craftCompleted;
-    private float holdTimer;
+    private bool crafted;
+
+    private void Reset()
+    {
+        targetImage = GetComponent<Image>();
+    }
 
     private void Awake()
     {
-        ResetProgressVisual();
-    }
+        if (targetImage == null) targetImage = GetComponent<Image>();
 
-    private void Update()
-    {
-        if (!isHolding || craftCompleted) return;
+        // Fill settings for hold mode
+        targetImage.type = Image.Type.Filled;
+        targetImage.fillMethod = Image.FillMethod.Horizontal;
+        targetImage.fillOrigin = (int)Image.OriginHorizontal.Left;
+        targetImage.fillAmount = 1f; // full in normal state
 
-        holdTimer += Time.deltaTime;
-        float progress = Mathf.Clamp01(holdTimer / holdDuration);
-
-        onHoldProgress?.Invoke(progress);
-        UpdateProgressVisual(progress);
-
-        if (progress >= 1f)
-        {
-            craftCompleted = true;
-            isHolding = false;
-            onCraftComplete?.Invoke();
-        }
+        SetNormal();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        isPointerOver = true;
-        onHoverEnter?.Invoke();
+        isHovering = true;
+        if (!isHolding) SetHover();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        isPointerOver = false;
-        onHoverExit?.Invoke();
+        isHovering = false;
 
-        
-        if (isHolding)
-        {
-            CancelHold();
-        }
-        else if (resetProgressOnExit)
-        {
-            ResetHold();
-        }
+        // Optional behavior: leaving cancels hold
+        if (isHolding) CancelHold();
+        else SetNormal();
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (!isPointerOver) return;
+        if (!isHovering || isHolding) return;
 
-        craftCompleted = false;
+        crafted = false;
         isHolding = true;
-        holdTimer = 0f;
-        onHoldStart?.Invoke();
-        UpdateProgressVisual(0f);
+
+        // hold state sprite + start empty fill
+        targetImage.sprite = holdSprite != null ? holdSprite : targetImage.sprite;
+        targetImage.fillAmount = 0f;
+
+        if (holdRoutine != null) StopCoroutine(holdRoutine);
+        holdRoutine = StartCoroutine(HoldFillRoutine());
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        // If released before completion, cancel
-        if (!craftCompleted)
+        if (!isHolding) return;
+
+        // If not completed, cancel/reset
+        if (!crafted) CancelHold();
+    }
+
+    private IEnumerator HoldFillRoutine()
+    {
+        float t = 0f;
+
+        while (t < holdDuration)
         {
-            CancelHold();
+            t += Time.deltaTime;
+            targetImage.fillAmount = Mathf.Clamp01(t / holdDuration);
+            yield return null;
         }
+
+        // Completed
+        targetImage.fillAmount = 1f;
+        isHolding = false;
+        crafted = true;
+        holdRoutine = null;
+
+        onCraftComplete?.Invoke();
+
+        // stay hover if pointer still on, else normal
+        if (isHovering) SetHover();
+        else SetNormal();
     }
 
     private void CancelHold()
     {
         isHolding = false;
-        holdTimer = 0f;
-        onHoldCanceled?.Invoke();
-        ResetProgressVisual();
+
+        if (holdRoutine != null)
+        {
+            StopCoroutine(holdRoutine);
+            holdRoutine = null;
+        }
+
+        if (unfillOnCancel) targetImage.fillAmount = 0f;
+        else targetImage.fillAmount = 1f;
+
+        if (isHovering) SetHover();
+        else SetNormal();
     }
 
-    private void ResetHold()
+    private void SetNormal()
     {
-        isHolding = false;
-        craftCompleted = false;
-        holdTimer = 0f;
-        ResetProgressVisual();
+        if (normalSprite != null) targetImage.sprite = normalSprite;
+        targetImage.fillAmount = 1f;
     }
 
-    private void UpdateProgressVisual(float progress)
+    private void SetHover()
     {
-        if (holdProgressImage != null)
-            holdProgressImage.fillAmount = progress;
-    }
-
-    private void ResetProgressVisual()
-    {
-        if (holdProgressImage != null)
-            holdProgressImage.fillAmount = 0f;
+        if (hoverSprite != null) targetImage.sprite = hoverSprite;
+        targetImage.fillAmount = 1f;
     }
 }
