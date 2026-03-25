@@ -8,11 +8,29 @@ public class InventoryHandler : MonoBehaviour
 
     [SerializeField] private Image inventory;
 
+    [Header("Craftble Items Images")]
+    [SerializeField] private Image medikit;
+    [SerializeField] private Image bandage;
+    [SerializeField] private Image silencer;
+    [SerializeField] private Image shotgunShell;
+    [SerializeField] private Image grenade;
+    [SerializeField] private Image landmine;
+
+    [Header("Crafting Items Images")]
+    [SerializeField] private Image alcohol;
+    [SerializeField] private Image rag;
+    [SerializeField] private Image binding;
+    [SerializeField] private Image gunPowder;
+    [SerializeField] private Image canBox;
+
+
     private bool isInventoryOpen = false;
 
     private void Start()
     {
         inventory.gameObject.SetActive(false);
+
+
     }
 
     private void Update()
@@ -41,12 +59,45 @@ public class InventoryHandler : MonoBehaviour
         OnInventoryToggled?.Invoke(false);
     }
 
+
+    private void OnEnable()
+    {
+        CustomButton.OnHoveredCraftItem += HandleHoveredCraftItem;
+        CustomButton.OnUnhoveredCraftItem += HandleUnhoveredCraftItem;
+        CustomButton.OnCraftItemHold += HandleCraftItemHold;
+        CustomButton.OnCraftItemRelease += HandleCraftItemRelease;
+    }
     private void OnDisable()
     {
         if (isInventoryOpen)
         {
             CloseInventory() ;
         }
+
+        CustomButton.OnHoveredCraftItem -= HandleHoveredCraftItem;
+        CustomButton.OnUnhoveredCraftItem -= HandleUnhoveredCraftItem;
+        CustomButton.OnCraftItemHold -= HandleCraftItemHold;
+        CustomButton.OnCraftItemRelease -= HandleCraftItemRelease;
+
     }
 
+    private void HandleCraftItemRelease(CustomButton.CraftableItem item)
+    {
+        
+    }
+
+    private void HandleCraftItemHold(CustomButton.CraftableItem item)
+    {
+
+    }
+
+    private void HandleUnhoveredCraftItem(CustomButton.CraftableItem item)
+    {
+
+    }
+
+    private void HandleHoveredCraftItem(CustomButton.CraftableItem item)
+    {
+
+    }
 }
