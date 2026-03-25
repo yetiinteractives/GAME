@@ -190,29 +190,19 @@ public class AimLayerController : MonoBehaviour
         aimRigWeight = 0.75f;
     }
 
-    // PUBLIC METHODS FOR GRENADE AND LANDMINE
-
-    /// <summary>
-    /// Sets the target Grenade Layer weight (will lerp smoothly in Update)
-    /// Only arms move via avatar mask. No animation rigging.
-    /// </summary>
+  
     public void SetGrenadeLayerWeight(float weight)
     {
         targetGrenadeLayerWeight = Mathf.Clamp01(weight);
     }
 
-    /// <summary>
-    /// Sets the target Landmine Layer weight (will lerp smoothly in Update)
-    /// Full body override. No animation rigging.
-    /// </summary>
+ 
     public void SetLandmineLayerWeight(float weight)
     {
         targetLandmineLayerWeight = Mathf.Clamp01(weight);
     }
 
-    /// <summary>
-    /// Forces immediate reset of all rigs - useful when switching to explosives
-    /// </summary>
+   
     public void ForceDisableAllRigs()
     {
         pistolAimRig.weight = 0f;
