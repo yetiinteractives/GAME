@@ -10276,50 +10276,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 196905663375859200, guid: d7fcb52adb3a8cd40bb748351e3613c4,
-        type: 3}
-      propertyPath: reloadTime
-      value: 1.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 196905663375859200, guid: d7fcb52adb3a8cd40bb748351e3613c4,
-        type: 3}
-      propertyPath: magCapacity
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 196905663375859200, guid: d7fcb52adb3a8cd40bb748351e3613c4,
-        type: 3}
-      propertyPath: totalBullet
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 540210248575676909, guid: d7fcb52adb3a8cd40bb748351e3613c4,
-        type: 3}
-      propertyPath: explosivesHandler
-      value: 
-      objectReference: {fileID: 1242335866}
     - target: {fileID: 2820313199325803506, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
       propertyPath: m_Name
       value: ______Essestial_Prefab______
-      objectReference: {fileID: 0}
-    - target: {fileID: 4643398768095534328, guid: d7fcb52adb3a8cd40bb748351e3613c4,
-        type: 3}
-      propertyPath: explosivesHandler
-      value: 
-      objectReference: {fileID: 1242335866}
-    - target: {fileID: 4688316207421438785, guid: d7fcb52adb3a8cd40bb748351e3613c4,
-        type: 3}
-      propertyPath: reloadTime
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4688316207421438785, guid: d7fcb52adb3a8cd40bb748351e3613c4,
-        type: 3}
-      propertyPath: magCapacity
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4688316207421438785, guid: d7fcb52adb3a8cd40bb748351e3613c4,
-        type: 3}
-      propertyPath: totalBullet
-      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 4825617583685081468, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
@@ -10375,31 +10335,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6625623158948479575, guid: d7fcb52adb3a8cd40bb748351e3613c4,
-        type: 3}
-      propertyPath: initialGrenadeCount
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 6625623158948479575, guid: d7fcb52adb3a8cd40bb748351e3613c4,
-        type: 3}
-      propertyPath: initialLandmineCount
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8823724606015440329, guid: d7fcb52adb3a8cd40bb748351e3613c4,
-        type: 3}
-      propertyPath: damage
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 8823724606015440329, guid: d7fcb52adb3a8cd40bb748351e3613c4,
-        type: 3}
-      propertyPath: reloadTime
-      value: 1.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8823724606015440329, guid: d7fcb52adb3a8cd40bb748351e3613c4,
-        type: 3}
-      propertyPath: totalBullet
-      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -17658,18 +17593,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1241909549}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1242335866 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6625623158948479575, guid: d7fcb52adb3a8cd40bb748351e3613c4,
-    type: 3}
-  m_PrefabInstance: {fileID: 738273677}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3613f688d2c73e441aa94f763b87f0f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ExplosivesHandler
 --- !u!1001 &1242643503
 PrefabInstance:
   m_ObjectHideFlags: 0

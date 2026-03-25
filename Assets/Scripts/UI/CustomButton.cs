@@ -14,6 +14,7 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public static event Action<CraftableItem> OnUnhoveredCraftItem;
     public static event Action<CraftableItem> OnCraftItemHold;
     public static event Action<CraftableItem> OnCraftItemRelease;
+    public static event Action<CraftableItem> OnCraftCompleted;
 
     [Header("Target Image")]
     [SerializeField] private Image targetImage; // main button image
@@ -27,8 +28,7 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     [SerializeField] private float holdDuration = 1.5f;
     [SerializeField] private bool unfillOnCancel = true;
 
-    [Header("Events")]
-    public UnityEvent onCraftComplete;
+    
 
     private Coroutine holdRoutine;
     private bool isHovering;
@@ -134,7 +134,8 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         crafted = true;
         holdRoutine = null;
 
-        onCraftComplete?.Invoke();
+
+        OnCraftCompleted?.Invoke(itemToCraft);
 
         // stay hover if pointer still on, else normal
         if (isHovering) SetHover();
