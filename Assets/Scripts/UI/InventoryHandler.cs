@@ -9,24 +9,24 @@ public class InventoryHandler : MonoBehaviour
 {
     public static event Action<bool> OnInventoryToggled;
 
+    [Header("Inventory Root")]
     [SerializeField] private Image inventory;
 
-    [Header("Craftble Items Images")]
-    [SerializeField] private Image medikit;
-    [SerializeField] private Image bandage;
-    [SerializeField] private Image silencer;
-    [SerializeField] private Image shotgunShell;
-    [SerializeField] private Image grenade;
-    [SerializeField] private Image landmine;
-
-    [Header("Crafting Items Images")]
+    [Header("Crafting Ingredient Images")]
     [SerializeField] private Image alcohol;
     [SerializeField] private Image rag;
     [SerializeField] private Image binding;
     [SerializeField] private Image gunPowder;
     [SerializeField] private Image canBox;
 
-    [Header("Crafting Item Highlight")]
+    [Header("Ingredient Radial Overlay Images")]
+    [SerializeField] private Image alcoholRadial;
+    [SerializeField] private Image ragRadial;
+    [SerializeField] private Image bindingRadial;
+    [SerializeField] private Image gunPowderRadial;
+    [SerializeField] private Image canRadial;
+
+    [Header("Ingredient Visuals")]
     [SerializeField] private Sprite ingredientNormalSprite;
     [SerializeField] private Sprite ingredientHighlightedSprite;
     [SerializeField] private Sprite ingredientMissingSprite;
@@ -34,22 +34,37 @@ public class InventoryHandler : MonoBehaviour
     [SerializeField] private Color ingredientHighlightColor = Color.white;
     [SerializeField] private Color ingredientMissingColor = new Color(1f, 0.35f, 0.35f, 1f);
 
-    [Header("Radial Fill Overlay (for crafting ingredients)")]
-    [SerializeField] private Image alcoholRadial;
-    [SerializeField] private Image ragRadial;
-    [SerializeField] private Image bindingRadial;
-    [SerializeField] private Image gunPowderRadial;
-    [SerializeField] private Image canRadial;
+    [Header("Timing")]
     [SerializeField] private float radialDuration = 1.5f;
 
-    [Header("Initial Crafting Item Counts")]
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip hoverClip;
+    [SerializeField] private AudioClip notEnoughMaterialsClip;
+    [SerializeField] private AudioClip craftingLoopClip; // loop while holding
+    [SerializeField, Range(0f, 1f)] private float hoverVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float notEnoughVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float craftingLoopVolume = 1f;
+
+    [Header("Denied Animation - Button")]
+    [SerializeField] private float denyAnimDuration = 0.12f;
+    [SerializeField] private float denyScaleDown = 0.92f;
+    [SerializeField] private float denyScaleUp = 1.03f;
+
+    [Header("Denied Animation - Ingredients Shake")]
+    [SerializeField] private float ingredientShakeDuration = 0.16f;
+    [SerializeField] private float ingredientShakeFrequency = 45f;
+    [SerializeField] private float ingredientShakeAmpNormal = 4f;
+    [SerializeField] private float ingredientShakeAmpMissing = 10f;
+
+    [Header("Initial Ingredient Counts")]
     [SerializeField] private int alcoholCount = 3;
     [SerializeField] private int ragCount = 5;
     [SerializeField] private int bindingCount = 3;
     [SerializeField] private int gunPowderCount = 4;
     [SerializeField] private int canCount = 3;
 
-    [Header("Initial Craftable Item Counts")]
+    [Header("Initial Craftable Counts")]
     [SerializeField] private int medikitCount = 0;
     [SerializeField] private int bandageCount = 0;
     [SerializeField] private int silencerCount = 0;
@@ -57,14 +72,14 @@ public class InventoryHandler : MonoBehaviour
     [SerializeField] private int grenadeCount = 0;
     [SerializeField] private int landmineCount = 0;
 
-    [Header("TMP - Crafting Item Counts")]
+    [Header("TMP - Ingredient Counts")]
     [SerializeField] private TMP_Text alcoholCountText;
     [SerializeField] private TMP_Text ragCountText;
     [SerializeField] private TMP_Text bindingCountText;
     [SerializeField] private TMP_Text gunPowderCountText;
     [SerializeField] private TMP_Text canCountText;
 
-    [Header("TMP - Craftable Item Counts")]
+    [Header("TMP - Craftable Counts")]
     [SerializeField] private TMP_Text medikitCountText;
     [SerializeField] private TMP_Text bandageCountText;
     [SerializeField] private TMP_Text silencerCountText;
@@ -72,11 +87,13 @@ public class InventoryHandler : MonoBehaviour
     [SerializeField] private TMP_Text grenadeCountText;
     [SerializeField] private TMP_Text landmineCountText;
 
-    private bool isInventoryOpen = false;
-    private Coroutine radialRoutine;
-    private CustomButton.CraftableItem hoveredItem;
-
     private enum IngredientType { Alcohol, Rag, Binding, GunPowder, Can }
+
+    private bool isInventoryOpen;
+    private Coroutine radialRoutine;
+    private Coroutine denyButtonRoutine;
+    private readonly Dictionary<Image, Coroutine> ingredientShakeRoutines = new();
+    private readonly Dictionary<CustomButton, AudioSource> craftingAudioSources = new();
 
     private readonly Dictionary<IngredientType, int> ingredientCounts = new();
     private readonly Dictionary<CustomButton.CraftableItem, int> craftableCounts = new();
@@ -84,9 +101,14 @@ public class InventoryHandler : MonoBehaviour
     private readonly Dictionary<IngredientType, Image> ingredientRadials = new();
     private readonly Dictionary<CustomButton.CraftableItem, Dictionary<IngredientType, int>> recipes = new();
 
+    private void Awake()
+    {
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
+    }
+
     private void Start()
     {
-        inventory.gameObject.SetActive(false);
+        if (inventory != null) inventory.gameObject.SetActive(false);
 
         ingredientCounts[IngredientType.Alcohol] = alcoholCount;
         ingredientCounts[IngredientType.Rag] = ragCount;
@@ -121,46 +143,11 @@ public class InventoryHandler : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q) && !isInventoryOpen) OpenInventory();
-        else if (Input.GetKeyDown(KeyCode.Q) && isInventoryOpen) CloseInventory();
-    }
-
-    private void BuildRecipes()
-    {
-        recipes[CustomButton.CraftableItem.Medikit] = new() { { IngredientType.Alcohol, 1 }, { IngredientType.Rag, 2 }, { IngredientType.Binding, 1 } };
-        recipes[CustomButton.CraftableItem.Bandage] = new() { { IngredientType.Rag, 1 }, { IngredientType.Binding, 1 } };
-        recipes[CustomButton.CraftableItem.Silencer] = new() { { IngredientType.Can, 1 }, { IngredientType.Rag, 1 }, { IngredientType.Binding, 1 } };
-        recipes[CustomButton.CraftableItem.ShotgunShell] = new() { { IngredientType.Can, 1 }, { IngredientType.GunPowder, 1 } };
-        recipes[CustomButton.CraftableItem.Grenade] = new() { { IngredientType.Can, 1 }, { IngredientType.GunPowder, 2 }, { IngredientType.Binding, 1 } };
-        recipes[CustomButton.CraftableItem.Landmine] = new() { { IngredientType.Can, 1 }, { IngredientType.GunPowder, 2 }, { IngredientType.Binding, 1 } };
-    }
-
-    private void SetupRadials()
-    {
-        foreach (var kvp in ingredientRadials)
+        if (Input.GetKeyDown(KeyCode.Q))
         {
-            if (kvp.Value == null) continue;
-            kvp.Value.type = Image.Type.Filled;
-            kvp.Value.fillMethod = Image.FillMethod.Radial360;
-            kvp.Value.fillOrigin = (int)Image.Origin360.Top;
-            kvp.Value.fillClockwise = true;
-            kvp.Value.fillAmount = 0f;
-            kvp.Value.gameObject.SetActive(false);
+            if (isInventoryOpen) CloseInventory();
+            else OpenInventory();
         }
-    }
-
-    private void OpenInventory()
-    {
-        inventory.gameObject.SetActive(true);
-        isInventoryOpen = true;
-        OnInventoryToggled?.Invoke(true);
-    }
-
-    private void CloseInventory()
-    {
-        inventory.gameObject.SetActive(false);
-        isInventoryOpen = false;
-        OnInventoryToggled?.Invoke(false);
     }
 
     private void OnEnable()
@@ -170,62 +157,137 @@ public class InventoryHandler : MonoBehaviour
         CustomButton.OnCraftItemHold += HandleCraftItemHold;
         CustomButton.OnCraftItemRelease += HandleCraftItemRelease;
         CustomButton.OnCraftCompleted += HandleCraftCompleted;
+        CustomButton.OnCraftDenied += HandleCraftDenied;
+        CustomButton.OnCraftCanceled += HandleCraftCanceled;
     }
 
     private void OnDisable()
     {
-        if (isInventoryOpen) CloseInventory();
-
         CustomButton.OnHoveredCraftItem -= HandleHoveredCraftItem;
         CustomButton.OnUnhoveredCraftItem -= HandleUnhoveredCraftItem;
         CustomButton.OnCraftItemHold -= HandleCraftItemHold;
         CustomButton.OnCraftItemRelease -= HandleCraftItemRelease;
         CustomButton.OnCraftCompleted -= HandleCraftCompleted;
+        CustomButton.OnCraftDenied -= HandleCraftDenied;
+        CustomButton.OnCraftCanceled -= HandleCraftCanceled;
+
+        StopAllCraftingLoopSounds();
+        StopRadialRoutine();
+        HideAllRadials();
     }
 
-    private void HandleHoveredCraftItem(CustomButton.CraftableItem item)
+    public bool CanCraft(CustomButton.CraftableItem item)
     {
-        hoveredItem = item;
-        HighlightRecipe(item);
+        if (!recipes.TryGetValue(item, out var recipe)) return false;
+        foreach (var req in recipe)
+            if (ingredientCounts[req.Key] < req.Value) return false;
+        return true;
     }
 
-    private void HandleUnhoveredCraftItem(CustomButton.CraftableItem item)
+    public void UpdateUICounts()
+    {
+        if (alcoholCountText) alcoholCountText.text = ingredientCounts[IngredientType.Alcohol].ToString();
+        if (ragCountText) ragCountText.text = ingredientCounts[IngredientType.Rag].ToString();
+        if (bindingCountText) bindingCountText.text = ingredientCounts[IngredientType.Binding].ToString();
+        if (gunPowderCountText) gunPowderCountText.text = ingredientCounts[IngredientType.GunPowder].ToString();
+        if (canCountText) canCountText.text = ingredientCounts[IngredientType.Can].ToString();
+
+        if (medikitCountText) medikitCountText.text = craftableCounts[CustomButton.CraftableItem.Medikit].ToString();
+        if (bandageCountText) bandageCountText.text = craftableCounts[CustomButton.CraftableItem.Bandage].ToString();
+        if (silencerCountText) silencerCountText.text = craftableCounts[CustomButton.CraftableItem.Silencer].ToString();
+        if (shotgunShellCountText) shotgunShellCountText.text = craftableCounts[CustomButton.CraftableItem.ShotgunShell].ToString();
+        if (grenadeCountText) grenadeCountText.text = craftableCounts[CustomButton.CraftableItem.Grenade].ToString();
+        if (landmineCountText) landmineCountText.text = craftableCounts[CustomButton.CraftableItem.Landmine].ToString();
+    }
+
+    private void HandleHoveredCraftItem(CustomButton button)
+    {
+        PlayHoverSfx();
+        HighlightRecipe(button.ItemToCraft);
+    }
+
+    private void HandleUnhoveredCraftItem(CustomButton button)
     {
         StopRadialRoutine();
         HideAllRadials();
         ResetIngredientVisuals();
     }
 
-    private void HandleCraftItemHold(CustomButton.CraftableItem item)
+    private void HandleCraftItemHold(CustomButton button)
     {
-        hoveredItem = item;
+        var item = button.ItemToCraft;
         HighlightRecipe(item);
 
+        if (!CanCraft(item))
+        {
+            PlayNotEnoughSfx();
+            PlayDeniedButtonBump(button);
+            PlayIngredientDenyShake(item);
+            StopRadialRoutine();
+            HideAllRadials();
+            StopCraftingLoopSound(button);
+            return;
+        }
+
+        StartCraftingLoopSound(button);
+
         StopRadialRoutine();
-        radialRoutine = StartCoroutine(IngredientRadialFillRoutine(item, radialDuration)); // 1.5 sec
+        radialRoutine = StartCoroutine(IngredientRadialFillRoutine(item, radialDuration));
     }
 
-    private void HandleCraftItemRelease(CustomButton.CraftableItem item)
+    private void HandleCraftItemRelease(CustomButton button)
     {
+        StopCraftingLoopSound(button);
         StopRadialRoutine();
         HideAllRadials();
-        HighlightRecipe(item);
+        HighlightRecipe(button.ItemToCraft);
     }
 
-    private void HandleCraftCompleted(CustomButton.CraftableItem item)
+    private void HandleCraftCanceled(CustomButton button)
     {
+        StopCraftingLoopSound(button);
+        StopRadialRoutine();
+        HideAllRadials();
+    }
+
+    private void HandleCraftCompleted(CustomButton button)
+    {
+        StopCraftingLoopSound(button);
         StopRadialRoutine();
         HideAllRadials();
 
-        if (TryCraft(item))
+        if (!TryCraft(button.ItemToCraft))
         {
-            UpdateUICounts();
-            HighlightRecipe(item);
+            PlayNotEnoughSfx();
+            PlayDeniedButtonBump(button);
+            PlayIngredientDenyShake(button.ItemToCraft);
+            return;
         }
-        else
-        {
-            Debug.Log($"Not enough ingredients to craft {item}");
-        }
+
+        UpdateUICounts();
+        HighlightRecipe(button.ItemToCraft);
+    }
+
+    private void HandleCraftDenied(CustomButton button)
+    {
+        StopCraftingLoopSound(button);
+        PlayNotEnoughSfx();
+        PlayDeniedButtonBump(button);
+        PlayIngredientDenyShake(button.ItemToCraft);
+        StopRadialRoutine();
+        HideAllRadials();
+        HighlightRecipe(button.ItemToCraft);
+    }
+
+    private bool TryCraft(CustomButton.CraftableItem item)
+    {
+        if (!CanCraft(item)) return false;
+
+        var recipe = recipes[item];
+        foreach (var req in recipe) ingredientCounts[req.Key] -= req.Value;
+        craftableCounts[item] += 1;
+
+        return true;
     }
 
     private IEnumerator IngredientRadialFillRoutine(CustomButton.CraftableItem item, float duration)
@@ -256,32 +318,7 @@ public class InventoryHandler : MonoBehaviour
             yield return null;
         }
 
-        foreach (var req in recipe)
-        {
-            Image radial = ingredientRadials[req.Key];
-            if (radial == null) continue;
-            radial.fillAmount = 1f;
-        }
-
         radialRoutine = null;
-    }
-
-    private bool TryCraft(CustomButton.CraftableItem item)
-    {
-        if (!recipes.TryGetValue(item, out var recipe)) return false;
-
-        foreach (var req in recipe)
-        {
-            if (ingredientCounts[req.Key] < req.Value) return false;
-        }
-
-        foreach (var req in recipe)
-        {
-            ingredientCounts[req.Key] -= req.Value;
-        }
-
-        craftableCounts[item] += 1;
-        return true;
     }
 
     private void HighlightRecipe(CustomButton.CraftableItem item)
@@ -291,13 +328,14 @@ public class InventoryHandler : MonoBehaviour
 
         foreach (var req in recipe)
         {
-            IngredientType ingredient = req.Key;
+            IngredientType ing = req.Key;
             int need = req.Value;
-            int have = ingredientCounts[ingredient];
+            int have = ingredientCounts[ing];
 
-            Image img = ingredientImages[ingredient];
+            Image img = ingredientImages[ing];
+            if (img == null) continue;
+
             bool enough = have >= need;
-
             if (enough)
             {
                 if (ingredientHighlightedSprite != null) img.sprite = ingredientHighlightedSprite;
@@ -315,17 +353,23 @@ public class InventoryHandler : MonoBehaviour
     {
         foreach (var kvp in ingredientImages)
         {
+            if (kvp.Value == null) continue;
             if (ingredientNormalSprite != null) kvp.Value.sprite = ingredientNormalSprite;
             kvp.Value.color = ingredientNormalColor;
         }
     }
 
-    private void StopRadialRoutine()
+    private void SetupRadials()
     {
-        if (radialRoutine != null)
+        foreach (var kvp in ingredientRadials)
         {
-            StopCoroutine(radialRoutine);
-            radialRoutine = null;
+            if (kvp.Value == null) continue;
+            kvp.Value.type = Image.Type.Filled;
+            kvp.Value.fillMethod = Image.FillMethod.Radial360;
+            kvp.Value.fillOrigin = (int)Image.Origin360.Top;
+            kvp.Value.fillClockwise = true;
+            kvp.Value.fillAmount = 0f;
+            kvp.Value.gameObject.SetActive(false);
         }
     }
 
@@ -339,29 +383,179 @@ public class InventoryHandler : MonoBehaviour
         }
     }
 
-   
-    public void UpdateUICounts()
+    private void StopRadialRoutine()
     {
-        // crafting ingredient counts
-        if (alcoholCountText) alcoholCountText.text = ingredientCounts[IngredientType.Alcohol].ToString();
-        if (ragCountText) ragCountText.text = ingredientCounts[IngredientType.Rag].ToString();
-        if (bindingCountText) bindingCountText.text = ingredientCounts[IngredientType.Binding].ToString();
-        if (gunPowderCountText) gunPowderCountText.text = ingredientCounts[IngredientType.GunPowder].ToString();
-        if (canCountText) canCountText.text = ingredientCounts[IngredientType.Can].ToString();
-
-        // craftable item counts
-        if (medikitCountText) medikitCountText.text = craftableCounts[CustomButton.CraftableItem.Medikit].ToString();
-        if (bandageCountText) bandageCountText.text = craftableCounts[CustomButton.CraftableItem.Bandage].ToString();
-        if (silencerCountText) silencerCountText.text = craftableCounts[CustomButton.CraftableItem.Silencer].ToString();
-        if (shotgunShellCountText) shotgunShellCountText.text = craftableCounts[CustomButton.CraftableItem.ShotgunShell].ToString();
-        if (grenadeCountText) grenadeCountText.text = craftableCounts[CustomButton.CraftableItem.Grenade].ToString();
-        if (landmineCountText) landmineCountText.text = craftableCounts[CustomButton.CraftableItem.Landmine].ToString();
+        if (radialRoutine != null)
+        {
+            StopCoroutine(radialRoutine);
+            radialRoutine = null;
+        }
     }
 
-    //  helpers for other scripts
-    public void AddIngredient_Alcohol(int amount) { ingredientCounts[IngredientType.Alcohol] += amount; UpdateUICounts(); if (isInventoryOpen) HighlightRecipe(hoveredItem); }
-    public void AddIngredient_Rag(int amount) { ingredientCounts[IngredientType.Rag] += amount; UpdateUICounts(); if (isInventoryOpen) HighlightRecipe(hoveredItem); }
-    public void AddIngredient_Binding(int amount) { ingredientCounts[IngredientType.Binding] += amount; UpdateUICounts(); if (isInventoryOpen) HighlightRecipe(hoveredItem); }
-    public void AddIngredient_GunPowder(int amount) { ingredientCounts[IngredientType.GunPowder] += amount; UpdateUICounts(); if (isInventoryOpen) HighlightRecipe(hoveredItem); }
-    public void AddIngredient_Can(int amount) { ingredientCounts[IngredientType.Can] += amount; UpdateUICounts(); if (isInventoryOpen) HighlightRecipe(hoveredItem); }
+    private void PlayHoverSfx()
+    {
+        if (audioSource != null && hoverClip != null)
+            audioSource.PlayOneShot(hoverClip, hoverVolume);
+    }
+
+    private void PlayNotEnoughSfx()
+    {
+        if (audioSource != null && notEnoughMaterialsClip != null)
+            audioSource.PlayOneShot(notEnoughMaterialsClip, notEnoughVolume);
+    }
+
+    private void StartCraftingLoopSound(CustomButton button)
+    {
+        if (button == null || craftingLoopClip == null) return;
+
+        if (!craftingAudioSources.TryGetValue(button, out var src) || src == null)
+        {
+            src = button.gameObject.GetComponent<AudioSource>();
+            if (src == null) src = button.gameObject.AddComponent<AudioSource>();
+            craftingAudioSources[button] = src;
+        }
+
+        src.clip = craftingLoopClip;
+        src.loop = true;
+        src.playOnAwake = false;
+        src.volume = craftingLoopVolume;
+
+        if (!src.isPlaying) src.Play();
+    }
+
+    private void StopCraftingLoopSound(CustomButton button)
+    {
+        if (button == null) return;
+        if (craftingAudioSources.TryGetValue(button, out var src) && src != null && src.isPlaying)
+            src.Stop();
+    }
+
+    private void StopAllCraftingLoopSounds()
+    {
+        foreach (var kvp in craftingAudioSources)
+        {
+            if (kvp.Value != null && kvp.Value.isPlaying)
+                kvp.Value.Stop();
+        }
+    }
+
+    private void PlayDeniedButtonBump(CustomButton button)
+    {
+        if (button == null || button.TargetImage == null) return;
+
+        RectTransform rt = button.TargetImage.rectTransform;
+        if (denyButtonRoutine != null) StopCoroutine(denyButtonRoutine);
+        denyButtonRoutine = StartCoroutine(DenyButtonBumpRoutine(rt));
+    }
+
+    private IEnumerator DenyButtonBumpRoutine(RectTransform rt)
+    {
+        if (rt == null) yield break;
+
+        Vector3 baseScale = Vector3.one;
+        float half = denyAnimDuration * 0.5f;
+        float t = 0f;
+
+        while (t < half)
+        {
+            t += Time.deltaTime;
+            float p = Mathf.Clamp01(t / half);
+            float s = Mathf.Lerp(1f, denyScaleDown, p);
+            rt.localScale = new Vector3(s, s, s);
+            yield return null;
+        }
+
+        t = 0f;
+        while (t < half)
+        {
+            t += Time.deltaTime;
+            float p = Mathf.Clamp01(t / half);
+            float s = Mathf.Lerp(denyScaleDown, denyScaleUp, p);
+            rt.localScale = new Vector3(s, s, s);
+            yield return null;
+        }
+
+        rt.localScale = baseScale;
+        denyButtonRoutine = null;
+    }
+
+    private void PlayIngredientDenyShake(CustomButton.CraftableItem item)
+    {
+        if (!recipes.TryGetValue(item, out var recipe)) return;
+
+        foreach (var req in recipe)
+        {
+            if (!ingredientImages.TryGetValue(req.Key, out var img) || img == null) continue;
+
+            int have = ingredientCounts[req.Key];
+            bool missing = have < req.Value;
+            float amp = missing ? ingredientShakeAmpMissing : ingredientShakeAmpNormal;
+
+            StartIngredientShake(img, amp, ingredientShakeDuration);
+        }
+    }
+
+    private void StartIngredientShake(Image img, float amplitude, float duration)
+    {
+        if (ingredientShakeRoutines.TryGetValue(img, out var running) && running != null)
+            StopCoroutine(running);
+
+        ingredientShakeRoutines[img] = StartCoroutine(IngredientShakeRoutine(img.rectTransform, amplitude, duration, img));
+    }
+
+    private IEnumerator IngredientShakeRoutine(RectTransform rt, float amp, float duration, Image key)
+    {
+        if (rt == null) yield break;
+
+        Vector2 basePos = rt.anchoredPosition;
+        float t = 0f;
+
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float damper = 1f - (t / duration);
+            float x = Mathf.Sin(t * ingredientShakeFrequency) * amp * damper;
+            rt.anchoredPosition = basePos + new Vector2(x, 0f);
+            yield return null;
+        }
+
+        rt.anchoredPosition = basePos;
+        ingredientShakeRoutines[key] = null;
+    }
+
+    private void BuildRecipes()
+    {
+        recipes[CustomButton.CraftableItem.Medikit] = new() {
+            { IngredientType.Alcohol, 1 }, { IngredientType.Rag, 2 }, { IngredientType.Binding, 1 }
+        };
+        recipes[CustomButton.CraftableItem.Bandage] = new() {
+            { IngredientType.Rag, 1 }, { IngredientType.Binding, 1 }
+        };
+        recipes[CustomButton.CraftableItem.Silencer] = new() {
+            { IngredientType.Can, 1 }, { IngredientType.Rag, 1 }, { IngredientType.Binding, 1 }
+        };
+        recipes[CustomButton.CraftableItem.ShotgunShell] = new() {
+            { IngredientType.Can, 1 }, { IngredientType.GunPowder, 1 }
+        };
+        recipes[CustomButton.CraftableItem.Grenade] = new() {
+            { IngredientType.Can, 1 }, { IngredientType.GunPowder, 2 }, { IngredientType.Binding, 1 }
+        };
+        recipes[CustomButton.CraftableItem.Landmine] = new() {
+            { IngredientType.Can, 1 }, { IngredientType.GunPowder, 2 }, { IngredientType.Binding, 1 }
+        };
+    }
+
+    private void OpenInventory()
+    {
+        if (inventory != null) inventory.gameObject.SetActive(true);
+        isInventoryOpen = true;
+        OnInventoryToggled?.Invoke(true);
+    }
+
+    private void CloseInventory()
+    {
+        if (inventory != null) inventory.gameObject.SetActive(false);
+        isInventoryOpen = false;
+        OnInventoryToggled?.Invoke(false);
+    }
 }

@@ -1,41 +1,12 @@
 using System;
 using System.Collections;
-using System.Runtime.CompilerServices;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Image))]
 public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
-    public static event Action<CraftableItem> OnHoveredCraftItem; 
-    public static event Action<CraftableItem> OnUnhoveredCraftItem;
-    public static event Action<CraftableItem> OnCraftItemHold;
-    public static event Action<CraftableItem> OnCraftItemRelease;
-    public static event Action<CraftableItem> OnCraftCompleted;
-
-    [Header("Target Image")]
-    [SerializeField] private Image targetImage; // main button image
-
-    [Header("Sprites")]
-    [SerializeField] private Sprite normalSprite;
-    [SerializeField] private Sprite hoverSprite;
-    [SerializeField] private Sprite holdSprite;
-
-    [Header("Hold Fill")]
-    [SerializeField] private float holdDuration = 1.5f;
-    [SerializeField] private bool unfillOnCancel = true;
-
-    
-
-    private Coroutine holdRoutine;
-    private bool isHovering;
-    private bool isHolding;
-    private bool crafted;
-
-
     public enum CraftableItem
     {
         Medikit,
@@ -46,7 +17,38 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         Landmine
     }
 
-    public CraftableItem itemToCraft;
+    public static event Action<CustomButton> OnHoveredCraftItem;
+    public static event Action<CustomButton> OnUnhoveredCraftItem;
+    public static event Action<CustomButton> OnCraftItemHold;
+    public static event Action<CustomButton> OnCraftItemRelease;
+    public static event Action<CustomButton> OnCraftCompleted;
+    public static event Action<CustomButton> OnCraftDenied;
+    public static event Action<CustomButton> OnCraftCanceled;
+
+    [Header("Item")]
+    [SerializeField] private CraftableItem itemToCraft;
+    public CraftableItem ItemToCraft => itemToCraft;
+
+    [Header("UI")]
+    [SerializeField] private Image targetImage;
+    public Image TargetImage => targetImage;
+
+    [Header("Sprites")]
+    [SerializeField] private Sprite normalSprite;
+    [SerializeField] private Sprite hoverSprite;
+    [SerializeField] private Sprite holdSprite;
+
+    [Header("Hold Fill (Linear)")]
+    [SerializeField] private float holdDuration = 1.5f;
+    [SerializeField] private bool unfillOnCancel = true;
+
+    [Header("Gate")]
+    [SerializeField] private InventoryHandler inventoryHandler;
+
+    private Coroutine holdRoutine;
+    private bool isHovering;
+    private bool isHolding;
+    private bool crafted;
 
     private void Reset()
     {
@@ -57,11 +59,10 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     {
         if (targetImage == null) targetImage = GetComponent<Image>();
 
-        // Fill settings for hold mode
         targetImage.type = Image.Type.Filled;
         targetImage.fillMethod = Image.FillMethod.Horizontal;
         targetImage.fillOrigin = (int)Image.OriginHorizontal.Left;
-        targetImage.fillAmount = 1f; // full in normal state
+        targetImage.fillAmount = 1f;
 
         SetNormal();
     }
@@ -69,38 +70,34 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public void OnPointerEnter(PointerEventData eventData)
     {
         isHovering = true;
-
-        OnHoveredCraftItem?.Invoke(itemToCraft);
-
+        OnHoveredCraftItem?.Invoke(this);
         if (!isHolding) SetHover();
-
-        
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         isHovering = false;
+        OnUnhoveredCraftItem?.Invoke(this);
 
-        OnUnhoveredCraftItem?.Invoke(itemToCraft);
-
-
-        
         if (isHolding) CancelHold();
         else SetNormal();
-
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
         if (!isHovering || isHolding) return;
 
+        if (inventoryHandler != null && !inventoryHandler.CanCraft(itemToCraft))
+        {
+            OnCraftDenied?.Invoke(this);
+            return;
+        }
+
         crafted = false;
         isHolding = true;
+        OnCraftItemHold?.Invoke(this);
 
-        OnCraftItemHold?.Invoke(itemToCraft);
-
-        // hold state sprite + start empty fill
-        targetImage.sprite = holdSprite != null ? holdSprite : targetImage.sprite;
+        if (holdSprite != null) targetImage.sprite = holdSprite;
         targetImage.fillAmount = 0f;
 
         if (holdRoutine != null) StopCoroutine(holdRoutine);
@@ -111,16 +108,14 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     {
         if (!isHolding) return;
 
-        OnCraftItemRelease?.Invoke(itemToCraft);
+        OnCraftItemRelease?.Invoke(this);
 
-        // If not completed, cancel/reset
         if (!crafted) CancelHold();
     }
 
     private IEnumerator HoldFillRoutine()
     {
         float t = 0f;
-
         while (t < holdDuration)
         {
             t += Time.deltaTime;
@@ -128,16 +123,13 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             yield return null;
         }
 
-        // Completed
         targetImage.fillAmount = 1f;
         isHolding = false;
         crafted = true;
         holdRoutine = null;
 
+        OnCraftCompleted?.Invoke(this);
 
-        OnCraftCompleted?.Invoke(itemToCraft);
-
-        // stay hover if pointer still on, else normal
         if (isHovering) SetHover();
         else SetNormal();
     }
@@ -152,8 +144,8 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             holdRoutine = null;
         }
 
-        if (unfillOnCancel) targetImage.fillAmount = 0f;
-        else targetImage.fillAmount = 1f;
+        targetImage.fillAmount = unfillOnCancel ? 0f : 1f;
+        OnCraftCanceled?.Invoke(this);
 
         if (isHovering) SetHover();
         else SetNormal();
@@ -171,22 +163,22 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         targetImage.fillAmount = 1f;
     }
 
-
-    private void OnEnable()
-    {
-        SetNormal();
-    }
     private void OnDisable()
     {
         isHovering = false;
-        isHolding = false; 
+
+        if (isHolding)
+            OnCraftCanceled?.Invoke(this);
+
+        isHolding = false;
         crafted = false;
+
         if (holdRoutine != null)
         {
             StopCoroutine(holdRoutine);
             holdRoutine = null;
         }
+
         SetNormal();
     }
-
 }
