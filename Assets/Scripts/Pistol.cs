@@ -162,4 +162,7 @@ public class Pistol : Weapon
                 SetSilencer();
         }
     }
+
+    
+
 }

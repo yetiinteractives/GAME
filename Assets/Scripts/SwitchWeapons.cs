@@ -166,4 +166,9 @@ public class SwitchWeapons : MonoBehaviour
            bandageTMP.text = bandageCount.ToString();
         }
     }
+    public void AddBandage(int count)
+    {
+        bandageCount += count;
+        bandageTMP.text = bandageCount.ToString();
+    }
 }
