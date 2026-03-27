@@ -1,10 +1,16 @@
 using UnityEngine;
 using System.Collections;
 using Unity.VisualScripting;
+using TMPro;
+
 
 
 public class WaveSpawner : MonoBehaviour
 {
+    public TextMeshProUGUI waveText;
+    public TextMeshProUGUI enemyText;
+    public TextMeshProUGUI timeText;
+
 
     public Transform[] spawnPoints;
     public GameObject[] enemyPrefabs;
@@ -21,11 +27,16 @@ public class WaveSpawner : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+
         StartCoroutine(StartWave());
     }
     IEnumerator StartWave()
     {
+        waveText.text = "Wave: " + currentWave;
         Debug.Log("Wave:"+currentWave);
+
+
+        StartCoroutine(ShowWaveStart());
         for(int i=0; i<enemiesPerWave; i++)
         {
             if(currentWave == 1) spawnJinga();
@@ -42,11 +53,21 @@ public class WaveSpawner : MonoBehaviour
         }
 
         Debug.Log("Wave "+currentWave+" completed!");
-        yield return new WaitForSeconds(timeBetweenWaves);
+        float countdown = timeBetweenWaves;
+
+    while (countdown > 0)
+   {
+      timeText.text = "Next Wave in: " + Mathf.Ceil(countdown);
+      countdown -= Time.deltaTime;
+      yield return null;
+   }
+
+        timeText.text = "";
 
         currentWave++;
         enemiesPerWave += 3;
-        spawnDelay += 1f;
+        spawnDelay -= 0.1f;
+        spawnDelay = Mathf.Clamp(spawnDelay, 0.5f, 5f);
 
 
         StartCoroutine(StartWave());
@@ -57,6 +78,7 @@ public class WaveSpawner : MonoBehaviour
         int randomSpawnPoint = Random.Range(0, spawnPoints.Length);
         GameObject enemy = Instantiate(enemyPrefabs[0], spawnPoints[randomSpawnPoint].position, Quaternion.identity);
         UniversalEnemyAi enemyAi = enemy.GetComponent<UniversalEnemyAi>();
+        enemyText.text = "Enemies: " + enemiesAlive;
         if (enemyAi != null)
         {
             enemyAi.OnEnemyDeathEvent += EnemyDied;
@@ -68,16 +90,25 @@ public class WaveSpawner : MonoBehaviour
         int randomSpawnPoint = Random.Range(0, spawnPoints.Length);
         GameObject enemy = Instantiate(enemyPrefabs[randomEnemy], spawnPoints[randomSpawnPoint].position, Quaternion.identity);
         UniversalEnemyAi enemyAi = enemy.GetComponent<UniversalEnemyAi>();
+        enemyText.text = "Enemies Alive: " + enemiesAlive;
         if (enemyAi != null)
         {
             enemyAi.OnEnemyDeathEvent += EnemyDied;
         }
     }
       
+       IEnumerator ShowWaveStart()
+    {
+        timeText.text = "WAVE " + currentWave + " START!";
+        yield return new WaitForSeconds(2f);
+        timeText.text = "";
+   }
     public void EnemyDied()
     {
         enemiesAlive--;
         enemiesDead++;
+
+        enemyText.text = "Enemies: " + enemiesAlive;
     }
 
     public void OnDisable()
