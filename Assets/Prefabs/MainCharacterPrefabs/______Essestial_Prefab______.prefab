@@ -169,7 +169,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5146241245648273192
 Transform:
   m_ObjectHideFlags: 0
@@ -707,13 +707,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2dca05b536909846a39aa1ebb3d95ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CustomButton
+  itemToCraft: 1
   targetImage: {fileID: 4990836016096598271}
   normalSprite: {fileID: 21300000, guid: 5d03af511d67b7d4884f2982b393a8f8, type: 3}
   hoverSprite: {fileID: 21300000, guid: 9ab8f15a5092c494b9f6bb8f384de4a7, type: 3}
   holdSprite: {fileID: 21300000, guid: 5211183e7ce953f419749edbbabb6f75, type: 3}
   holdDuration: 1.5
   unfillOnCancel: 1
-  itemToCraft: 1
+  inventoryHandler: {fileID: 0}
 --- !u!1 &527118583255661812
 GameObject:
   m_ObjectHideFlags: 0
@@ -3604,13 +3605,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2dca05b536909846a39aa1ebb3d95ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CustomButton
+  itemToCraft: 0
   targetImage: {fileID: 1832504494931877070}
   normalSprite: {fileID: 21300000, guid: 5d03af511d67b7d4884f2982b393a8f8, type: 3}
   hoverSprite: {fileID: 21300000, guid: 9ab8f15a5092c494b9f6bb8f384de4a7, type: 3}
   holdSprite: {fileID: 21300000, guid: 5211183e7ce953f419749edbbabb6f75, type: 3}
   holdDuration: 1.5
   unfillOnCancel: 1
-  itemToCraft: 0
+  inventoryHandler: {fileID: 0}
 --- !u!1 &2679645992714150621
 GameObject:
   m_ObjectHideFlags: 0
@@ -3807,13 +3809,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2dca05b536909846a39aa1ebb3d95ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CustomButton
+  itemToCraft: 2
   targetImage: {fileID: 6948214221829701771}
   normalSprite: {fileID: 21300000, guid: 5d03af511d67b7d4884f2982b393a8f8, type: 3}
   hoverSprite: {fileID: 21300000, guid: 9ab8f15a5092c494b9f6bb8f384de4a7, type: 3}
   holdSprite: {fileID: 21300000, guid: 5211183e7ce953f419749edbbabb6f75, type: 3}
   holdDuration: 1.5
   unfillOnCancel: 1
-  itemToCraft: 2
+  inventoryHandler: {fileID: 0}
 --- !u!1 &2820313199325803506
 GameObject:
   m_ObjectHideFlags: 0
@@ -4765,7 +4768,7 @@ Transform:
   m_GameObject: {fileID: 3255314731135957485}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1521297, y: 0.0000000022130024, z: -3.4062814e-10, w: 0.9883606}
-  m_LocalPosition: {x: -1.4133997, y: 3.5834775, z: 50.04657}
+  m_LocalPosition: {x: 3.8724365, y: 3.309014, z: -5.3515625}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5269,7 +5272,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7170235177347784590
 Transform:
   m_ObjectHideFlags: 0
@@ -5283,6 +5286,7 @@ Transform:
   m_LocalScale: {x: 0.09462241, y: 0.24993832, z: 0.09462241}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 5667133576624870335}
   - {fileID: 6203659130090407624}
   - {fileID: 7676452769665623595}
   - {fileID: 7300614436510950566}
@@ -7908,17 +7912,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   inventory: {fileID: 2292548220124005686}
-  medikit: {fileID: 1832504494931877070}
-  bandage: {fileID: 4990836016096598271}
-  silencer: {fileID: 6948214221829701771}
-  shotgunShell: {fileID: 3248159562182943582}
-  grenade: {fileID: 5399779705830111059}
-  landmine: {fileID: 8667891450632490526}
   alcohol: {fileID: 1139128706114979447}
   rag: {fileID: 6706179163977427736}
   binding: {fileID: 9003811343146952783}
   gunPowder: {fileID: 5274390109883121836}
   canBox: {fileID: 4618658414953821984}
+  alcoholRadial: {fileID: 8723894631160879052}
+  ragRadial: {fileID: 6568693721193681963}
+  bindingRadial: {fileID: 3378964634342605316}
+  gunPowderRadial: {fileID: 648952330506609298}
+  canRadial: {fileID: 9157905969421424888}
   ingredientNormalSprite: {fileID: 21300000, guid: acde2dbb121314a4c81cc862cff170d5,
     type: 3}
   ingredientHighlightedSprite: {fileID: 21300000, guid: acde2dbb121314a4c81cc862cff170d5,
@@ -7928,12 +7931,21 @@ MonoBehaviour:
   ingredientNormalColor: {r: 1, g: 1, b: 1, a: 0.09803922}
   ingredientHighlightColor: {r: 0.12236723, g: 0.3660378, b: 0, a: 0.53333336}
   ingredientMissingColor: {r: 1, g: 0, b: 0, a: 0.09803922}
-  alcoholRadial: {fileID: 8723894631160879052}
-  ragRadial: {fileID: 6568693721193681963}
-  bindingRadial: {fileID: 3378964634342605316}
-  gunPowderRadial: {fileID: 648952330506609298}
-  canRadial: {fileID: 9157905969421424888}
   radialDuration: 1.5
+  audioSource: {fileID: 0}
+  hoverClip: {fileID: 0}
+  notEnoughMaterialsClip: {fileID: 0}
+  craftingLoopClip: {fileID: 0}
+  hoverVolume: 1
+  notEnoughVolume: 1
+  craftingLoopVolume: 1
+  denyAnimDuration: 0.12
+  denyScaleDown: 0.92
+  denyScaleUp: 1.03
+  ingredientShakeDuration: 0.16
+  ingredientShakeFrequency: 45
+  ingredientShakeAmpNormal: 4
+  ingredientShakeAmpMissing: 10
   alcoholCount: 3
   ragCount: 5
   bindingCount: 3
@@ -9563,13 +9575,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2dca05b536909846a39aa1ebb3d95ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CustomButton
+  itemToCraft: 4
   targetImage: {fileID: 5399779705830111059}
   normalSprite: {fileID: 21300000, guid: 5d03af511d67b7d4884f2982b393a8f8, type: 3}
   hoverSprite: {fileID: 21300000, guid: 9ab8f15a5092c494b9f6bb8f384de4a7, type: 3}
   holdSprite: {fileID: 21300000, guid: 5211183e7ce953f419749edbbabb6f75, type: 3}
   holdDuration: 1.5
   unfillOnCancel: 1
-  itemToCraft: 4
+  inventoryHandler: {fileID: 0}
 --- !u!1 &6422552762741491345
 GameObject:
   m_ObjectHideFlags: 0
@@ -9660,13 +9673,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2dca05b536909846a39aa1ebb3d95ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CustomButton
+  itemToCraft: 5
   targetImage: {fileID: 8667891450632490526}
   normalSprite: {fileID: 21300000, guid: 5d03af511d67b7d4884f2982b393a8f8, type: 3}
   hoverSprite: {fileID: 21300000, guid: 9ab8f15a5092c494b9f6bb8f384de4a7, type: 3}
   holdSprite: {fileID: 21300000, guid: 5211183e7ce953f419749edbbabb6f75, type: 3}
   holdDuration: 1.5
   unfillOnCancel: 1
-  itemToCraft: 5
+  inventoryHandler: {fileID: 0}
 --- !u!1 &6449982599397689053
 GameObject:
   m_ObjectHideFlags: 0
@@ -10480,7 +10494,7 @@ Transform:
   m_GameObject: {fileID: 6748496026950744590}
   serializedVersion: 2
   m_LocalRotation: {x: 0.15212971, y: 0.0000000022209945, z: -3.9255058e-10, w: 0.9883606}
-  m_LocalPosition: {x: -1.4133997, y: 3.5834775, z: 50.04657}
+  m_LocalPosition: {x: 3.8724365, y: 3.309014, z: -5.3515625}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11721,13 +11735,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2dca05b536909846a39aa1ebb3d95ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CustomButton
+  itemToCraft: 3
   targetImage: {fileID: 3248159562182943582}
   normalSprite: {fileID: 21300000, guid: 5d03af511d67b7d4884f2982b393a8f8, type: 3}
   hoverSprite: {fileID: 21300000, guid: 9ab8f15a5092c494b9f6bb8f384de4a7, type: 3}
   holdSprite: {fileID: 21300000, guid: 5211183e7ce953f419749edbbabb6f75, type: 3}
   holdDuration: 1.5
   unfillOnCancel: 1
-  itemToCraft: 3
+  inventoryHandler: {fileID: 0}
 --- !u!1 &7580487929977979574
 GameObject:
   m_ObjectHideFlags: 0
@@ -16022,6 +16037,105 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 4707312428920934921}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &5273445281593521236
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7170235177347784590}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 2c34f21a0439d28478d60afcd1db289a,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2c34f21a0439d28478d60afcd1db289a,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.13
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2c34f21a0439d28478d60afcd1db289a,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.11
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2c34f21a0439d28478d60afcd1db289a,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6.716
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2c34f21a0439d28478d60afcd1db289a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.594
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2c34f21a0439d28478d60afcd1db289a,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.819
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2c34f21a0439d28478d60afcd1db289a,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.40211916
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2c34f21a0439d28478d60afcd1db289a,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.82409614
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2c34f21a0439d28478d60afcd1db289a,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.13622522
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2c34f21a0439d28478d60afcd1db289a,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.37497795
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2c34f21a0439d28478d60afcd1db289a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 49.901
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2c34f21a0439d28478d60afcd1db289a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -127.868
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2c34f21a0439d28478d60afcd1db289a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 186.87
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2c34f21a0439d28478d60afcd1db289a,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8491192543122694909, guid: 2c34f21a0439d28478d60afcd1db289a,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: cc23cfb208e20704fba787df90fd2590, type: 2}
+    - target: {fileID: 919132149155446097, guid: 2c34f21a0439d28478d60afcd1db289a,
+        type: 3}
+      propertyPath: m_Name
+      value: Sniper_SKS
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2c34f21a0439d28478d60afcd1db289a, type: 3}
+--- !u!4 &5667133576624870335 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2c34f21a0439d28478d60afcd1db289a,
+    type: 3}
+  m_PrefabInstance: {fileID: 5273445281593521236}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5880973654234800419
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16124,6 +16238,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 93d043ceeb84aa646b58fd9dd6c9e5cd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3906516772817071007, guid: 93d043ceeb84aa646b58fd9dd6c9e5cd,
         type: 3}
@@ -17428,37 +17547,37 @@ PrefabInstance:
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.8834
+      value: 3.3769531
       objectReference: {fileID: 0}
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5120659
+      value: 1.2461926
       objectReference: {fileID: 0}
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 51.954002
+      value: -3.4667969
       objectReference: {fileID: 0}
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.98904854
       objectReference: {fileID: 0}
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: 0.05345732
       objectReference: {fileID: 0}
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.1373673
       objectReference: {fileID: 0}
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0.0074516805
       objectReference: {fileID: 0}
     - target: {fileID: 8178461708024176165, guid: 1065b7837df3b774f9cb7bc79a988cd6,
         type: 3}
