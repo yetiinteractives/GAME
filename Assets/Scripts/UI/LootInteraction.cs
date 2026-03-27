@@ -4,39 +4,39 @@ using UnityEngine.UI;
 
 public class LootInteraction : MonoBehaviour, IInteractable
 {
-    [SerializeField]private SpriteRenderer lootIcon;
+    [SerializeField]private GameObject lootIcon;
+    [SerializeField] private GameObject promptText;
 
     private void Start()
     {
-        if (lootIcon == null)
-        {
-            lootIcon = GetComponentInChildren<SpriteRenderer>();
-
-        }
+        
 
         HideInteractableIcon();
+        HideInteractionPrompt();
 
     }
 
     public void ShowInteractableIcon()
     {
-        lootIcon?.gameObject.SetActive(true);
+        lootIcon?.SetActive(true);
     }
     public void HideInteractableIcon()
     {
-        lootIcon.gameObject.SetActive(false);   
+        lootIcon?.SetActive(false);   
     }
 
     public void ShowInteractionPrompt()
     {
+        promptText?.SetActive(true);
     }
     public void HideInteractionPrompt()
     {
-
+        promptText.SetActive(false);
     }
 
     public void Interact()
     {
+        gameObject.SetActive(false);
     }
 
   

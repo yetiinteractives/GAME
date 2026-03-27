@@ -832,7 +832,7 @@ PrefabInstance:
     - target: {fileID: 5079321456133702264, guid: fc3a8eee171ce334fbf342dd360aba1d,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1406.13
+      value: 1407.33
       objectReference: {fileID: 0}
     - target: {fileID: 5079321456133702264, guid: fc3a8eee171ce334fbf342dd360aba1d,
         type: 3}
@@ -961,9 +961,21 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e28acf57f55cba44fb043549e79783a5, type: 3}
+--- !u!1 &570291899 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 33716467642916492, guid: e2fe60f47e645614e8e403c16567f6d9,
+    type: 3}
+  m_PrefabInstance: {fileID: 8355281572752938320}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &575817179 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5792778852884037157, guid: e2fe60f47e645614e8e403c16567f6d9,
+    type: 3}
+  m_PrefabInstance: {fileID: 124309667}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &629197522 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 33716467642916492, guid: e2fe60f47e645614e8e403c16567f6d9,
     type: 3}
   m_PrefabInstance: {fileID: 124309667}
   m_PrefabAsset: {fileID: 0}
@@ -1045,7 +1057,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc89919b4ae3e974bbc5449523d30e0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LootInteraction
-  lootIcon: {fileID: 0}
+  lootIcon: {fileID: 1537128473}
+  promptText: {fileID: 570291899}
 --- !u!114 &651803283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1147,6 +1160,12 @@ Camera:
     type: 3}
   m_PrefabInstance: {fileID: 1123074754}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &906828746 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 57186887120056081, guid: e2fe60f47e645614e8e403c16567f6d9,
+    type: 3}
+  m_PrefabInstance: {fileID: 709153673}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &940378920 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 753284524096072000, guid: fc3a8eee171ce334fbf342dd360aba1d,
@@ -1165,7 +1184,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc89919b4ae3e974bbc5449523d30e0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LootInteraction
-  lootIcon: {fileID: 0}
+  lootIcon: {fileID: 906828746}
+  promptText: {fileID: 1124541390}
 --- !u!114 &940378922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1263,17 +1283,17 @@ PrefabInstance:
     - target: {fileID: 5079321456133702264, guid: fc3a8eee171ce334fbf342dd360aba1d,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1408.738
+      value: 1408.58
       objectReference: {fileID: 0}
     - target: {fileID: 5079321456133702264, guid: fc3a8eee171ce334fbf342dd360aba1d,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.7900363
+      value: 0.79
       objectReference: {fileID: 0}
     - target: {fileID: 5079321456133702264, guid: fc3a8eee171ce334fbf342dd360aba1d,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 18369.768
+      value: 18369.62
       objectReference: {fileID: 0}
     - target: {fileID: 5079321456133702264, guid: fc3a8eee171ce334fbf342dd360aba1d,
         type: 3}
@@ -1754,6 +1774,18 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2071960043}
   m_SourcePrefab: {fileID: 100100000, guid: d7fcb52adb3a8cd40bb748351e3613c4, type: 3}
+--- !u!1 &1124541390 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 33716467642916492, guid: e2fe60f47e645614e8e403c16567f6d9,
+    type: 3}
+  m_PrefabInstance: {fileID: 709153673}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1170609963 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 33716467642916492, guid: e2fe60f47e645614e8e403c16567f6d9,
+    type: 3}
+  m_PrefabInstance: {fileID: 283072851}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1248448821
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2117,7 +2149,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc89919b4ae3e974bbc5449523d30e0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LootInteraction
-  lootIcon: {fileID: 0}
+  lootIcon: {fileID: 2020842283}
+  promptText: {fileID: 629197522}
 --- !u!65 &1534601129
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2171,6 +2204,12 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5079321456133702264, guid: fc3a8eee171ce334fbf342dd360aba1d,
     type: 3}
   m_PrefabInstance: {fileID: 945746364}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1537128473 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 57186887120056081, guid: e2fe60f47e645614e8e403c16567f6d9,
+    type: 3}
+  m_PrefabInstance: {fileID: 8355281572752938320}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1623262125
 PrefabInstance:
@@ -2423,6 +2462,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a93fac51166f634bab888f695f8c831, type: 3}
+--- !u!1 &1714656027 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 57186887120056081, guid: e2fe60f47e645614e8e403c16567f6d9,
+    type: 3}
+  m_PrefabInstance: {fileID: 283072851}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1751864203
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2849,7 +2894,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc89919b4ae3e974bbc5449523d30e0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LootInteraction
-  lootIcon: {fileID: 0}
+  lootIcon: {fileID: 1714656027}
+  promptText: {fileID: 1170609963}
+--- !u!1 &2020842283 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 57186887120056081, guid: e2fe60f47e645614e8e403c16567f6d9,
+    type: 3}
+  m_PrefabInstance: {fileID: 124309667}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2071960031 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2757692853214115328, guid: d7fcb52adb3a8cd40bb748351e3613c4,
@@ -2872,8 +2924,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1048576
   interactDistance: 4
-  overlapSphereRadius: 3
-  raycastSphereRadius: 0.5
+  overlapSphereRadius: 4
+  raycastSphereRadius: 0.75
 --- !u!1 &2115641797
 GameObject:
   m_ObjectHideFlags: 0
