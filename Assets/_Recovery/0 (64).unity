@@ -661,8 +661,34 @@ MonoBehaviour:
   pistol: {fileID: 1346199324}
   shotgun: {fileID: 1827082152}
   sniper: {fileID: 940999979}
-  explosives: {fileID: 1336446649}
+  explosives: {fileID: 0}
   switchWeapons: {fileID: 0}
+  pistolAmmoCount: 40
+  pistolAmmoMax: 90
+  shotgunAmmoCount: 10
+  shotgunAmmoMax: 30
+  sniperAmmoCount: 10
+  sniperAmmoMax: 30
+  grenadeCount: 2
+  grenadeMax: 5
+  landmineCount: 2
+  landmineMax: 5
+  medkitCount: 2
+  medkitMax: 3
+  bandageCount: 4
+  bandageMax: 6
+  silencerCount: 1
+  silencerMax: 3
+  alcoholCount: 3
+  alcoholMax: 5
+  ragCount: 3
+  ragMax: 5
+  bindingCount: 5
+  bindingMax: 10
+  gunpowderCount: 5
+  gunpowderMax: 10
+  canCount: 3
+  canMax: 5
 --- !u!4 &418504288
 Transform:
   m_ObjectHideFlags: 0
@@ -1015,18 +1041,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1336446649 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6625623158948479575, guid: d7fcb52adb3a8cd40bb748351e3613c4,
-    type: 3}
-  m_PrefabInstance: {fileID: 1123074754}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3613f688d2c73e441aa94f763b87f0f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ExplosivesHandler
 --- !u!1 &1336585397
 GameObject:
   m_ObjectHideFlags: 0

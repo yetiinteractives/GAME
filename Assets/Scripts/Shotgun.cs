@@ -7,6 +7,13 @@ public class Shotgun : Weapon
     [SerializeField] private float spreadAngle = 3f;
     [SerializeField] private int pelletDamage = 5; // Each pellet does less damage
 
+
+    protected override void Shoot(RaycastHit hit)
+    {
+           base.Shoot(hit);
+           ResourceManager.Instance.ConsumeShotgunAmmo(1);
+    }
+
     protected override void OnShoot(RaycastHit hit)
     {
         // Get camera position and forward direction

@@ -42,6 +42,12 @@ public class Sniper : Weapon
         SetPlayerBodyVisible(true); // guarantee clean start
     }
 
+    protected override void Shoot(RaycastHit hit)
+    {
+        base.Shoot(hit);
+        ResourceManager.Instance.ConsumeSniperAmmo(1);
+    }
+
     protected override void ScopeCheck()
     {
        

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class InventoryHandler : MonoBehaviour
 {
+    public static InventoryHandler Instance { get; private set; }
     public static event Action<bool> OnInventoryToggled;
 
     [Header("Inventory Root")]
@@ -41,7 +42,7 @@ public class InventoryHandler : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip hoverClip;
     [SerializeField] private AudioClip notEnoughMaterialsClip;
-    [SerializeField] private AudioClip craftingLoopClip; // loop while holding
+    [SerializeField] private AudioClip craftingLoopClip;
     [SerializeField, Range(0f, 1f)] private float hoverVolume = 1f;
     [SerializeField, Range(0f, 1f)] private float notEnoughVolume = 1f;
     [SerializeField, Range(0f, 1f)] private float craftingLoopVolume = 1f;
@@ -57,20 +58,18 @@ public class InventoryHandler : MonoBehaviour
     [SerializeField] private float ingredientShakeAmpNormal = 4f;
     [SerializeField] private float ingredientShakeAmpMissing = 10f;
 
-    [Header("Initial Ingredient Counts")]
-    [SerializeField] private int alcoholCount = 3;
-    [SerializeField] private int ragCount = 5;
-    [SerializeField] private int bindingCount = 3;
-    [SerializeField] private int gunPowderCount = 4;
-    [SerializeField] private int canCount = 3;
+    private int alcoholCount = 0;
+    private int ragCount = 0;
+    private int bindingCount = 0;
+    private int gunPowderCount = 0;
+    private int canCount = 0;
 
-    [Header("Initial Craftable Counts")]
-    [SerializeField] private int medikitCount = 0;
-    [SerializeField] private int bandageCount = 0;
-    [SerializeField] private int silencerCount = 0;
-    [SerializeField] private int shotgunShellCount = 0;
-    [SerializeField] private int grenadeCount = 0;
-    [SerializeField] private int landmineCount = 0;
+    private int medikitCount = 0;
+    private int bandageCount = 0;
+    private int silencerCount = 0;
+    private int shotgunShellCount = 0;
+    private int grenadeCount = 0;
+    private int landmineCount = 0;
 
     [Header("TMP - Ingredient Counts")]
     [SerializeField] private TMP_Text alcoholCountText;
@@ -103,6 +102,13 @@ public class InventoryHandler : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
     }
 
@@ -176,6 +182,63 @@ public class InventoryHandler : MonoBehaviour
         HideAllRadials();
     }
 
+    // public add methods for ResourceManager
+    public void AddAlcohol(int amount)
+    {
+        alcoholCount = Mathf.Max(0, alcoholCount + amount);
+        ingredientCounts[IngredientType.Alcohol] = alcoholCount;
+        UpdateUICounts();
+    }
+
+    public void AddRag(int amount)
+    {
+        ragCount = Mathf.Max(0, ragCount + amount);
+        ingredientCounts[IngredientType.Rag] = ragCount;
+        UpdateUICounts();
+    }
+
+    public void AddBinding(int amount)
+    {
+        bindingCount = Mathf.Max(0, bindingCount + amount);
+        ingredientCounts[IngredientType.Binding] = bindingCount;
+        UpdateUICounts();
+    }
+
+    public void AddGunPowder(int amount)
+    {
+        gunPowderCount = Mathf.Max(0, gunPowderCount + amount);
+        ingredientCounts[IngredientType.GunPowder] = gunPowderCount;
+        UpdateUICounts();
+    }
+
+    public void AddCan(int amount)
+    {
+        canCount = Mathf.Max(0, canCount + amount);
+        ingredientCounts[IngredientType.Can] = canCount;
+        UpdateUICounts();
+    }
+
+    public void AddMedkit(int amount)
+    {
+        medikitCount = Mathf.Max(0, medikitCount + amount);
+        craftableCounts[CustomButton.CraftableItem.Medikit] = medikitCount;
+        UpdateUICounts();
+    }
+
+    public void AddBandageCraftable(int amount)
+    {
+        bandageCount = Mathf.Max(0, bandageCount + amount);
+        craftableCounts[CustomButton.CraftableItem.Bandage] = bandageCount;
+        UpdateUICounts();
+    }
+
+    public void AddSilencer(int amount)
+    {
+        silencerCount = Mathf.Max(0, silencerCount + amount);
+        craftableCounts[CustomButton.CraftableItem.Silencer] = silencerCount;
+        UpdateUICounts();
+    }
+
     public bool CanCraft(CustomButton.CraftableItem item)
     {
         if (!recipes.TryGetValue(item, out var recipe)) return false;
@@ -230,7 +293,6 @@ public class InventoryHandler : MonoBehaviour
         }
 
         StartCraftingLoopSound(button);
-
         StopRadialRoutine();
         radialRoutine = StartCoroutine(IngredientRadialFillRoutine(item, radialDuration));
     }
@@ -279,12 +341,36 @@ public class InventoryHandler : MonoBehaviour
         HighlightRecipe(button.ItemToCraft);
     }
 
+    // consume ingredients via ResourceManager (as requested)
     private bool TryCraft(CustomButton.CraftableItem item)
     {
         if (!CanCraft(item)) return false;
+        if (!recipes.TryGetValue(item, out var recipe)) return false;
+        if (ResourceManager.Instance == null) return false;
 
-        var recipe = recipes[item];
-        foreach (var req in recipe) ingredientCounts[req.Key] -= req.Value;
+        foreach (var req in recipe)
+        {
+            bool ok = req.Key switch
+            {
+                IngredientType.Alcohol => ResourceManager.Instance.ConsumeAlcohol(req.Value),
+                IngredientType.Rag => ResourceManager.Instance.ConsumeRag(req.Value),
+                IngredientType.Binding => ResourceManager.Instance.ConsumeBinding(req.Value),
+                IngredientType.GunPowder => ResourceManager.Instance.ConsumeGunpowder(req.Value),
+                IngredientType.Can => ResourceManager.Instance.ConsumeCan(req.Value),
+                _ => false
+            };
+
+            if (!ok) return false;
+
+            ingredientCounts[req.Key] -= req.Value;
+        }
+
+        alcoholCount = ingredientCounts[IngredientType.Alcohol];
+        ragCount = ingredientCounts[IngredientType.Rag];
+        bindingCount = ingredientCounts[IngredientType.Binding];
+        gunPowderCount = ingredientCounts[IngredientType.GunPowder];
+        canCount = ingredientCounts[IngredientType.Can];
+
         craftableCounts[item] += 1;
 
         return true;
@@ -426,8 +512,7 @@ public class InventoryHandler : MonoBehaviour
     private void StopCraftingLoopSound(CustomButton button)
     {
         if (button == null) return;
-        if (craftingAudioSources.TryGetValue(button, out var src) && src != null && src.isPlaying)
-            src.Stop();
+        if (craftingAudioSources.TryGetValue(button, out var src) && src != null && src.isPlaying) src.Stop();
     }
 
     private void StopAllCraftingLoopSounds()

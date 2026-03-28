@@ -13,8 +13,8 @@ public class ExplosivesHandler : MonoBehaviour
     [SerializeField] private GameObject landmineModel;
 
     [Header("Resource Settings")]
-    [SerializeField] private int initialGrenadeCount;
-    [SerializeField] private int initialLandmineCount;
+    private int initialGrenadeCount;
+    private int initialLandmineCount;
     [SerializeField] private int maxGrenade;
     [SerializeField] private int maxLandmine;
 
@@ -93,6 +93,8 @@ public class ExplosivesHandler : MonoBehaviour
 
 
         currentGrenadeCount--;
+        ResourceManager.Instance.ConsumeGrenade(1);
+
         CheckIfHasExplosives();
 
         ToggleGrenade(hasGrenades && currentWeaponIndex == 4);
@@ -106,7 +108,9 @@ public class ExplosivesHandler : MonoBehaviour
         if(!hasLandmine) return;
 
             currentLandmineCount--;
-            CheckIfHasExplosives();
+            ResourceManager.Instance.ConsumeLandmine(1);
+
+        CheckIfHasExplosives();
 
         ToggleLandmine(hasLandmine && currentWeaponIndex == 5 );
 

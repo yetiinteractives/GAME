@@ -9,7 +9,7 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField] protected int damage = 10;
     [SerializeField] protected float force = 5f;
     [SerializeField] protected int magCapacity = 10;
-    [SerializeField] protected int totalBullet = 100;
+    protected int totalBullet  = 0;
     [SerializeField] protected float reloadTime = 1.5f;
     [SerializeField] protected float fireRate = 0.3f;
     [SerializeField] protected float recoilIntensity = 1.5f;
@@ -99,6 +99,8 @@ public abstract class Weapon : MonoBehaviour
         if (muzzleFlash != null)
             muzzleFlash.Stop();
     }
+
+ 
 
     void OnFireInput(RaycastHit hit)
     {

@@ -25,7 +25,7 @@ public class SwitchWeapons : MonoBehaviour
     [SerializeField] PlayerHealth playerHealth;
 
 
-    [SerializeField] private int bandageCount = 4;
+    private int bandageCount = 0;
     [SerializeField]private TextMeshProUGUI bandageTMP;
 
     private void Start()

@@ -36,7 +36,7 @@ public class Pistol : Weapon
     {
         base.Awake();
 
-        
+        ResourceManager.Instance.SetPistolAmmo(2);
 
         baseGunshotLoudness = gunshotLoudness;
 
@@ -104,7 +104,7 @@ public class Pistol : Weapon
         ApplyDamage(hit, damage);
 
         bulletOnMag--;
-
+        ResourceManager.Instance.ConsumePistolAmmo(1);
        
 
         nextFireTime = Time.time + fireRate;
