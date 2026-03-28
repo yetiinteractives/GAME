@@ -15,7 +15,6 @@ public class ResourceManager : MonoBehaviour
     [SerializeField] private SwitchWeapons switchWeapons;
     [SerializeField] private InventoryHandler inventoryHandler;
 
-    // Full-state events
     public static Action<bool> OnPistolAmmoFullChanged;
     public static Action<bool> OnShotgunAmmoFullChanged;
     public static Action<bool> OnSniperAmmoFullChanged;
@@ -64,7 +63,9 @@ public class ResourceManager : MonoBehaviour
     [SerializeField] private int canCount = 3;
     [SerializeField] private int canMax = 5;
 
-    private Coroutine reloadSyncRoutine;
+    private Coroutine syncRoutine;
+    private int applyToken = -1; // increments each sceneLoaded
+    private int appliedToken = -9999; // last token applied
 
     private void Awake()
     {
@@ -85,8 +86,10 @@ public class ResourceManager : MonoBehaviour
 
     private void Start()
     {
+        // For first loaded scene
+        applyToken++;
+        BeginSync();
         BroadcastAllFullStates();
-        BeginReloadSync();
     }
 
     private void OnDestroy()
@@ -97,24 +100,51 @@ public class ResourceManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        BeginReloadSync();
+        applyToken++;
+        BeginSync();
     }
 
-    private void BeginReloadSync()
+    private void BeginSync()
     {
-        if (reloadSyncRoutine != null) StopCoroutine(reloadSyncRoutine);
-        reloadSyncRoutine = StartCoroutine(ReloadSyncRoutine());
+        if (syncRoutine != null) StopCoroutine(syncRoutine);
+        int tokenAtStart = applyToken;
+        syncRoutine = StartCoroutine(SyncRoutine(tokenAtStart));
     }
 
-    private IEnumerator ReloadSyncRoutine()
+    private IEnumerator SyncRoutine(int token)
     {
-        // wait a bit so scene scripts are alive and at their initial 0 values
+        // wait scene objects to initialize
         yield return null;
         yield return null;
 
-        RebindSceneRefs();
+        // if already applied for this token, stop (prevents +2 every reload)
+        if (appliedToken == token)
+        {
+            syncRoutine = null;
+            yield break;
+        }
 
-        // push manager truth -> scene objects (they start at 0)
+        RebindRefs();
+        ApplyManagerStateToFreshSceneOnce();
+        BroadcastAllFullStates();
+
+        appliedToken = token;
+        syncRoutine = null;
+    }
+
+    private void RebindRefs()
+    {
+        pistol = FindFirstObjectByType<Pistol>(FindObjectsInactive.Include);
+        shotgun = FindFirstObjectByType<Shotgun>(FindObjectsInactive.Include);
+        sniper = FindFirstObjectByType<Sniper>(FindObjectsInactive.Include);
+        explosives = FindFirstObjectByType<ExplosivesHandler>(FindObjectsInactive.Include);
+        switchWeapons = FindFirstObjectByType<SwitchWeapons>(FindObjectsInactive.Include);
+        inventoryHandler = FindFirstObjectByType<InventoryHandler>(FindObjectsInactive.Include);
+    }
+
+    // Scene scripts start from 0 -> apply full manager counts once
+    private void ApplyManagerStateToFreshSceneOnce()
+    {
         pistol?.AddBullets(pistolAmmoCount);
         shotgun?.AddBullets(shotgunAmmoCount);
         sniper?.AddBullets(sniperAmmoCount);
@@ -129,51 +159,36 @@ public class ResourceManager : MonoBehaviour
         inventoryHandler?.AddBinding(bindingCount);
         inventoryHandler?.AddGunPowder(gunpowderCount);
         inventoryHandler?.AddCan(canCount);
-
-        BroadcastAllFullStates();
-        reloadSyncRoutine = null;
     }
 
-    private void RebindSceneRefs()
-    {
-        pistol = FindFirstObjectByType<Pistol>(FindObjectsInactive.Include);
-        shotgun = FindFirstObjectByType<Shotgun>(FindObjectsInactive.Include);
-        sniper = FindFirstObjectByType<Sniper>(FindObjectsInactive.Include);
-        explosives = FindFirstObjectByType<ExplosivesHandler>(FindObjectsInactive.Include);
-        switchWeapons = FindFirstObjectByType<SwitchWeapons>(FindObjectsInactive.Include);
-        inventoryHandler = FindFirstObjectByType<InventoryHandler>(FindObjectsInactive.Include);
-    }
-
-    // ---------- centralized clamp ----------
-    private int AddClamped(ref int count, int max, int request, Action<bool> fullEvt)
+    private int AddClamped(ref int count, int max, int request, Action<bool> evt)
     {
         if (request <= 0) return 0;
         int before = count;
         int accepted = Mathf.Clamp(request, 0, Mathf.Max(0, max - count));
         count += accepted;
-        EmitFullChanged(before, count, max, fullEvt);
+        EmitFull(before, count, max, evt);
         return accepted;
     }
 
-    private bool ConsumeClamped(ref int count, int max, int amount, Action<bool> fullEvt)
+    private bool ConsumeClamped(ref int count, int max, int amount, Action<bool> evt)
     {
         if (amount <= 0) return true;
         if (count < amount) return false;
 
         int before = count;
         count = Mathf.Clamp(count - amount, 0, max);
-        EmitFullChanged(before, count, max, fullEvt);
+        EmitFull(before, count, max, evt);
         return true;
     }
 
-    private void EmitFullChanged(int before, int after, int max, Action<bool> evt)
+    private void EmitFull(int before, int after, int max, Action<bool> evt)
     {
         bool wasFull = before >= max;
         bool isFull = after >= max;
         if (wasFull != isFull) evt?.Invoke(isFull);
     }
 
-    // ---------- add APIs ----------
     public int SetPistolAmmo(int amount)
     {
         int accepted = AddClamped(ref pistolAmmoCount, pistolAmmoMax, amount, OnPistolAmmoFullChanged);
@@ -209,8 +224,6 @@ public class ResourceManager : MonoBehaviour
         return accepted;
     }
 
-    public int SetMedkit(int amount) => AddClamped(ref medkitCount, medkitMax, amount, OnMedkitFullChanged);
-
     public int SetBandage(int amount)
     {
         int accepted = AddClamped(ref bandageCount, bandageMax, amount, OnBandageFullChanged);
@@ -218,6 +231,7 @@ public class ResourceManager : MonoBehaviour
         return accepted;
     }
 
+    public int SetMedkit(int amount) => AddClamped(ref medkitCount, medkitMax, amount, OnMedkitFullChanged);
     public int SetSilencer(int amount) => AddClamped(ref silencerCount, silencerMax, amount, OnSilencerFullChanged);
 
     public int SetAlcohol(int amount)
@@ -255,7 +269,6 @@ public class ResourceManager : MonoBehaviour
         return accepted;
     }
 
-    // ---------- consume APIs ----------
     public bool ConsumePistolAmmo(int amount) => ConsumeClamped(ref pistolAmmoCount, pistolAmmoMax, amount, OnPistolAmmoFullChanged);
     public bool ConsumeShotgunAmmo(int amount) => ConsumeClamped(ref shotgunAmmoCount, shotgunAmmoMax, amount, OnShotgunAmmoFullChanged);
     public bool ConsumeSniperAmmo(int amount) => ConsumeClamped(ref sniperAmmoCount, sniperAmmoMax, amount, OnSniperAmmoFullChanged);
@@ -270,14 +283,8 @@ public class ResourceManager : MonoBehaviour
     public bool ConsumeGunpowder(int amount) => ConsumeClamped(ref gunpowderCount, gunpowderMax, amount, OnGunpowderFullChanged);
     public bool ConsumeCan(int amount) => ConsumeClamped(ref canCount, canMax, amount, OnCanFullChanged);
 
-    // getters
     public int PistolAmmoCount => pistolAmmoCount;
     public int PistolAmmoMax => pistolAmmoMax;
-    public int AlcoholCount => alcoholCount;
-    public int RagCount => ragCount;
-    public int BindingCount => bindingCount;
-    public int GunpowderCount => gunpowderCount;
-    public int CanCount => canCount;
 
     private void ClampAll()
     {
