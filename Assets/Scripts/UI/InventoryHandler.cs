@@ -108,6 +108,7 @@ public class InventoryHandler : MonoBehaviour
             return;
         }
         Instance = this;
+        DontDestroyOnLoad(gameObject);
 
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
     }
@@ -144,7 +145,9 @@ public class InventoryHandler : MonoBehaviour
         BuildRecipes();
         SetupRadials();
         ResetIngredientVisuals();
-        UpdateUICounts();
+
+        // force UI to use manager values after scene reload
+        SyncFromResourceManagerForUI();
     }
 
     private void Update()
@@ -165,6 +168,12 @@ public class InventoryHandler : MonoBehaviour
         CustomButton.OnCraftCompleted += HandleCraftCompleted;
         CustomButton.OnCraftDenied += HandleCraftDenied;
         CustomButton.OnCraftCanceled += HandleCraftCanceled;
+
+        ResourceManager.OnBandageFullChanged += OnManagerCountsChanged;
+        ResourceManager.OnGrenadeFullChanged += OnManagerCountsChanged;
+        ResourceManager.OnLandmineFullChanged += OnManagerCountsChanged;
+        ResourceManager.OnShotgunShellFullChanged += OnManagerCountsChanged;
+        ResourceManager.OnMedkitFullChanged += OnManagerCountsChanged;
     }
 
     private void OnDisable()
@@ -177,9 +186,20 @@ public class InventoryHandler : MonoBehaviour
         CustomButton.OnCraftDenied -= HandleCraftDenied;
         CustomButton.OnCraftCanceled -= HandleCraftCanceled;
 
+        ResourceManager.OnBandageFullChanged -= OnManagerCountsChanged;
+        ResourceManager.OnGrenadeFullChanged -= OnManagerCountsChanged;
+        ResourceManager.OnLandmineFullChanged -= OnManagerCountsChanged;
+        ResourceManager.OnShotgunShellFullChanged -= OnManagerCountsChanged;
+        ResourceManager.OnMedkitFullChanged -= OnManagerCountsChanged;
+
         StopAllCraftingLoopSounds();
         StopRadialRoutine();
         HideAllRadials();
+    }
+
+    private void OnManagerCountsChanged(bool _)
+    {
+        SyncFromResourceManagerForUI();
     }
 
     // public add methods for ResourceManager
@@ -361,7 +381,6 @@ public class InventoryHandler : MonoBehaviour
             };
 
             if (!ok) return false;
-
             ingredientCounts[req.Key] -= req.Value;
         }
 
@@ -371,9 +390,62 @@ public class InventoryHandler : MonoBehaviour
         gunPowderCount = ingredientCounts[IngredientType.GunPowder];
         canCount = ingredientCounts[IngredientType.Can];
 
-        craftableCounts[item] += 1;
+        switch (item)
+        {
+            case CustomButton.CraftableItem.Bandage:
+                ResourceManager.Instance.SetBandage(1);
+                break;
+            case CustomButton.CraftableItem.Grenade:
+                ResourceManager.Instance.SetGrenade(1);
+                break;
+            case CustomButton.CraftableItem.Landmine:
+                ResourceManager.Instance.SetLandmine(1);
+                break;
+            case CustomButton.CraftableItem.ShotgunShell:
+                ResourceManager.Instance.SetShotgunShell(4);
+                break;
+            case CustomButton.CraftableItem.Medikit:
+                ResourceManager.Instance.SetMedkit(1); 
+                var sw = FindFirstObjectByType<SwitchWeapons>(FindObjectsInactive.Include);
+                sw?.SyncFromResourceManager();
+                break;
+        }
 
+        SyncFromResourceManagerForUI();
         return true;
+    }
+
+    public void SyncFromResourceManagerForUI()
+    {
+        if (ResourceManager.Instance == null) return;
+
+        // Ingredients
+        alcoholCount = ResourceManager.Instance.AlcoholCount;
+        ragCount = ResourceManager.Instance.RagCount;
+        bindingCount = ResourceManager.Instance.BindingCount;
+        gunPowderCount = ResourceManager.Instance.GunpowderCount;
+        canCount = ResourceManager.Instance.CanCount;
+
+        ingredientCounts[IngredientType.Alcohol] = alcoholCount;
+        ingredientCounts[IngredientType.Rag] = ragCount;
+        ingredientCounts[IngredientType.Binding] = bindingCount;
+        ingredientCounts[IngredientType.GunPowder] = gunPowderCount;
+        ingredientCounts[IngredientType.Can] = canCount;
+
+        // Craftables
+        bandageCount = ResourceManager.Instance.BandageCount;
+        grenadeCount = ResourceManager.Instance.GrenadeCount;
+        landmineCount = ResourceManager.Instance.LandmineCount;
+        medikitCount = ResourceManager.Instance.MedkitCount;
+        shotgunShellCount = ResourceManager.Instance.ShotgunShellCount;
+
+        craftableCounts[CustomButton.CraftableItem.Bandage] = bandageCount;
+        craftableCounts[CustomButton.CraftableItem.Grenade] = grenadeCount;
+        craftableCounts[CustomButton.CraftableItem.Landmine] = landmineCount;
+        craftableCounts[CustomButton.CraftableItem.Medikit] = medikitCount;
+        craftableCounts[CustomButton.CraftableItem.ShotgunShell] = shotgunShellCount;
+
+        UpdateUICounts();
     }
 
     private IEnumerator IngredientRadialFillRoutine(CustomButton.CraftableItem item, float duration)

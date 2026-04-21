@@ -22,6 +22,7 @@ public class ResourceManager : MonoBehaviour
     public static Action<bool> OnLandmineFullChanged;
     public static Action<bool> OnMedkitFullChanged;
     public static Action<bool> OnBandageFullChanged;
+    public static Action<bool> OnShotgunShellFullChanged;
     public static Action<bool> OnSilencerFullChanged;
     public static Action<bool> OnAlcoholFullChanged;
     public static Action<bool> OnRagFullChanged;
@@ -44,11 +45,13 @@ public class ResourceManager : MonoBehaviour
     [SerializeField] private int landmineMax = 5;
 
     [Header("Craftables")]
-    [SerializeField] private int medkitCount = 2;
-    [SerializeField] private int medkitMax = 3;
-    [SerializeField] private int bandageCount = 4;
+    [SerializeField] private int medkitCount = 0;
+    [SerializeField] private int medkitMax = 2; // as requested
+    [SerializeField] private int bandageCount = 0;
     [SerializeField] private int bandageMax = 6;
-    [SerializeField] private int silencerCount = 1;
+    [SerializeField] private int shotgunShellCount = 0;
+    [SerializeField] private int shotgunShellMax = 30;
+    [SerializeField] private int silencerCount = 0;
     [SerializeField] private int silencerMax = 3;
 
     [Header("Ingredients")]
@@ -64,8 +67,8 @@ public class ResourceManager : MonoBehaviour
     [SerializeField] private int canMax = 5;
 
     private Coroutine syncRoutine;
-    private int applyToken = -1; // increments each sceneLoaded
-    private int appliedToken = -9999; // last token applied
+    private int applyToken = -1;
+    private int appliedToken = -9999;
 
     private void Awake()
     {
@@ -86,7 +89,6 @@ public class ResourceManager : MonoBehaviour
 
     private void Start()
     {
-        // For first loaded scene
         applyToken++;
         BeginSync();
         BroadcastAllFullStates();
@@ -113,11 +115,9 @@ public class ResourceManager : MonoBehaviour
 
     private IEnumerator SyncRoutine(int token)
     {
-        // wait scene objects to initialize
         yield return null;
         yield return null;
 
-        // if already applied for this token, stop (prevents +2 every reload)
         if (appliedToken == token)
         {
             syncRoutine = null;
@@ -142,9 +142,9 @@ public class ResourceManager : MonoBehaviour
         inventoryHandler = FindFirstObjectByType<InventoryHandler>(FindObjectsInactive.Include);
     }
 
-    // Scene scripts start from 0 -> apply full manager counts once
     private void ApplyManagerStateToFreshSceneOnce()
     {
+        // Weapons / explosives
         pistol?.AddBullets(pistolAmmoCount);
         shotgun?.AddBullets(shotgunAmmoCount);
         sniper?.AddBullets(sniperAmmoCount);
@@ -152,13 +152,20 @@ public class ResourceManager : MonoBehaviour
         explosives?.AddGrenades(grenadeCount);
         explosives?.AddLandmines(landmineCount);
 
+        // Healing UI holder
         switchWeapons?.AddBandage(bandageCount);
+        switchWeapons?.AddMedikit(medkitCount);
 
+        // Inventory ingredients
         inventoryHandler?.AddAlcohol(alcoholCount);
         inventoryHandler?.AddRag(ragCount);
         inventoryHandler?.AddBinding(bindingCount);
         inventoryHandler?.AddGunPowder(gunpowderCount);
         inventoryHandler?.AddCan(canCount);
+
+        // Force inventory UI to reflect manager values
+        inventoryHandler?.SyncFromResourceManagerForUI();
+        switchWeapons?.SyncFromResourceManager();
     }
 
     private int AddClamped(ref int count, int max, int request, Action<bool> evt)
@@ -189,6 +196,8 @@ public class ResourceManager : MonoBehaviour
         if (wasFull != isFull) evt?.Invoke(isFull);
     }
 
+    // -------------------- Add methods --------------------
+
     public int SetPistolAmmo(int amount)
     {
         int accepted = AddClamped(ref pistolAmmoCount, pistolAmmoMax, amount, OnPistolAmmoFullChanged);
@@ -200,6 +209,9 @@ public class ResourceManager : MonoBehaviour
     {
         int accepted = AddClamped(ref shotgunAmmoCount, shotgunAmmoMax, amount, OnShotgunAmmoFullChanged);
         if (accepted > 0) shotgun?.AddBullets(accepted);
+
+        // shotgun shells mirror shotgun ammo
+        shotgunShellCount = Mathf.Clamp(shotgunAmmoCount, 0, shotgunShellMax);
         return accepted;
     }
 
@@ -231,7 +243,29 @@ public class ResourceManager : MonoBehaviour
         return accepted;
     }
 
-    public int SetMedkit(int amount) => AddClamped(ref medkitCount, medkitMax, amount, OnMedkitFullChanged);
+    public int SetMedkit(int amount)
+    {
+        int accepted = AddClamped(ref medkitCount, medkitMax, amount, OnMedkitFullChanged);
+        if (accepted > 0) switchWeapons?.AddMedikit(accepted);
+        return accepted;
+    }
+
+    public int SetShotgunShell(int amount)
+    {
+        int accepted = AddClamped(ref shotgunShellCount, shotgunShellMax, amount, OnShotgunShellFullChanged);
+
+        // shells are shotgun ammo
+        if (accepted > 0)
+        {
+            int ammoAccepted = AddClamped(ref shotgunAmmoCount, shotgunAmmoMax, accepted, OnShotgunAmmoFullChanged);
+            if (ammoAccepted > 0) shotgun?.AddBullets(ammoAccepted);
+
+            shotgunShellCount = shotgunAmmoCount;
+        }
+
+        return accepted;
+    }
+
     public int SetSilencer(int amount) => AddClamped(ref silencerCount, silencerMax, amount, OnSilencerFullChanged);
 
     public int SetAlcohol(int amount)
@@ -269,13 +303,36 @@ public class ResourceManager : MonoBehaviour
         return accepted;
     }
 
+    // -------------------- Consume methods --------------------
+
     public bool ConsumePistolAmmo(int amount) => ConsumeClamped(ref pistolAmmoCount, pistolAmmoMax, amount, OnPistolAmmoFullChanged);
-    public bool ConsumeShotgunAmmo(int amount) => ConsumeClamped(ref shotgunAmmoCount, shotgunAmmoMax, amount, OnShotgunAmmoFullChanged);
+
+    public bool ConsumeShotgunAmmo(int amount)
+    {
+        bool ok = ConsumeClamped(ref shotgunAmmoCount, shotgunAmmoMax, amount, OnShotgunAmmoFullChanged);
+        if (!ok) return false;
+
+        shotgunShellCount = Mathf.Clamp(shotgunAmmoCount, 0, shotgunShellMax);
+        OnShotgunShellFullChanged?.Invoke(shotgunShellCount >= shotgunShellMax);
+        return true;
+    }
+
     public bool ConsumeSniperAmmo(int amount) => ConsumeClamped(ref sniperAmmoCount, sniperAmmoMax, amount, OnSniperAmmoFullChanged);
     public bool ConsumeGrenade(int amount) => ConsumeClamped(ref grenadeCount, grenadeMax, amount, OnGrenadeFullChanged);
     public bool ConsumeLandmine(int amount) => ConsumeClamped(ref landmineCount, landmineMax, amount, OnLandmineFullChanged);
     public bool ConsumeMedkit(int amount) => ConsumeClamped(ref medkitCount, medkitMax, amount, OnMedkitFullChanged);
     public bool ConsumeBandage(int amount) => ConsumeClamped(ref bandageCount, bandageMax, amount, OnBandageFullChanged);
+
+    public bool ConsumeShotgunShell(int amount)
+    {
+        bool ok = ConsumeClamped(ref shotgunShellCount, shotgunShellMax, amount, OnShotgunShellFullChanged);
+        if (!ok) return false;
+
+        ConsumeClamped(ref shotgunAmmoCount, shotgunAmmoMax, amount, OnShotgunAmmoFullChanged);
+        shotgunShellCount = shotgunAmmoCount;
+        return true;
+    }
+
     public bool ConsumeSilencer(int amount) => ConsumeClamped(ref silencerCount, silencerMax, amount, OnSilencerFullChanged);
     public bool ConsumeAlcohol(int amount) => ConsumeClamped(ref alcoholCount, alcoholMax, amount, OnAlcoholFullChanged);
     public bool ConsumeRag(int amount) => ConsumeClamped(ref ragCount, ragMax, amount, OnRagFullChanged);
@@ -283,24 +340,45 @@ public class ResourceManager : MonoBehaviour
     public bool ConsumeGunpowder(int amount) => ConsumeClamped(ref gunpowderCount, gunpowderMax, amount, OnGunpowderFullChanged);
     public bool ConsumeCan(int amount) => ConsumeClamped(ref canCount, canMax, amount, OnCanFullChanged);
 
+    // -------------------- Getters --------------------
+
     public int PistolAmmoCount => pistolAmmoCount;
     public int PistolAmmoMax => pistolAmmoMax;
+
+    public int AlcoholCount => alcoholCount;
+    public int RagCount => ragCount;
+    public int BindingCount => bindingCount;
+    public int GunpowderCount => gunpowderCount;
+    public int CanCount => canCount;
+
+    public int BandageCount => bandageCount;
+    public int GrenadeCount => grenadeCount;
+    public int LandmineCount => landmineCount;
+    public int MedkitCount => medkitCount;
+    public int ShotgunShellCount => shotgunShellCount;
 
     private void ClampAll()
     {
         pistolAmmoCount = Mathf.Clamp(pistolAmmoCount, 0, pistolAmmoMax);
         shotgunAmmoCount = Mathf.Clamp(shotgunAmmoCount, 0, shotgunAmmoMax);
         sniperAmmoCount = Mathf.Clamp(sniperAmmoCount, 0, sniperAmmoMax);
+
         grenadeCount = Mathf.Clamp(grenadeCount, 0, grenadeMax);
         landmineCount = Mathf.Clamp(landmineCount, 0, landmineMax);
+
         medkitCount = Mathf.Clamp(medkitCount, 0, medkitMax);
         bandageCount = Mathf.Clamp(bandageCount, 0, bandageMax);
+        shotgunShellCount = Mathf.Clamp(shotgunShellCount, 0, shotgunShellMax);
         silencerCount = Mathf.Clamp(silencerCount, 0, silencerMax);
+
         alcoholCount = Mathf.Clamp(alcoholCount, 0, alcoholMax);
         ragCount = Mathf.Clamp(ragCount, 0, ragMax);
         bindingCount = Mathf.Clamp(bindingCount, 0, bindingMax);
         gunpowderCount = Mathf.Clamp(gunpowderCount, 0, gunpowderMax);
         canCount = Mathf.Clamp(canCount, 0, canMax);
+
+        // keep shell/ammo mirror
+        shotgunShellCount = Mathf.Clamp(shotgunAmmoCount, 0, shotgunShellMax);
     }
 
     private void BroadcastAllFullStates()
@@ -308,11 +386,15 @@ public class ResourceManager : MonoBehaviour
         OnPistolAmmoFullChanged?.Invoke(pistolAmmoCount >= pistolAmmoMax);
         OnShotgunAmmoFullChanged?.Invoke(shotgunAmmoCount >= shotgunAmmoMax);
         OnSniperAmmoFullChanged?.Invoke(sniperAmmoCount >= sniperAmmoMax);
+
         OnGrenadeFullChanged?.Invoke(grenadeCount >= grenadeMax);
         OnLandmineFullChanged?.Invoke(landmineCount >= landmineMax);
+
         OnMedkitFullChanged?.Invoke(medkitCount >= medkitMax);
         OnBandageFullChanged?.Invoke(bandageCount >= bandageMax);
+        OnShotgunShellFullChanged?.Invoke(shotgunShellCount >= shotgunShellMax);
         OnSilencerFullChanged?.Invoke(silencerCount >= silencerMax);
+
         OnAlcoholFullChanged?.Invoke(alcoholCount >= alcoholMax);
         OnRagFullChanged?.Invoke(ragCount >= ragMax);
         OnBindingFullChanged?.Invoke(bindingCount >= bindingMax);

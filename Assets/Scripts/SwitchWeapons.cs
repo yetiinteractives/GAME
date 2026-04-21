@@ -28,6 +28,9 @@ public class SwitchWeapons : MonoBehaviour
     private int bandageCount = 0;
     [SerializeField]private TextMeshProUGUI bandageTMP;
 
+    private int medikitCount = 0;
+    [SerializeField] private TextMeshProUGUI medikitTMP;
+
     private void Start()
     {
         if(switchWeaponWheel != null)
@@ -156,19 +159,59 @@ public class SwitchWeapons : MonoBehaviour
         }
     }
 
-    public void OnHealingSelected()
+    public void OnBandageSelected()
     {
-       if(bandageCount > 0)
-        {
-            playerHealth.HealPlayer(25); // Heal player 
-            bandageCount--;
+        if (bandageCount <= 0) return;
 
-           bandageTMP.text = bandageCount.ToString();
-        }
+        playerHealth.HealPlayer(25);
+        bandageCount--;
+        ResourceManager.Instance?.ConsumeBandage(1);
+
+        if (bandageTMP != null)
+            bandageTMP.text = bandageCount.ToString();
+
+        InventoryHandler.Instance?.SyncFromResourceManagerForUI();
     }
+
+    public void OnMedikitSelected()
+    {
+        if (medikitCount <= 0) return;
+
+        // full heal
+        playerHealth.HealPlayer(100); 
+                                     
+
+        medikitCount--;
+        ResourceManager.Instance?.ConsumeMedkit(1);
+
+        if (medikitTMP != null)
+            medikitTMP.text = medikitCount.ToString();
+
+        InventoryHandler.Instance?.SyncFromResourceManagerForUI();
+    }
+
     public void AddBandage(int count)
     {
         bandageCount += count;
         bandageTMP.text = bandageCount.ToString();
     }
+
+    public void AddMedikit(int count)
+    {
+        medikitCount = Mathf.Clamp(medikitCount + count, 0, 2);
+        if (medikitTMP != null) medikitTMP.text = medikitCount.ToString();
+    }
+
+    public void SyncFromResourceManager()
+    {
+        if (ResourceManager.Instance == null) return;
+
+        // keep local values aligned to source of truth
+        bandageCount = ResourceManager.Instance.BandageCount;
+        medikitCount = ResourceManager.Instance.MedkitCount;
+
+        if (bandageTMP != null) bandageTMP.text = bandageCount.ToString();
+        if (medikitTMP != null) medikitTMP.text = medikitCount.ToString();
+    }
+
 }

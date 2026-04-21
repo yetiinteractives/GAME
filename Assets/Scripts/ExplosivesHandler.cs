@@ -101,7 +101,7 @@ public class ExplosivesHandler : MonoBehaviour
 
         OnExplosivesCountChanged?.Invoke(currentGrenadeCount);
 
-
+        InventoryHandler.Instance?.SyncFromResourceManagerForUI();
     }
     public void ConsumeLandmine()
     {
@@ -115,6 +115,8 @@ public class ExplosivesHandler : MonoBehaviour
         ToggleLandmine(hasLandmine && currentWeaponIndex == 5 );
 
         OnExplosivesCountChanged?.Invoke(currentLandmineCount);
+
+        InventoryHandler.Instance?.SyncFromResourceManagerForUI();
 
     }
      public void AddGrenades(int amount)
