@@ -409,6 +409,9 @@ public class InventoryHandler : MonoBehaviour
                 var sw = FindFirstObjectByType<SwitchWeapons>(FindObjectsInactive.Include);
                 sw?.SyncFromResourceManager();
                 break;
+            case CustomButton.CraftableItem.Silencer:
+                ResourceManager.Instance.SetSilencer(1);
+                break;
         }
 
         SyncFromResourceManagerForUI();
@@ -425,6 +428,7 @@ public class InventoryHandler : MonoBehaviour
         bindingCount = ResourceManager.Instance.BindingCount;
         gunPowderCount = ResourceManager.Instance.GunpowderCount;
         canCount = ResourceManager.Instance.CanCount;
+        silencerCount = ResourceManager.Instance.SilencerCount;
 
         ingredientCounts[IngredientType.Alcohol] = alcoholCount;
         ingredientCounts[IngredientType.Rag] = ragCount;
@@ -444,6 +448,7 @@ public class InventoryHandler : MonoBehaviour
         craftableCounts[CustomButton.CraftableItem.Landmine] = landmineCount;
         craftableCounts[CustomButton.CraftableItem.Medikit] = medikitCount;
         craftableCounts[CustomButton.CraftableItem.ShotgunShell] = shotgunShellCount;
+        craftableCounts[CustomButton.CraftableItem.Silencer] = silencerCount;
 
         UpdateUICounts();
     }

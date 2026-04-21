@@ -66,9 +66,18 @@ public class ResourceManager : MonoBehaviour
     [SerializeField] private int canCount = 3;
     [SerializeField] private int canMax = 5;
 
+    [Header("Pistol Silencer Runtime State")]
+    [SerializeField] private bool isPistolSilencerEquipped = false;
+    [SerializeField] private int pistolSilencerDurability = 10;
+
+    public bool IsPistolSilencerEquipped => isPistolSilencerEquipped;
+    public int PistolSilencerDurability => pistolSilencerDurability;
+    public int SilencerCount => silencerCount;
+
     private Coroutine syncRoutine;
     private int applyToken = -1;
     private int appliedToken = -9999;
+
 
     private void Awake()
     {
@@ -198,6 +207,11 @@ public class ResourceManager : MonoBehaviour
 
     // -------------------- Add methods --------------------
 
+    public void SetPistolSilencerRuntimeState(bool equipped, int durability)
+    {
+        isPistolSilencerEquipped = equipped;
+        pistolSilencerDurability = Mathf.Clamp(durability, 0, 100);
+    }
     public int SetPistolAmmo(int amount)
     {
         int accepted = AddClamped(ref pistolAmmoCount, pistolAmmoMax, amount, OnPistolAmmoFullChanged);
@@ -379,6 +393,8 @@ public class ResourceManager : MonoBehaviour
 
         // keep shell/ammo mirror
         shotgunShellCount = Mathf.Clamp(shotgunAmmoCount, 0, shotgunShellMax);
+        pistolSilencerDurability = Mathf.Clamp(pistolSilencerDurability, 0, 10);
+        if (silencerCount <= 0) isPistolSilencerEquipped = false;
     }
 
     private void BroadcastAllFullStates()

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,7 +5,6 @@ public class Pistol : Weapon
 {
     [Header("Silencer")]
     [SerializeField] private int silencerDurability = 5;
-
     [SerializeField] private GameObject silencerModel;
     [SerializeField] private AudioClip silencerSound;
 
@@ -15,18 +13,11 @@ public class Pistol : Weapon
     [SerializeField] private Image silencerDetachedIcon;
     [SerializeField] private Slider silencerDurabilitySlider;
 
-
-    
-
     [Header("Sound")]
     [SerializeField, Range(0.01f, 1f)]
     private float silencedLoudnessMultiplier = 0.1f;
 
-    
-
-    private bool hasSilencer = true;
     private bool isSilencerOn = false;
-
     private int currentSilencerDurability;
 
     private float baseGunshotLoudness;
@@ -36,67 +27,121 @@ public class Pistol : Weapon
     {
         base.Awake();
 
-        ResourceManager.Instance.SetPistolAmmo(2);
-
         baseGunshotLoudness = gunshotLoudness;
+        currentShootSound = shootSound;
 
-        silencerDurabilitySlider.maxValue = silencerDurability;
-        currentSilencerDurability = silencerDurability;
+        if (silencerDurabilitySlider != null)
+            silencerDurabilitySlider.maxValue = silencerDurability;
 
-        UpdateUI(isSilencerOn);
-        RemoveSilencer();
+        // Load persisted runtime state
+        if (ResourceManager.Instance != null)
+        {
+            isSilencerOn = ResourceManager.Instance.IsPistolSilencerEquipped;
+            currentSilencerDurability = ResourceManager.Instance.PistolSilencerDurability;
+        }
+        else
+        {
+            isSilencerOn = false;
+            currentSilencerDurability = silencerDurability;
+        }
+
+        if (currentSilencerDurability <= 0)
+            currentSilencerDurability = silencerDurability;
+
+        ApplySilencerStateVisualAndSound();
+        UpdateSilencerUI();
+        SaveSilencerRuntimeState();
     }
 
-
-    void UpdateUI(bool attached)
+    protected override void OnEnable()
     {
-        if (silencerAttachedIcon == null || silencerDetachedIcon == null || silencerDurabilitySlider == null)
-            return;
-        DisableAllSilencerIcons();
-        silencerDurabilitySlider.value = currentSilencerDurability;
+        base.OnEnable();
 
-        if (attached && hasSilencer)
+        if (ResourceManager.Instance != null)
         {
-            silencerAttachedIcon.gameObject.SetActive(true);
+            isSilencerOn = ResourceManager.Instance.IsPistolSilencerEquipped;
+            currentSilencerDurability = ResourceManager.Instance.PistolSilencerDurability;
+
+            if (currentSilencerDurability <= 0 && ResourceManager.Instance.SilencerCount > 0)
+                currentSilencerDurability = silencerDurability;
         }
-        else if (!attached && hasSilencer)
-        {
-            silencerDetachedIcon.gameObject.SetActive(true);
-        }
+
+        ApplySilencerStateVisualAndSound();
+        UpdateSilencerUI();
     }
 
     private void DisableAllSilencerIcons()
     {
-       silencerDetachedIcon.gameObject.SetActive(false);
-        silencerAttachedIcon.gameObject.SetActive(false);
+        if (silencerDetachedIcon != null) silencerDetachedIcon.gameObject.SetActive(false);
+        if (silencerAttachedIcon != null) silencerAttachedIcon.gameObject.SetActive(false);
+    }
+
+    private void UpdateSilencerUI()
+    {
+        if (silencerDurabilitySlider != null)
+        {
+            silencerDurabilitySlider.maxValue = silencerDurability;
+            silencerDurabilitySlider.value = Mathf.Clamp(currentSilencerDurability, 0, silencerDurability);
+        }
+
+        DisableAllSilencerIcons();
+
+        int silencerCount = ResourceManager.Instance != null ? ResourceManager.Instance.SilencerCount : 0;
+        bool hasAnySilencer = silencerCount > 0;
+
+        if (!hasAnySilencer) return;
+
+        if (isSilencerOn) silencerAttachedIcon?.gameObject.SetActive(true);
+        else silencerDetachedIcon?.gameObject.SetActive(true);
+    }
+
+    private void ApplySilencerStateVisualAndSound()
+    {
+        if (isSilencerOn)
+        {
+            if (silencerModel != null) silencerModel.SetActive(true);
+            currentShootSound = silencerSound;
+            gunshotLoudness = baseGunshotLoudness * silencedLoudnessMultiplier;
+        }
+        else
+        {
+            if (silencerModel != null) silencerModel.SetActive(false);
+            currentShootSound = shootSound;
+            gunshotLoudness = baseGunshotLoudness;
+        }
+    }
+
+    private void SaveSilencerRuntimeState()
+    {
+        if (ResourceManager.Instance == null) return;
+        ResourceManager.Instance.SetPistolSilencerRuntimeState(isSilencerOn, currentSilencerDurability);
     }
 
     public void SetSilencer()
     {
-        if (!hasSilencer) return;
+        if (ResourceManager.Instance == null) return;
+
+        // no silencer in inventory => can't attach
+        if (ResourceManager.Instance.SilencerCount <= 0) return;
+
+        // if durability somehow zero while still having inventory, prepare fresh unit
+        if (currentSilencerDurability <= 0)
+            currentSilencerDurability = silencerDurability;
 
         isSilencerOn = true;
 
-        if (silencerModel != null)
-            silencerModel.SetActive(true);
-
-        currentShootSound = silencerSound;
-        gunshotLoudness = baseGunshotLoudness * silencedLoudnessMultiplier;
-
-        UpdateUI(true);
+        ApplySilencerStateVisualAndSound();
+        UpdateSilencerUI();
+        SaveSilencerRuntimeState();
     }
 
     public void RemoveSilencer()
     {
         isSilencerOn = false;
 
-        if (silencerModel != null)
-            silencerModel.SetActive(false);
-
-        currentShootSound = shootSound;
-        gunshotLoudness = baseGunshotLoudness;
-
-        UpdateUI(false);
+        ApplySilencerStateVisualAndSound();
+        UpdateSilencerUI();
+        SaveSilencerRuntimeState();
     }
 
     protected override void Shoot(RaycastHit hit)
@@ -104,8 +149,7 @@ public class Pistol : Weapon
         ApplyDamage(hit, damage);
 
         bulletOnMag--;
-        ResourceManager.Instance.ConsumePistolAmmo(1);
-       
+        ResourceManager.Instance?.ConsumePistolAmmo(1);
 
         nextFireTime = Time.time + fireRate;
 
@@ -132,20 +176,37 @@ public class Pistol : Weapon
 
         UpdateStatus(bulletOnMag <= 0 ? "Out of Ammo!" : "Aiming");
 
-        Debug.Log($"{gameObject.name} fired! Mag: {bulletOnMag}/{magCapacity}, Total: {totalBullet}, Loudness: {gunshotLoudness:F2}");
-
         if (isSilencerOn)
         {
             currentSilencerDurability--;
-            silencerDurabilitySlider.value = currentSilencerDurability;
+            if (silencerDurabilitySlider != null)
+                silencerDurabilitySlider.value = currentSilencerDurability;
 
             if (currentSilencerDurability <= 0)
             {
-                hasSilencer = false;
-                RemoveSilencer();
+                currentSilencerDurability = 0;
+                isSilencerOn = false;
+
+                // consume only when broken
+                ResourceManager.Instance?.ConsumeSilencer(1);
+
+                // if still have spare, prepare next unit durability for MANUAL attach
+                if (ResourceManager.Instance != null && ResourceManager.Instance.SilencerCount > 0)
+                    currentSilencerDurability = silencerDurability;
+
+                ApplySilencerStateVisualAndSound();
+                UpdateSilencerUI();
+                SaveSilencerRuntimeState();
+
+                InventoryHandler.Instance?.SyncFromResourceManagerForUI();
+            }
+            else
+            {
+                SaveSilencerRuntimeState();
             }
         }
 
+        Debug.Log($"{gameObject.name} fired! Mag: {bulletOnMag}/{magCapacity}, Total: {totalBullet}, Loudness: {gunshotLoudness:F2}");
     }
 
     protected override void Update()
@@ -154,15 +215,8 @@ public class Pistol : Weapon
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (!hasSilencer) return;
-
-            if (isSilencerOn)
-                RemoveSilencer();
-            else
-                SetSilencer();
+            if (isSilencerOn) RemoveSilencer();
+            else SetSilencer();
         }
     }
-
-    
-
 }
