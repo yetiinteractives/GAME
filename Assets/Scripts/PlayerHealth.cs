@@ -40,6 +40,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public void TakeDamage(float amount)
     {
         currentHealth = Mathf.Clamp(currentHealth - amount, 0f, maxHealth);
+        PlayerStateManager.Instance?.SetHealth(currentHealth);
 
         // Health bar updates instantly
         healthBar.fillAmount = currentHealth / maxHealth;
@@ -59,9 +60,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
        
             currentHealth = Mathf.Clamp(currentHealth + amount, 0f, maxHealth);
+            PlayerStateManager.Instance?.SetHealth(currentHealth);
 
-            // Trail updates instantly
-            healthBarTrail.fillAmount = currentHealth / maxHealth;
+        // Trail updates instantly
+        healthBarTrail.fillAmount = currentHealth / maxHealth;
 
             healthBarTrail.color = healColor;
 
@@ -120,5 +122,14 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
     {
 
+    }
+
+
+    public void SetHealthFromSave(float value)
+    {
+        currentHealth = Mathf.Clamp(value, 0f, maxHealth);
+        float fill = Mathf.Clamp01(currentHealth / maxHealth);
+        if (healthBar != null) healthBar.fillAmount = fill;
+        if (healthBarTrail != null) healthBarTrail.fillAmount = fill;
     }
 }

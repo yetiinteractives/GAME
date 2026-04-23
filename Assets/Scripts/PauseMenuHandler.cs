@@ -64,6 +64,21 @@ public class PauseMenuHandler : MonoBehaviour
         DisablePauseMenu() ;
     }
 
+    public void OnClickSaveGame()
+    {
+        SaveManager.Instance?.SaveGame();
+    }
+
+    public void OnClickSaveAndQuit()
+    {
+        SaveManager.Instance?.SaveAndQuit();
+    }
+
+    public void OnClickLoadLastSave()
+    {
+        SaveManager.Instance?.ContinueGameFromMainMenu();
+    }
+
 
     private void OnDisable()
     {

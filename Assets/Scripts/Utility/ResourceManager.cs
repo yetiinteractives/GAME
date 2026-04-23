@@ -417,4 +417,104 @@ public class ResourceManager : MonoBehaviour
         OnGunpowderFullChanged?.Invoke(gunpowderCount >= gunpowderMax);
         OnCanFullChanged?.Invoke(canCount >= canMax);
     }
+
+
+    public ResourceSaveData ExportSaveData()
+    {
+        return new ResourceSaveData
+        {
+            pistolAmmoCount = pistolAmmoCount,
+            shotgunAmmoCount = shotgunAmmoCount,
+            sniperAmmoCount = sniperAmmoCount,
+
+            grenadeCount = grenadeCount,
+            landmineCount = landmineCount,
+
+            medkitCount = medkitCount,
+            bandageCount = bandageCount,
+            shotgunShellCount = shotgunShellCount,
+            silencerCount = silencerCount,
+
+            alcoholCount = alcoholCount,
+            ragCount = ragCount,
+            bindingCount = bindingCount,
+            gunpowderCount = gunpowderCount,
+            canCount = canCount,
+
+            isPistolSilencerEquipped = isPistolSilencerEquipped,
+            pistolSilencerDurability = pistolSilencerDurability
+        };
+    }
+
+    public void ImportSaveData(ResourceSaveData d)
+    {
+        if (d == null) return;
+
+        pistolAmmoCount = d.pistolAmmoCount;
+        shotgunAmmoCount = d.shotgunAmmoCount;
+        sniperAmmoCount = d.sniperAmmoCount;
+
+        grenadeCount = d.grenadeCount;
+        landmineCount = d.landmineCount;
+
+        medkitCount = d.medkitCount;
+        bandageCount = d.bandageCount;
+        shotgunShellCount = d.shotgunShellCount;
+        silencerCount = d.silencerCount;
+
+        alcoholCount = d.alcoholCount;
+        ragCount = d.ragCount;
+        bindingCount = d.bindingCount;
+        gunpowderCount = d.gunpowderCount;
+        canCount = d.canCount;
+
+        isPistolSilencerEquipped = d.isPistolSilencerEquipped;
+        pistolSilencerDurability = d.pistolSilencerDurability;
+
+        ClampAll();
+
+        // Re-apply to fresh/current scene systems
+        RebindRefs();
+        ApplyManagerStateToFreshSceneOnce();
+        BroadcastAllFullStates();
+
+        // Force UI refresh
+        inventoryHandler?.SyncFromResourceManagerForUI();
+        switchWeapons?.SyncFromResourceManager();
+    }
+
+
+
+    public void ResetToDefaults()
+    {
+        // Set your intended new-game defaults here
+        pistolAmmoCount = 40;
+        shotgunAmmoCount = 10;
+        sniperAmmoCount = 10;
+
+        grenadeCount = 2;
+        landmineCount = 2;
+
+        medkitCount = 0;
+        bandageCount = 0;
+        shotgunShellCount = 0;
+        silencerCount = 0;
+
+        alcoholCount = 3;
+        ragCount = 3;
+        bindingCount = 5;
+        gunpowderCount = 5;
+        canCount = 3;
+
+        isPistolSilencerEquipped = false;
+        pistolSilencerDurability = 5;
+
+        ClampAll();
+        RebindRefs();
+        ApplyManagerStateToFreshSceneOnce();
+        BroadcastAllFullStates();
+
+        inventoryHandler?.SyncFromResourceManagerForUI();
+        switchWeapons?.SyncFromResourceManager();
+    }
 }
