@@ -269,6 +269,7 @@ public class InventoryHandler : MonoBehaviour
 
     public void UpdateUICounts()
     {
+        EnsureDictionariesInitialized();
         if (alcoholCountText) alcoholCountText.text = ingredientCounts[IngredientType.Alcohol].ToString();
         if (ragCountText) ragCountText.text = ingredientCounts[IngredientType.Rag].ToString();
         if (bindingCountText) bindingCountText.text = ingredientCounts[IngredientType.Binding].ToString();
@@ -281,6 +282,22 @@ public class InventoryHandler : MonoBehaviour
         if (shotgunShellCountText) shotgunShellCountText.text = craftableCounts[CustomButton.CraftableItem.ShotgunShell].ToString();
         if (grenadeCountText) grenadeCountText.text = craftableCounts[CustomButton.CraftableItem.Grenade].ToString();
         if (landmineCountText) landmineCountText.text = craftableCounts[CustomButton.CraftableItem.Landmine].ToString();
+    }
+
+    private void EnsureDictionariesInitialized()
+    {
+        if (!ingredientCounts.ContainsKey(IngredientType.Alcohol)) ingredientCounts[IngredientType.Alcohol] = alcoholCount;
+        if (!ingredientCounts.ContainsKey(IngredientType.Rag)) ingredientCounts[IngredientType.Rag] = ragCount;
+        if (!ingredientCounts.ContainsKey(IngredientType.Binding)) ingredientCounts[IngredientType.Binding] = bindingCount;
+        if (!ingredientCounts.ContainsKey(IngredientType.GunPowder)) ingredientCounts[IngredientType.GunPowder] = gunPowderCount;
+        if (!ingredientCounts.ContainsKey(IngredientType.Can)) ingredientCounts[IngredientType.Can] = canCount;
+
+        if (!craftableCounts.ContainsKey(CustomButton.CraftableItem.Medikit)) craftableCounts[CustomButton.CraftableItem.Medikit] = medikitCount;
+        if (!craftableCounts.ContainsKey(CustomButton.CraftableItem.Bandage)) craftableCounts[CustomButton.CraftableItem.Bandage] = bandageCount;
+        if (!craftableCounts.ContainsKey(CustomButton.CraftableItem.Silencer)) craftableCounts[CustomButton.CraftableItem.Silencer] = silencerCount;
+        if (!craftableCounts.ContainsKey(CustomButton.CraftableItem.ShotgunShell)) craftableCounts[CustomButton.CraftableItem.ShotgunShell] = shotgunShellCount;
+        if (!craftableCounts.ContainsKey(CustomButton.CraftableItem.Grenade)) craftableCounts[CustomButton.CraftableItem.Grenade] = grenadeCount;
+        if (!craftableCounts.ContainsKey(CustomButton.CraftableItem.Landmine)) craftableCounts[CustomButton.CraftableItem.Landmine] = landmineCount;
     }
 
     private void HandleHoveredCraftItem(CustomButton button)
@@ -368,49 +385,76 @@ public class InventoryHandler : MonoBehaviour
         if (!recipes.TryGetValue(item, out var recipe)) return false;
         if (ResourceManager.Instance == null) return false;
 
+        // Read absolute values from manager
+        int alcohol = ResourceManager.Instance.AlcoholCount;
+        int rag = ResourceManager.Instance.RagCount;
+        int binding = ResourceManager.Instance.BindingCount;
+        int gunPowder = ResourceManager.Instance.GunpowderCount;
+        int can = ResourceManager.Instance.CanCount;
+
+        // Validate recipe against manager values
         foreach (var req in recipe)
         {
-            bool ok = req.Key switch
+            int have = req.Key switch
             {
-                IngredientType.Alcohol => ResourceManager.Instance.ConsumeAlcohol(req.Value),
-                IngredientType.Rag => ResourceManager.Instance.ConsumeRag(req.Value),
-                IngredientType.Binding => ResourceManager.Instance.ConsumeBinding(req.Value),
-                IngredientType.GunPowder => ResourceManager.Instance.ConsumeGunpowder(req.Value),
-                IngredientType.Can => ResourceManager.Instance.ConsumeCan(req.Value),
-                _ => false
+                IngredientType.Alcohol => alcohol,
+                IngredientType.Rag => rag,
+                IngredientType.Binding => binding,
+                IngredientType.GunPowder => gunPowder,
+                IngredientType.Can => can,
+                _ => 0
             };
 
-            if (!ok) return false;
-            ingredientCounts[req.Key] -= req.Value;
+            if (have < req.Value) return false;
         }
 
-        alcoholCount = ingredientCounts[IngredientType.Alcohol];
-        ragCount = ingredientCounts[IngredientType.Rag];
-        bindingCount = ingredientCounts[IngredientType.Binding];
-        gunPowderCount = ingredientCounts[IngredientType.GunPowder];
-        canCount = ingredientCounts[IngredientType.Can];
+        // Subtract ingredients locally
+        foreach (var req in recipe)
+        {
+            switch (req.Key)
+            {
+                case IngredientType.Alcohol: alcohol -= req.Value; break;
+                case IngredientType.Rag: rag -= req.Value; break;
+                case IngredientType.Binding: binding -= req.Value; break;
+                case IngredientType.GunPowder: gunPowder -= req.Value; break;
+                case IngredientType.Can: can -= req.Value; break;
+            }
+        }
 
+        // Push ingredient absolute values
+        ResourceManager.Instance.SetAlcoholAbsolute(alcohol);
+        ResourceManager.Instance.SetRagAbsolute(rag);
+        ResourceManager.Instance.SetBindingAbsolute(binding);
+        ResourceManager.Instance.SetGunpowderAbsolute(gunPowder);
+        ResourceManager.Instance.SetCanAbsolute(can);
+
+        // Add crafted output using absolute setters
         switch (item)
         {
             case CustomButton.CraftableItem.Bandage:
-                ResourceManager.Instance.SetBandage(1);
+                ResourceManager.Instance.SetBandageAbsolute(ResourceManager.Instance.BandageCount + 1);
                 break;
+
             case CustomButton.CraftableItem.Grenade:
-                ResourceManager.Instance.SetGrenade(1);
+                ResourceManager.Instance.SetGrenadeAbsolute(ResourceManager.Instance.GrenadeCount + 1);
                 break;
+
             case CustomButton.CraftableItem.Landmine:
-                ResourceManager.Instance.SetLandmine(1);
+                ResourceManager.Instance.SetLandmineAbsolute(ResourceManager.Instance.LandmineCount + 1);
                 break;
+
             case CustomButton.CraftableItem.ShotgunShell:
-                ResourceManager.Instance.SetShotgunShell(4);
+                ResourceManager.Instance.SetShotgunShellAbsolute(ResourceManager.Instance.ShotgunShellCount + 4);
                 break;
+
             case CustomButton.CraftableItem.Medikit:
-                ResourceManager.Instance.SetMedkit(1); 
+                ResourceManager.Instance.SetMedkitAbsolute(ResourceManager.Instance.MedkitCount + 1);
                 var sw = FindFirstObjectByType<SwitchWeapons>(FindObjectsInactive.Include);
                 sw?.SyncFromResourceManager();
                 break;
+
             case CustomButton.CraftableItem.Silencer:
-                ResourceManager.Instance.SetSilencer(1);
+                ResourceManager.Instance.SetSilencerAbsolute(ResourceManager.Instance.SilencerCount + 1);
                 break;
         }
 

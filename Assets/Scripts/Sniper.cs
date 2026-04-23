@@ -45,7 +45,12 @@ public class Sniper : Weapon
     protected override void Shoot(RaycastHit hit)
     {
         base.Shoot(hit);
-        ResourceManager.Instance.ConsumeSniperAmmo(1);
+
+        if (ResourceManager.Instance != null)
+        {
+            ResourceManager.Instance.SetSniperMagAmmo(BulletOnMag);
+            ResourceManager.Instance.SetSniperReserveAbsolute(TotalBullet);
+        }
     }
 
     protected override void ScopeCheck()

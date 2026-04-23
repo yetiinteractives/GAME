@@ -149,7 +149,11 @@ public class Pistol : Weapon
         ApplyDamage(hit, damage);
 
         bulletOnMag--;
-        ResourceManager.Instance?.ConsumePistolAmmo(1);
+        if (ResourceManager.Instance != null)
+        {
+            ResourceManager.Instance.SetPistolMagAmmo(bulletOnMag);
+            ResourceManager.Instance.SetPistolReserveAbsolute(totalBullet);
+        }
 
         nextFireTime = Time.time + fireRate;
 
@@ -188,7 +192,11 @@ public class Pistol : Weapon
                 isSilencerOn = false;
 
                 // consume only when broken
-                ResourceManager.Instance?.ConsumeSilencer(1);
+                if (ResourceManager.Instance != null)
+                {
+                    int nextSilencer = Mathf.Max(0, ResourceManager.Instance.SilencerCount - 1);
+                    ResourceManager.Instance.SetSilencerAbsolute(nextSilencer);
+                }
 
                 // if still have spare, prepare next unit durability for MANUAL attach
                 if (ResourceManager.Instance != null && ResourceManager.Instance.SilencerCount > 0)

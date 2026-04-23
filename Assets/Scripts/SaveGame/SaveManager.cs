@@ -45,8 +45,13 @@ public class SaveManager : MonoBehaviour
             currentScene = SceneManager.GetActiveScene().name
         };
 
+
         if (ResourceManager.Instance != null)
+        {
+            ResourceManager.Instance?.CaptureRuntimeAmmoFromWeapons();
             data.resources = ResourceManager.Instance.ExportSaveData();
+        }
+            
 
         if (PlayerStateManager.Instance != null)
         {
@@ -117,22 +122,46 @@ public class SaveManager : MonoBehaviour
 
     private IEnumerator LoadFlow(SaveData data)
     {
-        // 1) load scene first
+        // 1) Load scene first
         yield return SceneManager.LoadSceneAsync(data.currentScene);
 
-        // 2) apply runtime player state into PlayerStateManager
+        // 2) Wait for scene objects to initialize (Awake/Start/OnEnable)
+        yield return null;
+        yield return null;
+
+        // 3) Apply player runtime state into state manager
         if (PlayerStateManager.Instance != null)
         {
             PlayerStateManager.Instance.SetHealth(data.player.health);
+
             if (data.player.hasTransform)
                 PlayerStateManager.Instance.SetTransform(data.player.position, data.player.eulerRotation);
         }
 
-        // 3) apply resources
+        // 4) Apply resource/inventory state (absolute set, no additive methods)
         if (ResourceManager.Instance != null)
             ResourceManager.Instance.ImportSaveData(data.resources);
 
-        // 4) force apply player runtime now 
-        PlayerStateManager.Instance?.CaptureFromScene();
+        // 5) Apply health directly to scene player UI + value
+        var playerHealth = FindFirstObjectByType<PlayerHealth>(FindObjectsInactive.Include);
+        if (playerHealth != null)
+            playerHealth.SetHealthFromSave(data.player.health);
+
+        // 6) Apply transform directly to player
+        if (data.player.hasTransform)
+        {
+            Transform player = GameObject.FindGameObjectWithTag("Player")?.transform;
+            if (player != null)
+            {
+                player.position = data.player.position;
+                player.rotation = Quaternion.Euler(data.player.eulerRotation);
+            }
+        }
+
+        // 7) Final resync one frame later (prevents late OnEnable overwrite)
+        yield return null;
+        ResourceManager.Instance?.ForceResyncAllRuntimeUsers();
+
+        Debug.Log("[SaveManager] Load complete.");
     }
 }

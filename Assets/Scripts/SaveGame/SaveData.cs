@@ -28,6 +28,11 @@ public class ResourceSaveData
     public int shotgunAmmoCount;
     public int sniperAmmoCount;
 
+    // ADD THESE 3:
+    public int pistolMagAmmo;
+    public int shotgunMagAmmo;
+    public int sniperMagAmmo;
+
     public int grenadeCount;
     public int landmineCount;
 

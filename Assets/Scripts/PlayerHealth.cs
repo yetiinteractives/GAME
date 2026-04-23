@@ -31,7 +31,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     private void Start()
     {
-        currentHealth = maxHealth;
+        if (currentHealth <= 0f)
+            currentHealth = maxHealth;
         healthBar.fillAmount = 1f;
         healthBarTrail.fillAmount = 1f;
     }

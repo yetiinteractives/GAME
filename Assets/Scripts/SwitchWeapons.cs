@@ -1,217 +1,177 @@
 using System;
-using System.Runtime.CompilerServices;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class SwitchWeapons : MonoBehaviour
 {
-    public static event Action<int> OnWeaponSwitch;  // Event to switch weapons , to pass the weapon index
-    public static event Action<bool> OnToggleWeaponSwitchUI;  // Event to toggle weapon switch UI , using to pause the game
+    public static event Action<int> OnWeaponSwitch;
+    public static event Action<bool> OnToggleWeaponSwitchUI;
 
-    // References to weapon GameObjects
     [SerializeField] private GameObject pistol;
     [SerializeField] private GameObject shotgun;
     [SerializeField] private GameObject sniper;
     [SerializeField] private ExplosivesHandler explosivesHandler;
-
-    // Reference to the weapon switch UI
     [SerializeField] private GameObject switchWeaponWheel;
+    [SerializeField] private PlayerHealth playerHealth;
+
+    [Header("Healing UI")]
+    [SerializeField] private TextMeshProUGUI bandageTMP;
+    [SerializeField] private TextMeshProUGUI medikitTMP;
 
     private int currentWeaponIndex;
-    private bool isWheelOpen = false;
+    private bool isWheelOpen;
 
-    [SerializeField] PlayerHealth playerHealth;
-
-
-    private int bandageCount = 0;
-    [SerializeField]private TextMeshProUGUI bandageTMP;
-
-    private int medikitCount = 0;
-    [SerializeField] private TextMeshProUGUI medikitTMP;
+    private int bandageCount;
+    private int medikitCount;
 
     private void Start()
     {
-        if(switchWeaponWheel != null)
-        {
-            switchWeaponWheel.SetActive(false);
-        }
-
+        if (switchWeaponWheel != null) switchWeaponWheel.SetActive(false);
+        SyncFromResourceManager();
         OnPistolSelected();
-
     }
 
-
-    void Update()
+    private void OnEnable()
     {
-        if (GameInput.WeaponWheelDown)
-        {
-            OpenWheel();
-        }
-
-        // Only close if wheel is open AND key/button released
-        if (isWheelOpen && GameInput.WeaponWheelUp)
-        {
-            CloseWheel();
-        }
-
-
+        SyncFromResourceManager();
     }
+
+    private void Update()
+    {
+        if (GameInput.WeaponWheelDown) OpenWheel();
+        if (isWheelOpen && GameInput.WeaponWheelUp) CloseWheel();
+    }
+
     private void OpenWheel()
     {
         if (isWheelOpen) return;
-
         isWheelOpen = true;
         Time.timeScale = 0f;
-        switchWeaponWheel.SetActive(true);
-        OnToggleWeaponSwitchUI?.Invoke(isWheelOpen);
+        if (switchWeaponWheel != null) switchWeaponWheel.SetActive(true);
+        OnToggleWeaponSwitchUI?.Invoke(true);
     }
 
     private void CloseWheel()
     {
         if (!isWheelOpen) return;
-
         isWheelOpen = false;
         Time.timeScale = 1f;
-        switchWeaponWheel.SetActive(false);
-        OnToggleWeaponSwitchUI?.Invoke(isWheelOpen);
+        if (switchWeaponWheel != null) switchWeaponWheel.SetActive(false);
+        OnToggleWeaponSwitchUI?.Invoke(false);
     }
 
-
-    private void DisableWeapons() //disabling all weapons before enabling the selected one
+    private void DisableWeapons()
     {
-        pistol.SetActive(false);
-        shotgun.SetActive(false);   
-        sniper.SetActive(false);
-       
+        if (pistol != null) pistol.SetActive(false);
+        if (shotgun != null) shotgun.SetActive(false);
+        if (sniper != null) sniper.SetActive(false);
     }
 
     public void OnPistolSelected()
     {
-        if (currentWeaponIndex != 1) 
-        {
-            OnWeaponSwitch?.Invoke(1);
-            DisableWeapons();
-            currentWeaponIndex = 1;
-            pistol.SetActive(true);
-
-            CloseWheel();
-
-            
-            
-        }
-
+        if (currentWeaponIndex == 1) return;
+        DisableWeapons();
+        currentWeaponIndex = 1;
+        if (pistol != null) pistol.SetActive(true);
+        OnWeaponSwitch?.Invoke(1);
+        CloseWheel();
+        RefreshCurrentWeaponUI();
     }
+
     public void OnShotgunSelected()
     {
-        if (currentWeaponIndex != 2) 
-        {
-            OnWeaponSwitch?.Invoke(2);
-            DisableWeapons();
-            currentWeaponIndex = 2;
-            shotgun.SetActive(true);
-
-            CloseWheel();
-
-            
-        }
+        if (currentWeaponIndex == 2) return;
+        DisableWeapons();
+        currentWeaponIndex = 2;
+        if (shotgun != null) shotgun.SetActive(true);
+        OnWeaponSwitch?.Invoke(2);
+        CloseWheel();
+        RefreshCurrentWeaponUI();
     }
+
     public void OnSniperSelected()
     {
-        if (currentWeaponIndex != 3) 
-        {
-            OnWeaponSwitch?.Invoke(3);
-            DisableWeapons();
-            currentWeaponIndex = 3;
-            sniper.SetActive(true);
-
-            CloseWheel();
-
-           
-            
-        }
+        if (currentWeaponIndex == 3) return;
+        DisableWeapons();
+        currentWeaponIndex = 3;
+        if (sniper != null) sniper.SetActive(true);
+        OnWeaponSwitch?.Invoke(3);
+        CloseWheel();
+        RefreshCurrentWeaponUI();
     }
 
     public void OnGrenadeSelected()
     {
-        if (currentWeaponIndex != 4) 
-        {
-            OnWeaponSwitch?.Invoke(4);
-            DisableWeapons();
-            currentWeaponIndex = 4;
-            
-            CloseWheel();
-            
-            
-        }
+        if (currentWeaponIndex == 4) return;
+        DisableWeapons();
+        currentWeaponIndex = 4;
+        OnWeaponSwitch?.Invoke(4);
+        CloseWheel();
+        RefreshCurrentWeaponUI();
     }
 
     public void OnLandmineSelected()
     {
-        if (currentWeaponIndex != 5)
-        {
-            OnWeaponSwitch?.Invoke(5);
-            DisableWeapons();
-            currentWeaponIndex = 5;
-            
-            CloseWheel();
-        }
+        if (currentWeaponIndex == 5) return;
+        DisableWeapons();
+        currentWeaponIndex = 5;
+        OnWeaponSwitch?.Invoke(5);
+        CloseWheel();
+        RefreshCurrentWeaponUI();
     }
 
     public void OnBandageSelected()
     {
-        if (bandageCount <= 0) return;
+        if (bandageCount <= 0 || playerHealth == null || ResourceManager.Instance == null) return;
 
-        playerHealth.HealPlayer(25);
-        bandageCount--;
-        ResourceManager.Instance?.ConsumeBandage(1);
+        playerHealth.HealPlayer(25f);
 
-        if (bandageTMP != null)
-            bandageTMP.text = bandageCount.ToString();
+        // SET architecture: compute then set absolute value
+        int next = Mathf.Max(0, ResourceManager.Instance.BandageCount - 1);
+        ResourceManager.Instance.SetBandageAbsolute(next);
 
+        SyncFromResourceManager();
         InventoryHandler.Instance?.SyncFromResourceManagerForUI();
     }
 
     public void OnMedikitSelected()
     {
-        if (medikitCount <= 0) return;
+        if (medikitCount <= 0 || playerHealth == null || ResourceManager.Instance == null) return;
 
-        // full heal
-        playerHealth.HealPlayer(100); 
-                                     
+        playerHealth.HealPlayer(100f);
 
-        medikitCount--;
-        ResourceManager.Instance?.ConsumeMedkit(1);
+        // SET architecture: compute then set absolute value
+        int next = Mathf.Max(0, ResourceManager.Instance.MedkitCount - 1);
+        ResourceManager.Instance.SetMedkitAbsolute(next);
 
-        if (medikitTMP != null)
-            medikitTMP.text = medikitCount.ToString();
-
+        SyncFromResourceManager();
         InventoryHandler.Instance?.SyncFromResourceManagerForUI();
-    }
-
-    public void AddBandage(int count)
-    {
-        bandageCount += count;
-        bandageTMP.text = bandageCount.ToString();
-    }
-
-    public void AddMedikit(int count)
-    {
-        medikitCount = Mathf.Clamp(medikitCount + count, 0, 2);
-        if (medikitTMP != null) medikitTMP.text = medikitCount.ToString();
     }
 
     public void SyncFromResourceManager()
     {
         if (ResourceManager.Instance == null) return;
 
-        // keep local values aligned to source of truth
         bandageCount = ResourceManager.Instance.BandageCount;
         medikitCount = ResourceManager.Instance.MedkitCount;
 
         if (bandageTMP != null) bandageTMP.text = bandageCount.ToString();
         if (medikitTMP != null) medikitTMP.text = medikitCount.ToString();
     }
+    private void RefreshCurrentWeaponUI()
+    {
+        Weapon w = null;
 
+        if (currentWeaponIndex == 1 && pistol != null) w = pistol.GetComponent<Weapon>();
+        else if (currentWeaponIndex == 2 && shotgun != null) w = shotgun.GetComponent<Weapon>();
+        else if (currentWeaponIndex == 3 && sniper != null) w = sniper.GetComponent<Weapon>();
+
+        w?.ForceAmmoUIRefresh();
+
+        // explosives UI refresh too
+        if (currentWeaponIndex == 4)
+            explosivesHandler?.SetCounts(ResourceManager.Instance.GrenadeCount, ResourceManager.Instance.LandmineCount);
+        else if (currentWeaponIndex == 5)
+            explosivesHandler?.SetCounts(ResourceManager.Instance.GrenadeCount, ResourceManager.Instance.LandmineCount);
+    }
 }

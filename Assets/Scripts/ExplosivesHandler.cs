@@ -27,19 +27,14 @@ public class ExplosivesHandler : MonoBehaviour
 
     private void Start()
     {
-        
+        if (grenade == null) grenade = GetComponentInChildren<GrenadeThrow>(true);
+        if (landmine == null) landmine = GetComponentInChildren<LandminePlacement>(true);
 
-        currentGrenadeCount = initialGrenadeCount;
-        currentLandmineCount = initialLandmineCount;
-
-        if(grenade == null)
-        {
-            grenade = GetComponentInChildren<GrenadeThrow>();
-        }
-        if(landmine == null)
-        {
-            landmine = GetComponentInChildren<LandminePlacement>();
-        }
+        // IMPORTANT: initialize from manager, not initial fields
+        if (ResourceManager.Instance != null)
+            SetCounts(ResourceManager.Instance.GrenadeCount, ResourceManager.Instance.LandmineCount);
+        else
+            SetCounts(initialGrenadeCount, initialLandmineCount);
     }
 
     private void OnEnable()
@@ -63,63 +58,48 @@ public class ExplosivesHandler : MonoBehaviour
         hasLandmine = (currentLandmineCount > 0);   
     }
 
-  
+
 
     private void ToggleGrenade(bool isTrue)
     {
-        grenade.gameObject.SetActive(isTrue);
-        grenadeModel.SetActive(isTrue);
-        if(isTrue)
-        {
-            OnExplosivesCountChanged?.Invoke(currentGrenadeCount);
-        }
+        if (grenade != null) grenade.gameObject.SetActive(isTrue);
+        if (grenadeModel != null) grenadeModel.SetActive(isTrue);
+        if (isTrue) OnExplosivesCountChanged?.Invoke(currentGrenadeCount);
     }
     private void ToggleLandmine(bool isTrue)
     {
-            landmine.gameObject.SetActive(isTrue);
-            landmineModel.SetActive(isTrue);
-
-        if(isTrue)
-        {
-            OnExplosivesCountChanged?.Invoke(currentLandmineCount);
-        }
+        if (landmine != null) landmine.gameObject.SetActive(isTrue);
+        if (landmineModel != null) landmineModel.SetActive(isTrue);
+        if (isTrue) OnExplosivesCountChanged?.Invoke(currentLandmineCount);
     }
-
 
     public void ConsumeGrenade()
     {
-       
-        if(!hasGrenades) return;
+        if (!hasGrenades || ResourceManager.Instance == null) return;
 
-
-        currentGrenadeCount--;
-        ResourceManager.Instance.ConsumeGrenade(1);
+        currentGrenadeCount = Mathf.Max(0, currentGrenadeCount - 1);
+        ResourceManager.Instance.SetGrenadeAbsolute(currentGrenadeCount);
 
         CheckIfHasExplosives();
-
         ToggleGrenade(hasGrenades && currentWeaponIndex == 4);
-
         OnExplosivesCountChanged?.Invoke(currentGrenadeCount);
 
         InventoryHandler.Instance?.SyncFromResourceManagerForUI();
     }
     public void ConsumeLandmine()
     {
-        if(!hasLandmine) return;
+        if (!hasLandmine || ResourceManager.Instance == null) return;
 
-            currentLandmineCount--;
-            ResourceManager.Instance.ConsumeLandmine(1);
+        currentLandmineCount = Mathf.Max(0, currentLandmineCount - 1);
+        ResourceManager.Instance.SetLandmineAbsolute(currentLandmineCount);
 
         CheckIfHasExplosives();
-
-        ToggleLandmine(hasLandmine && currentWeaponIndex == 5 );
-
+        ToggleLandmine(hasLandmine && currentWeaponIndex == 5);
         OnExplosivesCountChanged?.Invoke(currentLandmineCount);
 
         InventoryHandler.Instance?.SyncFromResourceManagerForUI();
-
     }
-     public void AddGrenades(int amount)
+    public void AddGrenades(int amount)
     {
         currentGrenadeCount = Mathf.Clamp(currentGrenadeCount + amount, 0, maxGrenade);
         CheckIfHasExplosives();
@@ -138,8 +118,21 @@ public class ExplosivesHandler : MonoBehaviour
         OnExplosivesCountChanged?.Invoke(currentLandmineCount);
     }
 
+    public void SetCounts(int grenades, int landmines)
+    {
+        currentGrenadeCount = Mathf.Clamp(grenades, 0, maxGrenade);
+        currentLandmineCount = Mathf.Clamp(landmines, 0, maxLandmine);
 
-     private void OnDestroy()
+        CheckIfHasExplosives();
+
+        ToggleGrenade(hasGrenades && currentWeaponIndex == 4);
+        ToggleLandmine(hasLandmine && currentWeaponIndex == 5);
+
+        if (currentWeaponIndex == 4) OnExplosivesCountChanged?.Invoke(currentGrenadeCount);
+        if (currentWeaponIndex == 5) OnExplosivesCountChanged?.Invoke(currentLandmineCount);
+    }
+
+    private void OnDestroy()
     {
         SwitchWeapons.OnWeaponSwitch -= HandleWeaponSwitch;
     }

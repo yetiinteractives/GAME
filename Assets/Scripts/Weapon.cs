@@ -80,6 +80,10 @@ public abstract class Weapon : MonoBehaviour
         muzzleFlashLight.enabled = false;
     }
 
+    public void ForceAmmoUIRefresh()
+    {
+        OnAmmoChanged?.Invoke(bulletOnMag, totalBullet);
+    }
     protected void NotifyShotEvent()
     {
         OnAmmoChanged?.Invoke(bulletOnMag, totalBullet);
@@ -282,4 +286,14 @@ public abstract class Weapon : MonoBehaviour
     {
         // Override in sniper class
     }
+
+
+    public void SetAmmoState(int magAmmo, int reserveAmmo)
+    {
+        bulletOnMag = Mathf.Clamp(magAmmo, 0, magCapacity);
+        totalBullet = Mathf.Max(0, reserveAmmo);
+        OnAmmoChanged?.Invoke(bulletOnMag, totalBullet);
+    }
+    public int GetMagAmmo() => bulletOnMag;
+    public int GetReserveAmmo() => totalBullet;
 }

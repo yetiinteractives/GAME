@@ -69,23 +69,60 @@ public class LootInteraction : MonoBehaviour, IInteractable
 
     public void TryInteract()
     {
+        if (ResourceManager.Instance == null) return;
+
         switch (interactables)
         {
-            case InteractablesEnum.pistolAmmo: ResourceManager.Instance.SetPistolAmmo(amount); break;
-            case InteractablesEnum.shotgunAmmo: ResourceManager.Instance.SetShotgunAmmo(amount); break;
-            case InteractablesEnum.sniperAmmo: ResourceManager.Instance.SetSniperAmmo(amount); break;
-            case InteractablesEnum.grenade: ResourceManager.Instance.SetGrenade(amount); break;
-            case InteractablesEnum.landmine: ResourceManager.Instance.SetLandmine(amount); break;
-           // case InteractablesEnum.medkit: ResourceManager.Instance.SetMedkit(amount); break;
-            case InteractablesEnum.bandage: ResourceManager.Instance.SetBandage(amount); break;
-            //case InteractablesEnum.silencer: ResourceManager.Instance.SetSilencer(amount); break;
-            case InteractablesEnum.alchohol: ResourceManager.Instance.SetAlcohol(amount); break;
-            case InteractablesEnum.rag: ResourceManager.Instance.SetRag(amount); break;
-            case InteractablesEnum.binding: ResourceManager.Instance.SetBinding(amount); break;
-            case InteractablesEnum.gunpowder: ResourceManager.Instance.SetGunpowder(amount); break;
-            case InteractablesEnum.can: ResourceManager.Instance.SetCan(amount); break;
+            case InteractablesEnum.pistolAmmo:
+                ResourceManager.Instance.SetPistolReserveAbsolute(ResourceManager.Instance.PistolAmmoCount + amount);
+                break;
+
+            case InteractablesEnum.shotgunAmmo:
+                ResourceManager.Instance.SetShotgunReserveAbsolute(ResourceManager.Instance.ShotgunAmmoCount + amount);
+                break;
+
+            case InteractablesEnum.sniperAmmo:
+                ResourceManager.Instance.SetSniperReserveAbsolute(ResourceManager.Instance.SniperAmmoCount + amount);
+                break;
+
+            case InteractablesEnum.grenade:
+                ResourceManager.Instance.SetGrenadeAbsolute(ResourceManager.Instance.GrenadeCount + amount);
+                break;
+
+            case InteractablesEnum.landmine:
+                ResourceManager.Instance.SetLandmineAbsolute(ResourceManager.Instance.LandmineCount + amount);
+                break;
+
+            case InteractablesEnum.bandage:
+                ResourceManager.Instance.SetBandageAbsolute(ResourceManager.Instance.BandageCount + amount);
+                break;
+
+            case InteractablesEnum.alchohol:
+                ResourceManager.Instance.SetAlcoholAbsolute(ResourceManager.Instance.AlcoholCount + amount);
+                break;
+
+            case InteractablesEnum.rag:
+                ResourceManager.Instance.SetRagAbsolute(ResourceManager.Instance.RagCount + amount);
+                break;
+
+            case InteractablesEnum.binding:
+                ResourceManager.Instance.SetBindingAbsolute(ResourceManager.Instance.BindingCount + amount);
+                break;
+
+            case InteractablesEnum.gunpowder:
+                ResourceManager.Instance.SetGunpowderAbsolute(ResourceManager.Instance.GunpowderCount + amount);
+                break;
+
+            case InteractablesEnum.can:
+                ResourceManager.Instance.SetCanAbsolute(ResourceManager.Instance.CanCount + amount);
+                break;
         }
+
+        ResourceManager.Instance.ForceResyncAllRuntimeUsers();
+        ResourceManager.Instance.BroadcastAllFullStatesPublic(); // add public wrapper if needed
+        InventoryHandler.Instance?.SyncFromResourceManagerForUI();
     }
+
 
     private void ApplyFullState(bool isFull)
     {
