@@ -1,8 +1,8 @@
 using System;
 using System.IO;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
 
 public class SaveManager : MonoBehaviour
 {
@@ -12,6 +12,10 @@ public class SaveManager : MonoBehaviour
     [SerializeField] private string newGameSceneName = "Level_01";
 
     private string SavePath => Path.Combine(Application.persistentDataPath, "save_slot_0.json");
+
+    // pending load payload used when we route through LoadingScene
+    private SaveData pendingLoadData;
+    private bool hasPendingLoadData = false;
 
     private void Awake()
     {
@@ -23,6 +27,25 @@ public class SaveManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // When target scene finished loading through LoadingScene pipeline,
+        // apply pending save payload.
+        if (hasPendingLoadData && pendingLoadData != null && scene.name == pendingLoadData.currentScene)
+        {
+            StartCoroutine(ApplyPendingLoadAfterSceneReady());
+        }
     }
 
     public bool HasSave() => File.Exists(SavePath);
@@ -35,7 +58,6 @@ public class SaveManager : MonoBehaviour
 
     public void SaveGame()
     {
-        // capture latest runtime state first
         PlayerStateManager.Instance?.CaptureFromScene();
 
         var data = new SaveData
@@ -45,13 +67,11 @@ public class SaveManager : MonoBehaviour
             currentScene = SceneManager.GetActiveScene().name
         };
 
-
         if (ResourceManager.Instance != null)
         {
-            ResourceManager.Instance?.CaptureRuntimeAmmoFromWeapons();
+            ResourceManager.Instance.CaptureRuntimeAmmoFromWeapons();
             data.resources = ResourceManager.Instance.ExportSaveData();
         }
-            
 
         if (PlayerStateManager.Instance != null)
         {
@@ -90,24 +110,29 @@ public class SaveManager : MonoBehaviour
             return;
         }
 
-        StartCoroutine(LoadFlow(data));
+        // Store pending payload and use your LoadingScene architecture
+        pendingLoadData = data;
+        hasPendingLoadData = true;
+
+        SceneLoader.Load(data.currentScene);
     }
 
     public void StartNewGameFromMainMenu()
     {
         DeleteSave();
 
-        // reset runtime managers
         if (PlayerStateManager.Instance != null)
         {
             PlayerStateManager.Instance.SetHealth(100f);
-            // no transform yet on fresh new game
         }
 
         if (ResourceManager.Instance != null)
-            ResourceManager.Instance.ResetToDefaults(); 
+        {
+            ResourceManager.Instance.ResetToDefaults();
+        }
 
-        SceneManager.LoadScene(newGameSceneName);
+        // Use loading scene pipeline
+        SceneLoader.Load(newGameSceneName);
     }
 
     public void SaveAndQuit()
@@ -120,16 +145,25 @@ public class SaveManager : MonoBehaviour
 #endif
     }
 
-    private IEnumerator LoadFlow(SaveData data)
+    private IEnumerator ApplyPendingLoadAfterSceneReady()
     {
-        // 1) Load scene first
-        yield return SceneManager.LoadSceneAsync(data.currentScene);
-
-        // 2) Wait for scene objects to initialize (Awake/Start/OnEnable)
+        // wait for Awake/Start/OnEnable chains + late UI binds
         yield return null;
         yield return null;
 
-        // 3) Apply player runtime state into state manager
+        if (!hasPendingLoadData || pendingLoadData == null)
+            yield break;
+
+        var data = pendingLoadData;
+
+        // Apply resource data first so weapon/explosive/UI sync can pull correct values
+        if (ResourceManager.Instance != null)
+        {
+            ResourceManager.Instance.ImportSaveData(data.resources);
+            ResourceManager.Instance.ForceResyncAllRuntimeUsers();
+        }
+
+        // Apply player runtime state
         if (PlayerStateManager.Instance != null)
         {
             PlayerStateManager.Instance.SetHealth(data.player.health);
@@ -138,16 +172,11 @@ public class SaveManager : MonoBehaviour
                 PlayerStateManager.Instance.SetTransform(data.player.position, data.player.eulerRotation);
         }
 
-        // 4) Apply resource/inventory state (absolute set, no additive methods)
-        if (ResourceManager.Instance != null)
-            ResourceManager.Instance.ImportSaveData(data.resources);
-
-        // 5) Apply health directly to scene player UI + value
+        // Push to actual player object in scene
         var playerHealth = FindFirstObjectByType<PlayerHealth>(FindObjectsInactive.Include);
         if (playerHealth != null)
             playerHealth.SetHealthFromSave(data.player.health);
 
-        // 6) Apply transform directly to player
         if (data.player.hasTransform)
         {
             Transform player = GameObject.FindGameObjectWithTag("Player")?.transform;
@@ -158,10 +187,14 @@ public class SaveManager : MonoBehaviour
             }
         }
 
-        // 7) Final resync one frame later (prevents late OnEnable overwrite)
+        // One more frame for any late OnEnable overwrite, then hard resync
         yield return null;
         ResourceManager.Instance?.ForceResyncAllRuntimeUsers();
 
-        Debug.Log("[SaveManager] Load complete.");
+        // clear pending payload
+        pendingLoadData = null;
+        hasPendingLoadData = false;
+
+        Debug.Log("[SaveManager] Continue load complete.");
     }
 }
