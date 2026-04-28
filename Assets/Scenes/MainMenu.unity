@@ -735,7 +735,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e93896178761a409ea7192d8a4278f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveManager
-  newGameSceneName: Testing 2
+  newGameSceneName: viking
+  settleFramesAfterSceneLoad: 3
+  playerFindTimeoutSeconds: 8
 --- !u!4 &752354727
 Transform:
   m_ObjectHideFlags: 0
