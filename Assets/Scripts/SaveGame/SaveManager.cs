@@ -3,28 +3,27 @@ using System.IO;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Invector.vCharacterController;
 
-public class SaveManager : MonoBehaviour
+public sealed class SaveManager : MonoBehaviour
 {
     public static SaveManager Instance { get; private set; }
 
     [Header("Scenes")]
     [SerializeField] private string newGameSceneName = "Level_01";
 
+    [Header("Continue-load pipeline")]
+    [SerializeField, Min(0)] private int settleFramesAfterSceneLoad = 3;
+    [SerializeField, Min(0.1f)] private float playerFindTimeoutSeconds = 8f;
+
     private string SavePath => Path.Combine(Application.persistentDataPath, "save_slot_0.json");
 
-    // pending load payload used when we route through LoadingScene
     private SaveData pendingLoadData;
-    private bool hasPendingLoadData = false;
+    private bool hasPendingLoad;
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
@@ -38,26 +37,16 @@ public class SaveManager : MonoBehaviour
             SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        // When target scene finished loading through LoadingScene pipeline,
-        // apply pending save payload.
-        if (hasPendingLoadData && pendingLoadData != null && scene.name == pendingLoadData.currentScene)
-        {
-            StartCoroutine(ApplyPendingLoadAfterSceneReady());
-        }
-    }
-
     public bool HasSave() => File.Exists(SavePath);
 
     public void DeleteSave()
     {
-        if (File.Exists(SavePath))
-            File.Delete(SavePath);
+        if (File.Exists(SavePath)) File.Delete(SavePath);
     }
 
     public void SaveGame()
     {
+        // capture latest runtime state
         PlayerStateManager.Instance?.CaptureFromScene();
 
         var data = new SaveData
@@ -95,25 +84,23 @@ public class SaveManager : MonoBehaviour
     {
         if (!HasSave())
         {
-            Debug.LogWarning("[SaveManager] No save found. Starting new game instead.");
+            Debug.LogWarning("[SaveManager] No save found. Starting new game.");
             StartNewGameFromMainMenu();
             return;
         }
 
-        string json = File.ReadAllText(SavePath);
-        SaveData data = JsonUtility.FromJson<SaveData>(json);
-
+        SaveData data = LoadFromDisk();
         if (data == null)
         {
-            Debug.LogError("[SaveManager] Save file corrupted. Starting new game.");
+            Debug.LogError("[SaveManager] Save corrupted. Starting new game.");
             StartNewGameFromMainMenu();
             return;
         }
 
-        // Store pending payload and use your LoadingScene architecture
         pendingLoadData = data;
-        hasPendingLoadData = true;
+        hasPendingLoad = true;
 
+        // Use your LoadingScene pipeline
         SceneLoader.Load(data.currentScene);
     }
 
@@ -121,17 +108,15 @@ public class SaveManager : MonoBehaviour
     {
         DeleteSave();
 
+        // Reset managers; DO NOT teleport
         if (PlayerStateManager.Instance != null)
         {
             PlayerStateManager.Instance.SetHealth(100f);
+            PlayerStateManager.Instance.ClearSavedTransform();
         }
 
-        if (ResourceManager.Instance != null)
-        {
-            ResourceManager.Instance.ResetToDefaults();
-        }
+        ResourceManager.Instance?.ResetToDefaults();
 
-        // Use loading scene pipeline
         SceneLoader.Load(newGameSceneName);
     }
 
@@ -145,56 +130,112 @@ public class SaveManager : MonoBehaviour
 #endif
     }
 
-    private IEnumerator ApplyPendingLoadAfterSceneReady()
+    private SaveData LoadFromDisk()
     {
-        // wait for Awake/Start/OnEnable chains + late UI binds
-        yield return null;
-        yield return null;
+        try
+        {
+            string json = File.ReadAllText(SavePath);
+            return JsonUtility.FromJson<SaveData>(json);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[SaveManager] Load failed: {e}");
+            return null;
+        }
+    }
 
-        if (!hasPendingLoadData || pendingLoadData == null)
-            yield break;
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (!hasPendingLoad || pendingLoadData == null) return;
+        if (scene.name != pendingLoadData.currentScene) return;
 
-        var data = pendingLoadData;
+        StartCoroutine(ContinueLoadPipeline(pendingLoadData));
+    }
 
-        // Apply resource data first so weapon/explosive/UI sync can pull correct values
+    private IEnumerator ContinueLoadPipeline(SaveData data)
+    {
+        // Phase 0: let the scene & player initialize (Invector Start/FixedUpdate)
+        for (int i = 0; i < settleFramesAfterSceneLoad; i++)
+            yield return null;
+
+        // Phase 1: apply resources first
         if (ResourceManager.Instance != null)
         {
             ResourceManager.Instance.ImportSaveData(data.resources);
             ResourceManager.Instance.ForceResyncAllRuntimeUsers();
         }
 
-        // Apply player runtime state
+        // Phase 2: apply health into state manager + scene component
         if (PlayerStateManager.Instance != null)
         {
             PlayerStateManager.Instance.SetHealth(data.player.health);
-
             if (data.player.hasTransform)
                 PlayerStateManager.Instance.SetTransform(data.player.position, data.player.eulerRotation);
         }
 
-        // Push to actual player object in scene
-        var playerHealth = FindFirstObjectByType<PlayerHealth>(FindObjectsInactive.Include);
+        var playerHealth = FindAnyObjectByType<PlayerHealth>(FindObjectsInactive.Include);
         if (playerHealth != null)
             playerHealth.SetHealthFromSave(data.player.health);
 
+        // Phase 3: teleport only if transform exists in save
         if (data.player.hasTransform)
-        {
-            Transform player = GameObject.FindGameObjectWithTag("Player")?.transform;
-            if (player != null)
-            {
-                player.position = data.player.position;
-                player.rotation = Quaternion.Euler(data.player.eulerRotation);
-            }
-        }
+            yield return TeleportPlayerInvectorSafe(data.player.position, data.player.eulerRotation);
 
-        // One more frame for any late OnEnable overwrite, then hard resync
+        // Phase 4: final resync (UI binds)
         yield return null;
         ResourceManager.Instance?.ForceResyncAllRuntimeUsers();
+        InventoryHandler.Instance?.SyncFromResourceManagerForUI();
+        FindAnyObjectByType<SwitchWeapons>(FindObjectsInactive.Include)?.SyncFromResourceManager();
 
-        // clear pending payload
         pendingLoadData = null;
-        hasPendingLoadData = false;
+        hasPendingLoad = false;
 
-        Debug.Log("[SaveManager] Continue load complete.");
+        Debug.Log("[SaveManager] Load complete.");
+    }
+
+    private IEnumerator TeleportPlayerInvectorSafe(Vector3 pos, Vector3 euler)
+    {
+        float deadline = Time.realtimeSinceStartup + playerFindTimeoutSeconds;
+
+        GameObject player = null;
+        while (player == null && Time.realtimeSinceStartup < deadline)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+            if (player == null) yield return null;
+        }
+
+        if (player == null)
+        {
+            Debug.LogWarning("[SaveManager] Player(tag=Player) not found; skipping teleport.");
+            yield break;
+        }
+
+        var input = player.GetComponent<vThirdPersonInput>();
+        var controller = player.GetComponent<vThirdPersonController>();
+        var animator = player.GetComponentInChildren<Animator>(true);
+
+        bool inputWasEnabled = input != null && input.enabled;
+        bool controllerWasEnabled = controller != null && controller.enabled;
+        bool animatorWasEnabled = animator != null && animator.enabled;
+
+        // Pause anything that can drive transform/root motion
+        if (input != null) input.enabled = false;
+        if (controller != null) controller.enabled = false;
+        if (animator != null) animator.enabled = false;
+
+        // align with physics frame
+        yield return new WaitForFixedUpdate();
+
+        player.transform.SetPositionAndRotation(pos, Quaternion.Euler(euler));
+        Physics.SyncTransforms();
+
+        // allow one more fixed step with things disabled (prevents snap-back)
+        yield return new WaitForFixedUpdate();
+        yield return null;
+
+        // Re-enable in safe order
+        if (animator != null) animator.enabled = animatorWasEnabled;
+        if (controller != null) controller.enabled = controllerWasEnabled;
+        if (input != null) input.enabled = inputWasEnabled;
     }
 }

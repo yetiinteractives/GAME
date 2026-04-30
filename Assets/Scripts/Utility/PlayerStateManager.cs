@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class PlayerStateManager : MonoBehaviour
+public sealed class PlayerStateManager : MonoBehaviour
 {
     public static PlayerStateManager Instance { get; private set; }
 
@@ -21,12 +21,7 @@ public class PlayerStateManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
@@ -42,37 +37,31 @@ public class PlayerStateManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        // Only apply HEALTH on scene load. Transform is owned by SaveManager.
         if (applyRoutine != null) StopCoroutine(applyRoutine);
-        applyRoutine = StartCoroutine(ApplyStateAfterSceneLoad());
+        applyRoutine = StartCoroutine(ApplyHealthAfterSceneLoad());
     }
 
-    private IEnumerator ApplyStateAfterSceneLoad()
+    private IEnumerator ApplyHealthAfterSceneLoad()
     {
-        // wait a bit for player spawn/init
+        // Let scene initialize
         yield return null;
         yield return null;
 
-        var playerHealth = FindFirstObjectByType<PlayerHealth>(FindObjectsInactive.Include);
+        var playerHealth = FindAnyObjectByType<PlayerHealth>(FindObjectsInactive.Include);
         if (playerHealth != null)
             playerHealth.SetHealthFromSave(savedHealth);
-
-        var player = FindPlayerTransform();
-        if (player != null && hasTransformState)
-        {
-            player.position = savedPosition;
-            player.rotation = Quaternion.Euler(savedEulerRotation);
-        }
 
         applyRoutine = null;
     }
 
     public void CaptureFromScene()
     {
-        var playerHealth = FindFirstObjectByType<PlayerHealth>(FindObjectsInactive.Include);
+        var playerHealth = FindAnyObjectByType<PlayerHealth>(FindObjectsInactive.Include);
         if (playerHealth != null)
             savedHealth = playerHealth.CurrentHealth;
 
-        var player = FindPlayerTransform();
+        Transform player = FindPlayerRoot();
         if (player != null)
         {
             savedPosition = player.position;
@@ -93,14 +82,16 @@ public class PlayerStateManager : MonoBehaviour
         hasTransformState = true;
     }
 
-    private Transform FindPlayerTransform()
+    public void ClearSavedTransform()
     {
-        // Best: tag your root player GameObject as "Player"
-        GameObject go = GameObject.FindGameObjectWithTag("Player");
-        if (go != null) return go.transform;
+        hasTransformState = false;
+        savedPosition = Vector3.zero;
+        savedEulerRotation = Vector3.zero;
+    }
 
-        // fallback
-        var ph = FindFirstObjectByType<PlayerHealth>(FindObjectsInactive.Include);
-        return ph != null ? ph.transform : null;
+    private static Transform FindPlayerRoot()
+    {
+        var go = GameObject.FindGameObjectWithTag("Player");
+        return go != null ? go.transform : null;
     }
 }
