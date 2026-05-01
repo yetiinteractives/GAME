@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Playables;
+using System;
 
 public class CutsceneTrigger : MonoBehaviour, ILevelEntity
 {
@@ -10,6 +11,15 @@ public class CutsceneTrigger : MonoBehaviour, ILevelEntity
     private bool played;
 
     public string Guid => guid;
+
+#if UNITY_EDITOR
+    [ContextMenu("Generate GUID")]
+    private void GenerateGuid()
+    {
+        guid = System.Guid.NewGuid().ToString();
+        UnityEditor.EditorUtility.SetDirty(this);
+    }
+#endif
 
     private void Awake()
     {

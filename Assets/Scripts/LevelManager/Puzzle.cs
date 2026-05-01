@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class Puzzle : MonoBehaviour, ILevelEntity
 {
@@ -6,6 +7,15 @@ public class Puzzle : MonoBehaviour, ILevelEntity
     [SerializeField] private LevelFlag flagToUnlock;
 
     public string Guid => guid;
+
+#if UNITY_EDITOR
+    [ContextMenu("Generate GUID")]
+    private void GenerateGuid()
+    {
+        guid = System.Guid.NewGuid().ToString();
+        UnityEditor.EditorUtility.SetDirty(this);
+    }
+#endif
 
     private void Awake()
     {
