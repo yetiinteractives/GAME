@@ -11,6 +11,7 @@ public class SaveData
 
     public ResourceSaveData resources = new ResourceSaveData();
     public PlayerRuntimeSaveData player = new PlayerRuntimeSaveData();
+    public LevelStateData levelState = new LevelStateData();
 }
 
 [Serializable]

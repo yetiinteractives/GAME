@@ -70,6 +70,11 @@ public sealed class SaveManager : MonoBehaviour
             data.player.hasTransform = PlayerStateManager.Instance.HasTransformState;
         }
 
+        if (LevelManager.Instance != null)
+        {
+            data.levelState = LevelManager.Instance.ExportState();
+        }
+
         string json = JsonUtility.ToJson(data, true);
 
         string tempPath = SavePath + ".tmp";
@@ -176,6 +181,12 @@ public sealed class SaveManager : MonoBehaviour
         var playerHealth = FindAnyObjectByType<PlayerHealth>(FindObjectsInactive.Include);
         if (playerHealth != null)
             playerHealth.SetHealthFromSave(data.player.health);
+
+        if (LevelManager.Instance != null)
+        {
+            LevelManager.Instance.ImportState(data.levelState);
+            FindFirstObjectByType<LevelRegistry>()?.LoadAll();
+        }
 
         // Phase 3: teleport only if transform exists in save
         if (data.player.hasTransform)
