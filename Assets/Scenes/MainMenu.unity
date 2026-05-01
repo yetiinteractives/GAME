@@ -353,6 +353,9 @@ MonoBehaviour:
   shotgunAmmoMax: 30
   sniperAmmoCount: 10
   sniperAmmoMax: 30
+  pistolMagAmmo: 0
+  shotgunMagAmmo: 0
+  sniperMagAmmo: 0
   grenadeCount: 2
   grenadeMax: 5
   landmineCount: 2
@@ -731,7 +734,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e93896178761a409ea7192d8a4278f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveManager
-  newGameSceneName: Testing 2
+  newGameSceneName: Testing
+  settleFramesAfterSceneLoad: 3
+  playerFindTimeoutSeconds: 8
 --- !u!4 &752354727
 Transform:
   m_ObjectHideFlags: 0

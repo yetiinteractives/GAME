@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 
 
@@ -24,6 +25,8 @@ public abstract class UniversalEnemyAi : MonoBehaviour
     [Header("Player Reference")]
     public Transform player;
 
+    private PersistentSceneEntity persistentEntity;
+
     protected bool isDead = false;
 
     protected virtual void Awake()
@@ -36,6 +39,9 @@ public abstract class UniversalEnemyAi : MonoBehaviour
         {
             player = GameObject.FindGameObjectWithTag("Player").transform;
         }
+
+        persistentEntity = GetComponent<PersistentSceneEntity>();
+
     }
 
     protected virtual void Start()
@@ -76,6 +82,11 @@ public abstract class UniversalEnemyAi : MonoBehaviour
         OnEnemyDeath();
         OnEnemyDeathEvent?.Invoke();
 
+        // inside Die()
+        if (persistentEntity != null)
+            persistentEntity.MarkRemoved(false); 
+
+        Destroy(gameObject, deathDecayTime);
         Destroy(gameObject, deathDecayTime);
     }
 

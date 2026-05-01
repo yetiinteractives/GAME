@@ -459,6 +459,9 @@ public class InventoryHandler : MonoBehaviour
         }
 
         SyncFromResourceManagerForUI();
+        ResourceManager.Instance.ForceResyncAllRuntimeUsers();
+        ResourceManager.Instance.BroadcastAllFullStatesPublic();
+
         return true;
     }
 

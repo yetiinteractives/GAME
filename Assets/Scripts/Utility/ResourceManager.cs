@@ -193,6 +193,30 @@ public class ResourceManager : MonoBehaviour
         ClampAll();
     }
 
+    public void AddPistolReserve(int amount)
+    {
+        CaptureRuntimeAmmoFromWeapons(); // keeps current mag
+        SetPistolReserveAbsolute(pistolAmmoCount + amount);
+        ForceResyncAllRuntimeUsers();
+        BroadcastAllFullStates();
+    }
+
+    public void AddShotgunReserve(int amount)
+    {
+        CaptureRuntimeAmmoFromWeapons();
+        SetShotgunReserveAbsolute(shotgunAmmoCount + amount);
+        ForceResyncAllRuntimeUsers();
+        BroadcastAllFullStates();
+    }
+
+    public void AddSniperReserve(int amount)
+    {
+        CaptureRuntimeAmmoFromWeapons();
+        SetSniperReserveAbsolute(sniperAmmoCount + amount);
+        ForceResyncAllRuntimeUsers();
+        BroadcastAllFullStates();
+    }
+
     public ResourceSaveData ExportSaveData()
     {
         return new ResourceSaveData

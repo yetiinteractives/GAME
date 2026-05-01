@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-public class PersistentSceneEntity : MonoBehaviour
+public class PersistentSceneEntity : MonoBehaviour, ILevelEntity
 {
     [SerializeField] private string guid;
     public string Guid => guid;
@@ -15,17 +15,41 @@ public class PersistentSceneEntity : MonoBehaviour
     }
 #endif
 
+    private void Awake()
+    {
+        FindFirstObjectByType<LevelRegistry>()?.Register(this);
+    }
+
     private void Start()
     {
+        CheckAndDestroyIfRemoved();
+    }
+
+    public void LoadState()
+    {
+        CheckAndDestroyIfRemoved();
+    }
+
+    private void CheckAndDestroyIfRemoved()
+    {
+        if (string.IsNullOrWhiteSpace(guid)) return;
+
         if (LevelManager.Instance != null && LevelManager.Instance.IsEntityRemoved(guid))
         {
             Destroy(gameObject);
         }
     }
 
-    public void MarkRemoved()
+   
+    public void MarkRemoved(bool destroy = true)
     {
+        if (string.IsNullOrWhiteSpace(guid))
+        {
+            if (destroy) Destroy(gameObject);
+            return;
+        }
+
         LevelManager.Instance?.MarkEntityRemoved(guid);
-        Destroy(gameObject);
+        if (destroy) Destroy(gameObject);
     }
 }

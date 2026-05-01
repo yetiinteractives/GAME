@@ -16,6 +16,10 @@ public class PlayerInteract : MonoBehaviour
         Camera cam = Camera.main;
         if (cam == null) return;
 
+        // Clean dead focus
+        if (!IsAlive(currentFocusedInteractable))
+            currentFocusedInteractable = null;
+
         Vector3 origin = cam.transform.position;
         Vector3 direction = cam.transform.forward;
 
@@ -30,7 +34,7 @@ public class PlayerInteract : MonoBehaviour
         {
             IInteractable interactable = col.GetComponent<IInteractable>();
 
-            if (interactable != null)
+            if (IsAlive(interactable))
             {
                 currentNearby.Add(interactable);
                 interactable.ShowInteractableIcon();
@@ -42,6 +46,8 @@ public class PlayerInteract : MonoBehaviour
         // =====================
         foreach (IInteractable interactable in previousNearby)
         {
+            if (!IsAlive(interactable)) continue;
+
             if (!currentNearby.Contains(interactable))
             {
                 interactable.HideInteractableIcon();
@@ -57,17 +63,14 @@ public class PlayerInteract : MonoBehaviour
         {
             IInteractable interactable = hit.collider.GetComponent<IInteractable>();
 
-            if (interactable != currentFocusedInteractable)
+            if (IsAlive(interactable) && interactable != currentFocusedInteractable)
             {
                 currentFocusedInteractable?.HideInteractionPrompt();
-
                 currentFocusedInteractable = interactable;
-
                 currentFocusedInteractable?.ShowInteractionPrompt();
             }
 
-            // Interaction
-            if (interactable != null && Input.GetKeyDown(KeyCode.F))
+            if (IsAlive(interactable) && Input.GetKeyDown(KeyCode.F))
             {
                 interactable.Interact();
             }
@@ -77,6 +80,12 @@ public class PlayerInteract : MonoBehaviour
             currentFocusedInteractable?.HideInteractionPrompt();
             currentFocusedInteractable = null;
         }
+    }
+
+    private static bool IsAlive(IInteractable interactable)
+    {
+        if (interactable == null) return false;
+        return (interactable as MonoBehaviour) != null;
     }
 
     private void OnDrawGizmos()

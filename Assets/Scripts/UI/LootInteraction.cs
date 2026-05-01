@@ -10,11 +10,18 @@ public class LootInteraction : MonoBehaviour, IInteractable
     [SerializeField] private GameObject promptText;
 
     [Header("Sprite Tint")]
-    [SerializeField] private SpriteRenderer lootIconSprite;   // <-- sprite renderer
+    [SerializeField] private SpriteRenderer lootIconSprite;
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private Color fullColor = new Color(1f, 0.45f, 0.45f, 1f);
 
     private bool isFullForThisLoot;
+    private bool isRemoved;
+    private PersistentSceneEntity persistentEntity;
+
+    private void Awake()
+    {
+        persistentEntity = GetComponent<PersistentSceneEntity>();
+    }
 
     private void Start()
     {
@@ -39,50 +46,68 @@ public class LootInteraction : MonoBehaviour, IInteractable
 
     public void ShowInteractableIcon()
     {
-        lootIcon?.SetActive(true);
+        if (isRemoved) return;
+        if (lootIcon != null) lootIcon.SetActive(true);
         RefreshVisualState();
     }
 
-    public void HideInteractableIcon() => lootIcon?.SetActive(false);
+    public void HideInteractableIcon()
+    {
+        if (isRemoved) return;
+        if (lootIcon != null) lootIcon.SetActive(false);
+    }
 
     public void ShowInteractionPrompt()
     {
+        if (isRemoved) return;
         if (isFullForThisLoot)
         {
             HideInteractionPrompt();
             return;
         }
-        promptText?.SetActive(true);
+        if (promptText != null) promptText.SetActive(true);
     }
 
     public void HideInteractionPrompt()
     {
+        if (isRemoved) return;
         if (promptText != null) promptText.SetActive(false);
     }
 
     public void Interact()
     {
-        if (isFullForThisLoot) return;
-        TryInteract();
-        gameObject.SetActive(false);
+        if (isFullForThisLoot || isRemoved) return;
+
+        bool success = TryInteract();
+        if (!success) return;
+
+        isRemoved = true;
+        enabled = false;
+        HideInteractableIcon();
+        HideInteractionPrompt();
+
+        if (persistentEntity != null)
+            persistentEntity.MarkRemoved();
+        else
+            Destroy(gameObject);
     }
 
-    public void TryInteract()
+    private bool TryInteract()
     {
-        if (ResourceManager.Instance == null) return;
+        if (ResourceManager.Instance == null) return false;
 
         switch (interactables)
         {
             case InteractablesEnum.pistolAmmo:
-                ResourceManager.Instance.SetPistolReserveAbsolute(ResourceManager.Instance.PistolAmmoCount + amount);
+                ResourceManager.Instance.AddPistolReserve(amount);
                 break;
 
             case InteractablesEnum.shotgunAmmo:
-                ResourceManager.Instance.SetShotgunReserveAbsolute(ResourceManager.Instance.ShotgunAmmoCount + amount);
+                ResourceManager.Instance.AddShotgunReserve(amount);
                 break;
 
             case InteractablesEnum.sniperAmmo:
-                ResourceManager.Instance.SetSniperReserveAbsolute(ResourceManager.Instance.SniperAmmoCount + amount);
+                ResourceManager.Instance.AddSniperReserve(amount);
                 break;
 
             case InteractablesEnum.grenade:
@@ -116,13 +141,17 @@ public class LootInteraction : MonoBehaviour, IInteractable
             case InteractablesEnum.can:
                 ResourceManager.Instance.SetCanAbsolute(ResourceManager.Instance.CanCount + amount);
                 break;
+
+            default:
+                return false;
         }
 
         ResourceManager.Instance.ForceResyncAllRuntimeUsers();
-        ResourceManager.Instance.BroadcastAllFullStatesPublic(); // add public wrapper if needed
+        ResourceManager.Instance.BroadcastAllFullStatesPublic();
         InventoryHandler.Instance?.SyncFromResourceManagerForUI();
-    }
 
+        return true;
+    }
 
     private void ApplyFullState(bool isFull)
     {
@@ -137,7 +166,6 @@ public class LootInteraction : MonoBehaviour, IInteractable
             lootIconSprite.color = isFullForThisLoot ? fullColor : normalColor;
     }
 
-    // subscribe all
     private void SubscribeAll()
     {
         ResourceManager.OnPistolAmmoFullChanged += OnPistolAmmoFullChanged;
@@ -155,7 +183,6 @@ public class LootInteraction : MonoBehaviour, IInteractable
         ResourceManager.OnCanFullChanged += OnCanFullChanged;
     }
 
-    // unsubscribe all
     private void UnsubscribeAll()
     {
         ResourceManager.OnPistolAmmoFullChanged -= OnPistolAmmoFullChanged;
@@ -173,7 +200,6 @@ public class LootInteraction : MonoBehaviour, IInteractable
         ResourceManager.OnCanFullChanged -= OnCanFullChanged;
     }
 
-    // route by enum
     private void OnPistolAmmoFullChanged(bool v) { if (interactables == InteractablesEnum.pistolAmmo) ApplyFullState(v); }
     private void OnShotgunAmmoFullChanged(bool v) { if (interactables == InteractablesEnum.shotgunAmmo) ApplyFullState(v); }
     private void OnSniperAmmoFullChanged(bool v) { if (interactables == InteractablesEnum.sniperAmmo) ApplyFullState(v); }
