@@ -125,6 +125,64 @@ Camera:
     type: 3}
   m_PrefabInstance: {fileID: 963835694}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &664854134
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 664854137}
+  - component: {fileID: 664854136}
+  - component: {fileID: 664854135}
+  m_Layer: 0
+  m_Name: VikingLevelManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &664854135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 664854134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c56d5a731165840af296b14c751697, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelManager
+  levelID: Viking_Level
+--- !u!114 &664854136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 664854134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73291c68f9d9568409b6939f7da985a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelRegistry
+--- !u!4 &664854137
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 664854134}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1258.025, y: -0.94614, z: 18367.934}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &672499956 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3416273652463192172, guid: d7fcb52adb3a8cd40bb748351e3613c4,
@@ -10921,8 +10979,49 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 858811076128087362, guid: f15795a0eb81d274db6ec4494bdbd17a, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 541459974300693929, guid: f15795a0eb81d274db6ec4494bdbd17a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 739795232}
+    - targetCorrespondingSourceObject: {fileID: 541459974300693929, guid: f15795a0eb81d274db6ec4494bdbd17a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 739795231}
   m_SourcePrefab: {fileID: 100100000, guid: f15795a0eb81d274db6ec4494bdbd17a, type: 3}
+--- !u!1 &739795230 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 541459974300693929, guid: f15795a0eb81d274db6ec4494bdbd17a,
+    type: 3}
+  m_PrefabInstance: {fileID: 739795229}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &739795231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 739795230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34c45a3d06a689040a9b50f4153ba2b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GuidComponent
+  guid: 09cef35c-e84c-4969-8512-a58290d6b92e
+--- !u!114 &739795232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 739795230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9697582efb1683429be75a3c1b3eef9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Door
+  guid: 34c45a3d06a689040a9b50f4153ba2b7
+  requiredFlag: 1
 --- !u!1001 &963835694
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11961,6 +12060,7 @@ CanvasRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 664854137}
   - {fileID: 1716695688}
   - {fileID: 739795229}
   - {fileID: 963835694}
