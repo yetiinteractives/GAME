@@ -7,19 +7,28 @@ public class LevelStateData
 {
     public List<FlagEntry> flags = new();
     public List<TriggerEntry> triggers = new();
+    public List<EntityEntry> entities = new(); // ADD
 
     public LevelStateData() { }
 
-    public LevelStateData(Dictionary<LevelFlag, bool> f, Dictionary<TriggerID, bool> t)
+    public LevelStateData(
+        Dictionary<LevelFlag, bool> f,
+        Dictionary<TriggerID, bool> t,
+        Dictionary<string, bool> e)
     {
         flags = f.Select(kv => new FlagEntry(kv.Key, kv.Value)).ToList();
         triggers = t.Select(kv => new TriggerEntry(kv.Key, kv.Value)).ToList();
+        entities = e.Select(kv => new EntityEntry(kv.Key, kv.Value)).ToList();
     }
 
-    public void ApplyTo(Dictionary<LevelFlag, bool> f, Dictionary<TriggerID, bool> t)
+    public void ApplyTo(
+        Dictionary<LevelFlag, bool> f,
+        Dictionary<TriggerID, bool> t,
+        Dictionary<string, bool> e)
     {
         foreach (var entry in flags) f[entry.flag] = entry.value;
         foreach (var entry in triggers) t[entry.trigger] = entry.value;
+        foreach (var entry in entities) e[entry.guid] = entry.removed;
     }
 }
 
@@ -37,4 +46,12 @@ public struct TriggerEntry
     public TriggerID trigger;
     public bool value;
     public TriggerEntry(TriggerID t, bool v) { trigger = t; value = v; }
+}
+
+[Serializable]
+public struct EntityEntry
+{
+    public string guid;
+    public bool removed;
+    public EntityEntry(string g, bool r) { guid = g; removed = r; }
 }

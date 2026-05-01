@@ -12,6 +12,9 @@ public sealed class LevelManager : MonoBehaviour
     private readonly Dictionary<LevelFlag, bool> flagState = new();
     private readonly Dictionary<TriggerID, bool> triggerState = new();
 
+    // ADD THIS:
+    private readonly Dictionary<string, bool> entityRemoved = new();
+
     public event Action<LevelFlag> OnFlagChanged;
     public event Action<TriggerID> OnTriggerFired;
 
@@ -47,20 +50,33 @@ public sealed class LevelManager : MonoBehaviour
         return triggerState.TryGetValue(trigger, out var v) && v;
     }
 
+    // ---- ENTITY PERSISTENCE ----
+    public void MarkEntityRemoved(string guid)
+    {
+        if (string.IsNullOrEmpty(guid)) return;
+        entityRemoved[guid] = true;
+    }
+
+    public bool IsEntityRemoved(string guid)
+    {
+        return !string.IsNullOrEmpty(guid) &&
+               entityRemoved.TryGetValue(guid, out var removed) && removed;
+    }
+
     // ---- SAVE/LOAD ----
     public LevelStateData ExportState()
     {
-        return new LevelStateData(flagState, triggerState);
+        return new LevelStateData(flagState, triggerState, entityRemoved);
     }
 
     public void ImportState(LevelStateData data)
     {
         flagState.Clear();
         triggerState.Clear();
+        entityRemoved.Clear();
 
-        data.ApplyTo(flagState, triggerState);
+        data.ApplyTo(flagState, triggerState, entityRemoved);
 
-        // re-broadcast so listeners can update visuals
         foreach (var f in flagState.Keys) OnFlagChanged?.Invoke(f);
         foreach (var t in triggerState.Keys) OnTriggerFired?.Invoke(t);
     }
