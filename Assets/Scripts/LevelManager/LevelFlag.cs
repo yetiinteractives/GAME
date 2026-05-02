@@ -5,12 +5,13 @@ public enum LevelFlag
     // Keys
     HasRedKey,
     HasBlueKey,
-    HasKeycard,
+    ShortcutOpen,
 
-    // Power / switches
-    PowerOn,
-    GeneratorFuelInserted,
 
-    // Doors / shortcuts
-    ShortcutOpen
+    HasCircularEmblem,
+    HasLionEmblem, 
+    HasShieldEmblem,
+
+    IsVikingGateOpen,
+
 }
