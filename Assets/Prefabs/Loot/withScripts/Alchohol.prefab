@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1228968011015427022}
   - component: {fileID: 438011179893497772}
   - component: {fileID: 9054861943243803312}
+  - component: {fileID: 152287184975084561}
   m_Layer: 20
   m_Name: Alchohol
   m_TagString: Untagged
@@ -106,6 +107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LootInteraction
   interactables: 9
+  levelFlag: 0
   amount: 2
   lootIcon: {fileID: 6309738642459786590}
   promptText: {fileID: 6281485757562014915}
@@ -133,6 +135,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.00040144377, y: 0.00039563788, z: 0.00082971953}
   m_Center: {x: 0.0000035552862, y: -2.7934429e-11, z: 0.0000148596755}
+--- !u!114 &152287184975084561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7258496406829556583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c656c2239d13af44a8111061d7b7d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentSceneEntity
+  guid: 
 --- !u!1001 &9085657092179459429
 PrefabInstance:
   m_ObjectHideFlags: 0
