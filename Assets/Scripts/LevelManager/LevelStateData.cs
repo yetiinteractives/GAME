@@ -8,7 +8,8 @@ public class LevelStateData
     public List<FlagEntry> flags = new();
     public List<TriggerEntry> triggers = new();
     public List<EntityEntry> entities = new();
-    public List<EntityEntry> opened = new(); // NEW
+    public List<EntityEntry> opened = new();
+    public List<PuzzleEntry> puzzles = new();
 
     public LevelStateData() { }
 
@@ -16,24 +17,28 @@ public class LevelStateData
         Dictionary<LevelFlag, bool> f,
         Dictionary<TriggerID, bool> t,
         Dictionary<string, bool> e,
-        Dictionary<string, bool> o)
+        Dictionary<string, bool> o,
+        Dictionary<string, bool[]> p)
     {
         flags = f.Select(kv => new FlagEntry(kv.Key, kv.Value)).ToList();
         triggers = t.Select(kv => new TriggerEntry(kv.Key, kv.Value)).ToList();
         entities = e.Select(kv => new EntityEntry(kv.Key, kv.Value)).ToList();
         opened = o.Select(kv => new EntityEntry(kv.Key, kv.Value)).ToList();
+        puzzles = p.Select(kv => new PuzzleEntry(kv.Key, kv.Value)).ToList();
     }
 
     public void ApplyTo(
         Dictionary<LevelFlag, bool> f,
         Dictionary<TriggerID, bool> t,
         Dictionary<string, bool> e,
-        Dictionary<string, bool> o)
+        Dictionary<string, bool> o,
+        Dictionary<string, bool[]> p)
     {
         foreach (var entry in flags) f[entry.flag] = entry.value;
         foreach (var entry in triggers) t[entry.trigger] = entry.value;
         foreach (var entry in entities) e[entry.guid] = entry.removed;
         foreach (var entry in opened) o[entry.guid] = entry.removed;
+        foreach (var entry in puzzles) p[entry.guid] = entry.inserted.ToArray();
     }
 }
 
@@ -59,4 +64,16 @@ public struct EntityEntry
     public string guid;
     public bool removed;
     public EntityEntry(string g, bool r) { guid = g; removed = r; }
+}
+
+[Serializable]
+public struct PuzzleEntry
+{
+    public string guid;
+    public List<bool> inserted;
+    public PuzzleEntry(string g, bool[] ins)
+    {
+        guid = g;
+        inserted = ins != null ? ins.ToList() : new List<bool>();
+    }
 }

@@ -11,11 +11,11 @@ public sealed class LevelManager : MonoBehaviour
 
     private readonly Dictionary<LevelFlag, bool> flagState = new();
     private readonly Dictionary<TriggerID, bool> triggerState = new();
-
     private readonly Dictionary<string, bool> entityRemoved = new();
-
-    // NEW: opened entities (doors etc)
     private readonly Dictionary<string, bool> entityOpened = new();
+
+    // NEW: puzzle inserted state
+    private readonly Dictionary<string, bool[]> puzzleInserted = new();
 
     public event Action<LevelFlag> OnFlagChanged;
     public event Action<TriggerID> OnTriggerFired;
@@ -65,7 +65,6 @@ public sealed class LevelManager : MonoBehaviour
                entityRemoved.TryGetValue(guid, out var removed) && removed;
     }
 
-    // NEW: OPENED ENTITIES
     public void MarkEntityOpened(string guid)
     {
         if (string.IsNullOrEmpty(guid)) return;
@@ -78,10 +77,23 @@ public sealed class LevelManager : MonoBehaviour
                entityOpened.TryGetValue(guid, out var opened) && opened;
     }
 
+    // ---- PUZZLE INSERTED ----
+    public void SetPuzzleInserted(string guid, bool[] inserted)
+    {
+        if (string.IsNullOrEmpty(guid) || inserted == null) return;
+        puzzleInserted[guid] = (bool[])inserted.Clone();
+    }
+
+    public bool[] GetPuzzleInserted(string guid)
+    {
+        if (string.IsNullOrEmpty(guid)) return null;
+        return puzzleInserted.TryGetValue(guid, out var v) ? v : null;
+    }
+
     // ---- SAVE/LOAD ----
     public LevelStateData ExportState()
     {
-        return new LevelStateData(flagState, triggerState, entityRemoved, entityOpened);
+        return new LevelStateData(flagState, triggerState, entityRemoved, entityOpened, puzzleInserted);
     }
 
     public void ImportState(LevelStateData data)
@@ -90,8 +102,9 @@ public sealed class LevelManager : MonoBehaviour
         triggerState.Clear();
         entityRemoved.Clear();
         entityOpened.Clear();
+        puzzleInserted.Clear();
 
-        data.ApplyTo(flagState, triggerState, entityRemoved, entityOpened);
+        data.ApplyTo(flagState, triggerState, entityRemoved, entityOpened, puzzleInserted);
 
         foreach (var f in flagState.Keys) OnFlagChanged?.Invoke(f);
         foreach (var t in triggerState.Keys) OnTriggerFired?.Invoke(t);
