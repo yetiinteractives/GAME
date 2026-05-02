@@ -122,6 +122,10 @@ public class LootInteraction : MonoBehaviour, IInteractable
                 ResourceManager.Instance.SetBandageAbsolute(ResourceManager.Instance.BandageCount + amount);
                 break;
 
+            case InteractablesEnum.medkit:
+                ResourceManager.Instance.SetMedkitAbsolute(ResourceManager.Instance.MedkitCount + amount);
+                break;
+
             case InteractablesEnum.alchohol:
                 ResourceManager.Instance.SetAlcoholAbsolute(ResourceManager.Instance.AlcoholCount + amount);
                 break;
