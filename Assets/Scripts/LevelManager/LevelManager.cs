@@ -12,8 +12,10 @@ public sealed class LevelManager : MonoBehaviour
     private readonly Dictionary<LevelFlag, bool> flagState = new();
     private readonly Dictionary<TriggerID, bool> triggerState = new();
 
-    // ADD THIS:
     private readonly Dictionary<string, bool> entityRemoved = new();
+
+    // NEW: opened entities (doors etc)
+    private readonly Dictionary<string, bool> entityOpened = new();
 
     public event Action<LevelFlag> OnFlagChanged;
     public event Action<TriggerID> OnTriggerFired;
@@ -63,10 +65,23 @@ public sealed class LevelManager : MonoBehaviour
                entityRemoved.TryGetValue(guid, out var removed) && removed;
     }
 
+    // NEW: OPENED ENTITIES
+    public void MarkEntityOpened(string guid)
+    {
+        if (string.IsNullOrEmpty(guid)) return;
+        entityOpened[guid] = true;
+    }
+
+    public bool IsEntityOpened(string guid)
+    {
+        return !string.IsNullOrEmpty(guid) &&
+               entityOpened.TryGetValue(guid, out var opened) && opened;
+    }
+
     // ---- SAVE/LOAD ----
     public LevelStateData ExportState()
     {
-        return new LevelStateData(flagState, triggerState, entityRemoved);
+        return new LevelStateData(flagState, triggerState, entityRemoved, entityOpened);
     }
 
     public void ImportState(LevelStateData data)
@@ -74,8 +89,9 @@ public sealed class LevelManager : MonoBehaviour
         flagState.Clear();
         triggerState.Clear();
         entityRemoved.Clear();
+        entityOpened.Clear();
 
-        data.ApplyTo(flagState, triggerState, entityRemoved);
+        data.ApplyTo(flagState, triggerState, entityRemoved, entityOpened);
 
         foreach (var f in flagState.Keys) OnFlagChanged?.Invoke(f);
         foreach (var t in triggerState.Keys) OnTriggerFired?.Invoke(t);

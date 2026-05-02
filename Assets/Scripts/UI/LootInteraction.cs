@@ -3,6 +3,8 @@ using UnityEngine;
 public class LootInteraction : MonoBehaviour, IInteractable
 {
     public InteractablesEnum interactables;
+    public LevelFlag levelFlag = LevelFlag.None;
+
     public int amount = 10;
 
     [Header("UI")]
@@ -145,11 +147,14 @@ public class LootInteraction : MonoBehaviour, IInteractable
             case InteractablesEnum.can:
                 ResourceManager.Instance.SetCanAbsolute(ResourceManager.Instance.CanCount + amount);
                 break;
+            case InteractablesEnum.key:
+                PickUpKey(levelFlag);
+                break;
 
             default:
                 return false;
         }
-
+        ResourceManager.Instance.CaptureRuntimeAmmoFromWeapons();
         ResourceManager.Instance.ForceResyncAllRuntimeUsers();
         ResourceManager.Instance.BroadcastAllFullStatesPublic();
         InventoryHandler.Instance?.SyncFromResourceManagerForUI();
@@ -168,6 +173,11 @@ public class LootInteraction : MonoBehaviour, IInteractable
     {
         if (lootIconSprite != null)
             lootIconSprite.color = isFullForThisLoot ? fullColor : normalColor;
+    }
+
+    void PickUpKey(LevelFlag key)
+    {
+        LevelManager.Instance.TriggerFlag(key);
     }
 
     private void SubscribeAll()

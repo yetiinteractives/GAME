@@ -15,5 +15,6 @@ public enum InteractablesEnum
     rag,
     binding,
     gunpowder,
-    can
+    can,
+    key
 }

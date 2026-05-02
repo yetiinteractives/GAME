@@ -29,7 +29,7 @@ public class LoadingScreen : MonoBehaviour
             if (operation.progress >= 0.9f)
             {
                 progressBar.value = 1f;
-                yield return new WaitForSeconds(2f); 
+                
                 operation.allowSceneActivation = true; 
             }
 
