@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 7862295691768276953}
   - component: {fileID: 1228968011015427022}
   - component: {fileID: 438011179893497772}
-  m_Layer: 0
+  - component: {fileID: 9054861943243803312}
+  m_Layer: 20
   m_Name: Alchohol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -111,6 +112,27 @@ MonoBehaviour:
   lootIconSprite: {fileID: 0}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   fullColor: {r: 1, g: 0.45, b: 0.45, a: 1}
+--- !u!65 &9054861943243803312
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7258496406829556583}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.00040144377, y: 0.00039563788, z: 0.00082971953}
+  m_Center: {x: 0.0000035552862, y: -2.7934429e-11, z: 0.0000148596755}
 --- !u!1001 &9085657092179459429
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -119,10 +141,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8038819295661740355}
     m_Modifications:
+    - target: {fileID: 2970949656402833830, guid: 8e3d9ca0d762f6a448fc6b9eb98f9655,
+        type: 3}
+      propertyPath: m_Layer
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 2992093440554270779, guid: 8e3d9ca0d762f6a448fc6b9eb98f9655,
         type: 3}
       propertyPath: m_Name
       value: Interact Icon
+      objectReference: {fileID: 0}
+    - target: {fileID: 2992093440554270779, guid: 8e3d9ca0d762f6a448fc6b9eb98f9655,
+        type: 3}
+      propertyPath: m_Layer
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 8102631710032492757, guid: 8e3d9ca0d762f6a448fc6b9eb98f9655,
+        type: 3}
+      propertyPath: m_Layer
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 8730566143965024527, guid: 8e3d9ca0d762f6a448fc6b9eb98f9655,
         type: 3}

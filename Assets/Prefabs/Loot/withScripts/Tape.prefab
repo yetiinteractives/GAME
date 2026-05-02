@@ -210,6 +210,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tape
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2f71b8a7fc1c5cb4a93e73389c3e6ec5,
+        type: 3}
+      propertyPath: m_Layer
+      value: 20
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -226,6 +231,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 5723812881889676333}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2f71b8a7fc1c5cb4a93e73389c3e6ec5,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6164065492639650989}
   m_SourcePrefab: {fileID: 100100000, guid: 2f71b8a7fc1c5cb4a93e73389c3e6ec5, type: 3}
 --- !u!4 &6270297575428308545 stripped
 Transform:
@@ -258,6 +267,27 @@ MonoBehaviour:
   lootIconSprite: {fileID: 0}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   fullColor: {r: 1, g: 0.45, b: 0.45, a: 1}
+--- !u!65 &6164065492639650989
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6651608571242210555}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.20900178, y: 0.06329356, z: 0.13270146}
+  m_Center: {x: 0.044506274, y: -0.017060062, z: 0.0065659387}
 --- !u!1001 &5965003971945703456
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -270,6 +300,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Tape (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6259655172024209433, guid: f60762bb6126f3e46b7dc79a293e0f13,
+        type: 3}
+      propertyPath: m_Layer
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6743317570717272739, guid: f60762bb6126f3e46b7dc79a293e0f13,
         type: 3}
