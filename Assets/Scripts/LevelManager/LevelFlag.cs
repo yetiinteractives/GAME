@@ -2,15 +2,17 @@ public enum LevelFlag
 {
     None = 0,
 
-    // Keys
+    // requirment flags
     HasRedKey,
     HasBlueKey,
-    HasKeycard,
+    HasCircularEmblem,
+    HasLionEmblem,
+    HasShieldEmblem,
 
-    // Power / switches
-    PowerOn,
-    GeneratorFuelInserted,
+    // wrold state flags
+    IsVikingGateOpen,
+    IsRedDoorOpen,
 
-    // Doors / shortcuts
-    ShortcutOpen
+    
+
 }

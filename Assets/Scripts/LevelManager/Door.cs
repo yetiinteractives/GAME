@@ -4,7 +4,10 @@ using System;
 public class Door : MonoBehaviour, ILevelEntity, IInteractable
 {
     [SerializeField] private string guid;
-    [SerializeField] private LevelFlag requiredFlag;
+
+    [Header("Flags")]
+    [SerializeField] private LevelFlag requiredFlag; // must be true to allow interaction
+    [SerializeField] private LevelFlag openFlag;     // when this flag is triggered, door opens
 
     [Header("UI")]
     [SerializeField] private GameObject icon;
@@ -32,6 +35,15 @@ public class Door : MonoBehaviour, ILevelEntity, IInteractable
     {
         HideInteractableIcon();
         HideInteractionPrompt();
+
+        if (LevelManager.Instance != null)
+            LevelManager.Instance.OnFlagChanged += OnFlagChanged;
+    }
+
+    private void OnDestroy()
+    {
+        if (LevelManager.Instance != null)
+            LevelManager.Instance.OnFlagChanged -= OnFlagChanged;
     }
 
     public void ShowInteractableIcon()
@@ -69,6 +81,14 @@ public class Door : MonoBehaviour, ILevelEntity, IInteractable
         return requiredFlag == LevelFlag.None || LevelManager.Instance.GetFlag(requiredFlag);
     }
 
+    private void OnFlagChanged(LevelFlag flag)
+    {
+        if (isOpen) return;
+
+        if (openFlag != LevelFlag.None && flag == openFlag)
+            Open();
+    }
+
     private void Open()
     {
         if (isOpen) return;
@@ -78,6 +98,7 @@ public class Door : MonoBehaviour, ILevelEntity, IInteractable
         HideInteractionPrompt();
 
         LevelManager.Instance.MarkEntityOpened(guid);
+        Debug.Log("Door opened! mydude");
 
         Animator anim = GetComponentInChildren<Animator>();
         if (anim != null)

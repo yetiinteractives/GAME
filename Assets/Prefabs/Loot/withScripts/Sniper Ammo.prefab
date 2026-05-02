@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8692916917041473003}
   - component: {fileID: 8009795742776831711}
   - component: {fileID: 3524472650926692408}
+  - component: {fileID: 7723278510212576713}
   m_Layer: 20
   m_Name: Sniper Ammo
   m_TagString: Untagged
@@ -106,9 +107,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LootInteraction
   interactables: 3
+  levelFlag: 0
   amount: 4
   lootIcon: {fileID: 6770331248630015459}
   promptText: {fileID: 6722167523487749246}
+  lootIconSprite: {fileID: 0}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  fullColor: {r: 1, g: 0.45, b: 0.45, a: 1}
 --- !u!65 &3524472650926692408
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -130,6 +135,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.0012210868, y: 0.0016146665, z: 0.00036547804}
   m_Center: {x: 0.0000006335322, y: 0.000003184977, z: -0.0000042029706}
+--- !u!114 &7723278510212576713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 454305610721056970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c656c2239d13af44a8111061d7b7d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentSceneEntity
+  guid: 
 --- !u!1001 &6718850909554100978
 PrefabInstance:
   m_ObjectHideFlags: 0

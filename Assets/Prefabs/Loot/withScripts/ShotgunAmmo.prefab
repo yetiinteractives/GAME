@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2057747885258187362}
   - component: {fileID: 2226673705812379843}
   - component: {fileID: 5329591029548878499}
+  - component: {fileID: 8810902339403023099}
   m_Layer: 20
   m_Name: ShotgunAmmo
   m_TagString: Untagged
@@ -155,6 +156,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7d6dd29afae1e54d898918951e9ad31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableItem
+  interactionType: 0
+  icon: {fileID: 0}
+  prompt: {fileID: 0}
 --- !u!114 &5329591029548878499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,9 +172,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LootInteraction
   interactables: 2
+  levelFlag: 0
   amount: 4
   lootIcon: {fileID: 279118279376056431}
   promptText: {fileID: 244112754564202994}
+  lootIconSprite: {fileID: 0}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  fullColor: {r: 1, g: 0.45, b: 0.45, a: 1}
+--- !u!114 &8810902339403023099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6090735278252109801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c656c2239d13af44a8111061d7b7d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentSceneEntity
+  guid: 
 --- !u!1001 &221955882968080254
 PrefabInstance:
   m_ObjectHideFlags: 0

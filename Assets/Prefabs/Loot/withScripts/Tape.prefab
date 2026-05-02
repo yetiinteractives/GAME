@@ -235,6 +235,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6164065492639650989}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2f71b8a7fc1c5cb4a93e73389c3e6ec5,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 861231029089050314}
   m_SourcePrefab: {fileID: 100100000, guid: 2f71b8a7fc1c5cb4a93e73389c3e6ec5, type: 3}
 --- !u!4 &6270297575428308545 stripped
 Transform:
@@ -261,6 +265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LootInteraction
   interactables: 11
+  levelFlag: 0
   amount: 4
   lootIcon: {fileID: 1018503231325485710}
   promptText: {fileID: 1053438326197455635}
@@ -288,6 +293,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.20900178, y: 0.06329356, z: 0.13270146}
   m_Center: {x: 0.044506274, y: -0.017060062, z: 0.0065659387}
+--- !u!114 &861231029089050314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6651608571242210555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c656c2239d13af44a8111061d7b7d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentSceneEntity
+  guid: 
 --- !u!1001 &5965003971945703456
 PrefabInstance:
   m_ObjectHideFlags: 0

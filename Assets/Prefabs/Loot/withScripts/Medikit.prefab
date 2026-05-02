@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6482934366048752158}
   - component: {fileID: 3579739079705188381}
   - component: {fileID: 5545631471411091277}
+  - component: {fileID: 4726914143886504296}
   m_Layer: 20
   m_Name: Medikit
   m_TagString: Untagged
@@ -106,6 +107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LootInteraction
   interactables: 6
+  levelFlag: 0
   amount: 1
   lootIcon: {fileID: 6166599949095466970}
   promptText: {fileID: 6136376740436559431}
@@ -133,6 +135,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.0016060836, y: 0.0027181057, z: 0.0010646019}
   m_Center: {x: -0.000046219793, y: 0.000003147871, z: -0.000000026450076}
+--- !u!114 &4726914143886504296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 877000900084392704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c656c2239d13af44a8111061d7b7d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentSceneEntity
+  guid: 
 --- !u!1001 &6151638712437381323
 PrefabInstance:
   m_ObjectHideFlags: 0
