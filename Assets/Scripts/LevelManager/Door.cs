@@ -98,7 +98,6 @@ public class Door : MonoBehaviour, ILevelEntity, IInteractable
         HideInteractionPrompt();
 
         LevelManager.Instance.MarkEntityOpened(guid);
-        Debug.Log("Door opened! mydude");
 
         Animator anim = GetComponentInChildren<Animator>();
         if (anim != null)
