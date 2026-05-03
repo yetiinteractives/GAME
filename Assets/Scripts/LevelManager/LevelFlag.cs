@@ -3,7 +3,7 @@ public enum LevelFlag
     None = 0,
 
     // requirment flags
-    HasRedKey,
+    HasRustyKey,
     HasBlueKey,
     HasCircularEmblem,
     HasLionEmblem,
