@@ -148,7 +148,7 @@ Light:
   serializedVersion: 12
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.16
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -157,7 +157,7 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 0
+    m_Strength: 1
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 3.19
@@ -338,7 +338,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &585202205
 Transform:
   m_ObjectHideFlags: 0
@@ -833,6 +833,11 @@ PrefabInstance:
       propertyPath: freeSpeed.walkByDefault
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7390958006523679499, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: field of view
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 7588517971024295138, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -867,6 +872,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 2.268891e-12
+      objectReference: {fileID: 0}
+    - target: {fileID: 8365501868765587431, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: Lens.FieldOfView
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 8619074707358649786, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
