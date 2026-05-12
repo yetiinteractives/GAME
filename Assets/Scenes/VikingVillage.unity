@@ -68232,8 +68232,10 @@ GameObject:
   - component: {fileID: 1306088052}
   - component: {fileID: 1306088051}
   - component: {fileID: 1306088054}
+  - component: {fileID: 1306088055}
+  - component: {fileID: 1306088057}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: River
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68247,7 +68249,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1306088049}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -68325,6 +68327,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaterScroll
   speedX: 0.02
   speedY: 0.02
+--- !u!114 &1306088055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1306088049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2370a6046729043458b13af87e9d9b30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RiverFlow
+  speed: 0.1
+--- !u!114 &1306088057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1306088049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfbe97460f8acd1488a82178305cdf59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WaterReflection
+  reflectionPlane: {fileID: 0}
+  outputTexture: {fileID: 0}
+  copyCameraParamerers: 0
+  verticalOffset: 0
 --- !u!1001 &1306750219
 PrefabInstance:
   m_ObjectHideFlags: 0
