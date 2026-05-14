@@ -1,21 +1,30 @@
 using UnityEngine;
-using System;
+using TMPro;
+using System.Collections;
 
 public class Door : MonoBehaviour, ILevelEntity, IInteractable
 {
     [SerializeField] private string guid;
 
     [Header("Flags")]
-    [SerializeField] private LevelFlag requiredFlag; // must be true to allow interaction
-    [SerializeField] private LevelFlag openFlag;     // when this flag is triggered, door opens
+    [SerializeField] private LevelFlag requiredFlag;
+    [SerializeField] private LevelFlag openFlag;
 
     [Header("UI")]
     [SerializeField] private GameObject icon;
     [SerializeField] private GameObject prompt;
 
+    [Header("Locked Message")]
+    [SerializeField] private string lockedMessage = "Needs Rusty Key";
+    [SerializeField] private GameObject messagePanel;
+    [SerializeField] private float messageDuration = 2f;
+
     public string Guid => guid;
 
     private bool isOpen;
+
+    private TMP_Text messageText;
+    private Coroutine messageRoutine;
 
 #if UNITY_EDITOR
     [ContextMenu("Generate GUID")]
@@ -36,6 +45,12 @@ public class Door : MonoBehaviour, ILevelEntity, IInteractable
         HideInteractableIcon();
         HideInteractionPrompt();
 
+        if (messagePanel != null)
+        {
+            messageText = messagePanel.GetComponentInChildren<TMP_Text>();
+            messagePanel.SetActive(false);
+        }
+
         if (LevelManager.Instance != null)
             LevelManager.Instance.OnFlagChanged += OnFlagChanged;
     }
@@ -49,36 +64,45 @@ public class Door : MonoBehaviour, ILevelEntity, IInteractable
     public void ShowInteractableIcon()
     {
         if (isOpen) return;
-        if (icon != null) icon.SetActive(true);
+
+        if (icon != null)
+            icon.SetActive(true);
     }
 
     public void HideInteractableIcon()
     {
-        if (icon != null) icon.SetActive(false);
+        if (icon != null)
+            icon.SetActive(false);
     }
 
     public void ShowInteractionPrompt()
     {
         if (isOpen) return;
-        if (prompt != null) prompt.SetActive(true);
+
+        if (prompt != null)
+            prompt.SetActive(true);
     }
 
     public void HideInteractionPrompt()
     {
-        if (prompt != null) prompt.SetActive(false);
+        if (prompt != null)
+            prompt.SetActive(false);
     }
 
     public void Interact()
     {
         if (isOpen) return;
 
-        if (CanOpen()) Open();
-        else Debug.Log("Locked");
+        if (CanOpen())
+            Open();
+        else
+            ShowLockedMessage();
     }
 
     private bool CanOpen()
     {
-        return requiredFlag == LevelFlag.None || LevelManager.Instance.GetFlag(requiredFlag);
+        return requiredFlag == LevelFlag.None ||
+               LevelManager.Instance.GetFlag(requiredFlag);
     }
 
     private void OnFlagChanged(LevelFlag flag)
@@ -92,6 +116,7 @@ public class Door : MonoBehaviour, ILevelEntity, IInteractable
     private void Open()
     {
         if (isOpen) return;
+
         isOpen = true;
 
         HideInteractableIcon();
@@ -100,6 +125,7 @@ public class Door : MonoBehaviour, ILevelEntity, IInteractable
         LevelManager.Instance.MarkEntityOpened(guid);
 
         Animator anim = GetComponentInChildren<Animator>();
+
         if (anim != null)
             anim.SetTrigger("OpenDoor");
     }
@@ -108,5 +134,27 @@ public class Door : MonoBehaviour, ILevelEntity, IInteractable
     {
         if (LevelManager.Instance.IsEntityOpened(guid))
             Open();
+    }
+
+    private void ShowLockedMessage()
+    {
+        if (messagePanel == null || messageText == null)
+            return;
+
+        if (messageRoutine != null)
+            StopCoroutine(messageRoutine);
+
+        messageRoutine = StartCoroutine(ShowMessageRoutine());
+    }
+
+    private IEnumerator ShowMessageRoutine()
+    {
+        messageText.text = lockedMessage;
+
+        messagePanel.SetActive(true);
+
+        yield return new WaitForSeconds(messageDuration);
+
+        messagePanel.SetActive(false);
     }
 }
