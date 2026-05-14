@@ -159,7 +159,7 @@ public abstract class Weapon : MonoBehaviour
         OnAmmoChanged?.Invoke(bulletOnMag, totalBullet);
         OnBulletShot?.Invoke();
 
-        if (audioSource != null && shootSound != null)
+        if (audioSource != null && shootSound != null) 
             audioSource.PlayOneShot(shootSound);
 
 
