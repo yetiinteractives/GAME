@@ -4,15 +4,17 @@ public enum LevelFlag
 
     // requirment flags
     HasMasterKey,
-    HasBlueKey,
+    HasChurchKey,
     HasCircularEmblem,
     HasLionEmblem,
     HasShieldEmblem,
 
     // wrold state flags
     IsVikingGateOpen,
-    IsRedDoorOpen,
+    IsLootAreaDoorOpen,
 
-    
+    IsGeneratorOn,
+    HasFuelCan,
+    IsFuelCanFull
 
 }

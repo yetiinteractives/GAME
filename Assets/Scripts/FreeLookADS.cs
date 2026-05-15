@@ -7,11 +7,11 @@ public class FreeLookADS : MonoBehaviour
     public CinemachineCamera cam;
 
     [Header("Normal FOV Settings")]
-    public float normalFOV = 60f;
+    public float normalFOV = 45f;
     public float normalSensitivity = 1f;
 
     [Header("Weapon FOV Settings")]
-    public float adsFOV = 40f;
+    public float adsFOV = 35f;
     public float adsSensitivity = 0.5f;
     public float fovLerpSpeed = 10f;
     public float sensitivityLerpSpeed = 10f;
