@@ -1,7 +1,9 @@
 public enum TriggerID
 {
     None = 0,
-    FirstCutscene,
+    FirstZombieGirlCS,
+    SecondZombieGirlCS,
+    
     BossEntrance,
     HelicopterArrives
 }
