@@ -19,6 +19,10 @@ public class Door : MonoBehaviour, ILevelEntity, IInteractable
     [SerializeField] private GameObject messagePanel;
     [SerializeField] private float messageDuration = 2f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip openSound;
+    [SerializeField] private AudioClip lockedSound;
+
     public string Guid => guid;
 
     private bool isOpen;
@@ -128,6 +132,8 @@ public class Door : MonoBehaviour, ILevelEntity, IInteractable
 
         if (anim != null)
             anim.SetTrigger("OpenDoor");
+        if (openSound != null)
+            AudioSource.PlayClipAtPoint(openSound, transform.position);
     }
 
     public void LoadState()
@@ -145,6 +151,11 @@ public class Door : MonoBehaviour, ILevelEntity, IInteractable
             StopCoroutine(messageRoutine);
 
         messageRoutine = StartCoroutine(ShowMessageRoutine());
+        
+        if(lockedSound != null)
+        {
+            AudioSource.PlayClipAtPoint(lockedSound, transform.position);
+        }
     }
 
     private IEnumerator ShowMessageRoutine()
