@@ -7,15 +7,15 @@ public class GeneratorPuzzle : MonoBehaviour, ILevelEntity, IInteractable
     [SerializeField] private string guid;
 
     [Header("Flags")]
-    [SerializeField] private LevelFlag[] requiredFlags; // Multiple required flags
-    [SerializeField] private LevelFlag outputFlag = LevelFlag.IsGeneratorOn; 
+    [SerializeField] private LevelFlag[] requiredFlags;
+    [SerializeField] private LevelFlag outputFlag = LevelFlag.IsGeneratorOn;
 
     [Header("UI")]
     [SerializeField] private GameObject icon;
     [SerializeField] private GameObject prompt;
 
     [Header("Message")]
-    [SerializeField] private string missingRequirementsMessage = "Needs Fuel.";
+    [SerializeField] private string missingRequirementsMessage = "Needs Fuel";
     [SerializeField] private GameObject messagePanel;
     [SerializeField] private float messageDuration = 2f;
 
@@ -113,11 +113,7 @@ public class GeneratorPuzzle : MonoBehaviour, ILevelEntity, IInteractable
 
     private void OnFlagChanged(LevelFlag changedFlag)
     {
-        if (isOn) return;
-
-        
-        if (AllConditionsMet())
-            StartGenerator();
+      
     }
 
     private void StartGenerator()
@@ -128,7 +124,7 @@ public class GeneratorPuzzle : MonoBehaviour, ILevelEntity, IInteractable
         HideInteractableIcon();
         HideInteractionPrompt();
 
-        LevelManager.Instance.TriggerFlag(outputFlag);
+        LevelManager.Instance.TriggerFlag(outputFlag); 
         LevelManager.Instance.MarkEntityOpened(guid);
 
         Animator anim = GetComponentInChildren<Animator>();
@@ -138,7 +134,7 @@ public class GeneratorPuzzle : MonoBehaviour, ILevelEntity, IInteractable
 
     public void LoadState()
     {
-        if (LevelManager.Instance.GetFlag(outputFlag))
+        if (LevelManager.Instance.IsEntityOpened(guid))
             StartGenerator();
     }
 
