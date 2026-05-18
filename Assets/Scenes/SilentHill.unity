@@ -4129,6 +4129,113 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 10}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &1747004984
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1747004985}
+  - component: {fileID: 1747004987}
+  - component: {fileID: 1747004986}
+  m_Layer: 0
+  m_Name: JumpScareCam
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1747004985
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747004984}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.0021648232, y: 0.9997351, z: -0.021580705, w: 0.007702103}
+  m_LocalPosition: {x: -0.002552668, y: 1.7431937, z: 0.28291065}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1942091549}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1747004986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747004984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 886251e9a18ece04ea8e61686c173e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachinePositionComposer
+  CameraDistance: 10
+  DeadZoneDepth: 0
+  Composition:
+    ScreenPosition: {x: 0, y: 0}
+    DeadZone:
+      Enabled: 0
+      Size: {x: 0.2, y: 0.2}
+    HardLimits:
+      Enabled: 0
+      Size: {x: 0.8, y: 0.8}
+      Offset: {x: 0, y: 0}
+  CenterOnActivate: 1
+  TargetOffset: {x: 0.15, y: 1.66, z: -9.65}
+  Damping: {x: 1, y: 1, z: 1}
+  Lookahead:
+    Enabled: 0
+    Time: 0
+    Smoothing: 0
+    IgnoreY: 0
+--- !u!114 &1747004987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747004984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineCamera
+  Priority:
+    Enabled: 1
+    m_Value: 10
+  OutputChannel: 1
+  StandbyUpdate: 2
+  m_StreamingVersion: 20241001
+  m_LegacyPriority: 0
+  Target:
+    TrackingTarget: {fileID: 1942091550}
+    LookAtTarget: {fileID: 0}
+    CustomLookAtTarget: 0
+  Lens:
+    FieldOfView: 60.000004
+    OrthographicSize: 10
+    NearClipPlane: 0.1
+    FarClipPlane: 5000
+    Dutch: 0
+    ModeOverride: 0
+    PhysicalProperties:
+      GateFit: 2
+      SensorSize: {x: 21.946, y: 16.002}
+      LensShift: {x: 0, y: 0}
+      FocusDistance: 10
+      Iso: 200
+      ShutterSpeed: 0.005
+      Aperture: 16
+      BladeCount: 5
+      Curvature: {x: 2, y: 11}
+      BarrelClipping: 0.25
+      Anamorphism: 0
+  BlendHint: 0
 --- !u!1 &1753096676
 GameObject:
   m_ObjectHideFlags: 0
@@ -4473,7 +4580,7 @@ PrefabInstance:
     - target: {fileID: 3625487495965280307, guid: 7b07ce8b6c545dd44a5ebd2ac5badac4,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4115024554350465673, guid: 7b07ce8b6c545dd44a5ebd2ac5badac4,
         type: 3}
@@ -4542,9 +4649,25 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 4115024554350465673, guid: 7b07ce8b6c545dd44a5ebd2ac5badac4,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1747004985}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b07ce8b6c545dd44a5ebd2ac5badac4, type: 3}
+--- !u!4 &1942091549 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4115024554350465673, guid: 7b07ce8b6c545dd44a5ebd2ac5badac4,
+    type: 3}
+  m_PrefabInstance: {fileID: 1942091548}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1942091550 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1021874683977827745, guid: 7b07ce8b6c545dd44a5ebd2ac5badac4,
+    type: 3}
+  m_PrefabInstance: {fileID: 1942091548}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1949858886
 GameObject:
   m_ObjectHideFlags: 0
@@ -5085,37 +5208,37 @@ PrefabInstance:
     - target: {fileID: 1241365776001426378, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -609.3265
+      value: -613.4122
       objectReference: {fileID: 0}
     - target: {fileID: 1241365776001426378, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -16.389109
+      value: -15.605978
       objectReference: {fileID: 0}
     - target: {fileID: 1241365776001426378, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -256.44922
+      value: -305.4795
       objectReference: {fileID: 0}
     - target: {fileID: 1241365776001426378, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.98836166
+      value: 0.007702103
       objectReference: {fileID: 0}
     - target: {fileID: 1241365776001426378, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.15212251
+      value: 0.0021648232
       objectReference: {fileID: 0}
     - target: {fileID: 1241365776001426378, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -3.6527642e-11
+      value: 0.9997351
       objectReference: {fileID: 0}
     - target: {fileID: 1241365776001426378, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 5.622109e-12
+      value: -0.021580705
       objectReference: {fileID: 0}
     - target: {fileID: 1546186421530877730, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
@@ -6555,7 +6678,7 @@ PrefabInstance:
     - target: {fileID: 7390958006523679499, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
       propertyPath: field of view
-      value: 40
+      value: 60.000004
       objectReference: {fileID: 0}
     - target: {fileID: 7516786732937236567, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
