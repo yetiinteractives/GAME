@@ -15,6 +15,8 @@ public enum LevelFlag
 
     IsGeneratorOn,
     HasFuelCan,
-    IsFuelCanFull
+    IsFuelCanFull,
+
+    HasBridgePlanks
 
 }
