@@ -1,9 +1,11 @@
 
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Playables;
 
 public class AlienZombieBrain : UniversalEnemyAi, IDamageable
 {
+    [SerializeField] private PlayableDirector director;
     public enum AlienZombieState { Idle, Chase, Attack}
     public AlienZombieState state;
 
@@ -89,12 +91,19 @@ public class AlienZombieBrain : UniversalEnemyAi, IDamageable
                 if (attackTimer >= attackCooldown)
                 {
                     attackInProgress = false;
+                    PlayJumpScare();
+
                     //appy damage to player yeta
                 }
                 break;
  
         }
 
+    }
+
+    private void PlayJumpScare()
+    {
+        director.Play();
     }
 
     private void FacePlayer()
