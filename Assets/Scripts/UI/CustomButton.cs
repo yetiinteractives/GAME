@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 [RequireComponent(typeof(Image))]
 public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
@@ -32,6 +33,14 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     [Header("UI")]
     [SerializeField] private Image targetImage;
     public Image TargetImage => targetImage;
+
+    [Header("Hover Text (TMP)")]
+    [SerializeField] private TMP_Text itemText;
+    [SerializeField] private TMP_Text itemDescription;
+
+    [Header("Hover Text Content")]
+    [SerializeField] private string itemTextValue;
+    [SerializeField] private string itemDescriptionValue;
 
     [Header("Sprites")]
     [SerializeField] private Sprite normalSprite;
@@ -72,6 +81,8 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         isHovering = true;
         OnHoveredCraftItem?.Invoke(this);
         if (!isHolding) SetHover();
+
+        SetHoverText();
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -81,6 +92,9 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
         if (isHolding) CancelHold();
         else SetNormal();
+
+        // DO NOT restore original text here
+        // Keep last hovered item visible
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -163,6 +177,12 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         targetImage.fillAmount = 1f;
     }
 
+    private void SetHoverText()
+    {
+        if (itemText != null) itemText.text = itemTextValue;
+        if (itemDescription != null) itemDescription.text = itemDescriptionValue;
+    }
+
     private void OnDisable()
     {
         isHovering = false;
@@ -180,5 +200,6 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         }
 
         SetNormal();
+        // keep last hovered text; do not clear
     }
 }

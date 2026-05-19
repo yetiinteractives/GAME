@@ -379,8 +379,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -45.7, y: 10}
-  m_SizeDelta: {x: 234.18, y: 40.2585}
+  m_AnchoredPosition: {x: -30.0866, y: 10}
+  m_SizeDelta: {x: 318.9637, y: 40.2585}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &131782480
 MonoBehaviour:
@@ -402,9 +402,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Grenade
-
-'
+  m_text: Medikit
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1658,9 +1656,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Comon man! Its Just Grenade.
-
-    Boom! Boom!'
+  m_text: Restores health to full, stabilizing critical wounds in one use. Reliable,
+    efficient, and spent after activation.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2166,6 +2163,48 @@ PrefabInstance:
       propertyPath: m_Name
       value: ______Essestial_Prefab______
       objectReference: {fileID: 0}
+    - target: {fileID: 3012393538809218415, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemText
+      value: 
+      objectReference: {fileID: 131782480}
+    - target: {fileID: 3012393538809218415, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemTextValue
+      value: ShotgunShells
+      objectReference: {fileID: 0}
+    - target: {fileID: 3012393538809218415, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemDescription
+      value: 
+      objectReference: {fileID: 880718362}
+    - target: {fileID: 3012393538809218415, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemDescriptionValue
+      value: "Close\u2011quarters ordnance built to end fights immediately. Loud,
+        violent, and final."
+      objectReference: {fileID: 0}
+    - target: {fileID: 3242133899855124848, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemText
+      value: 
+      objectReference: {fileID: 131782480}
+    - target: {fileID: 3242133899855124848, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemTextValue
+      value: Grenade
+      objectReference: {fileID: 0}
+    - target: {fileID: 3242133899855124848, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemDescription
+      value: 
+      objectReference: {fileID: 880718362}
+    - target: {fileID: 3242133899855124848, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemDescriptionValue
+      value: Timed explosive designed to clear confined spaces. Pull, throw, and
+        let the blast do the talking.
+      objectReference: {fileID: 0}
     - target: {fileID: 3445498801144463442, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -2275,6 +2314,48 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4753764202531265904, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemText
+      value: 
+      objectReference: {fileID: 131782480}
+    - target: {fileID: 4753764202531265904, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemTextValue
+      value: Landmine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4753764202531265904, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemDescription
+      value: 
+      objectReference: {fileID: 880718362}
+    - target: {fileID: 4753764202531265904, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemDescriptionValue
+      value: "Pressure\u2011activated deterrent for territory control. Set the trap,
+        leave the message"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4774647335010187474, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemText
+      value: 
+      objectReference: {fileID: 131782480}
+    - target: {fileID: 4774647335010187474, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemTextValue
+      value: Medikit
+      objectReference: {fileID: 0}
+    - target: {fileID: 4774647335010187474, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemDescription
+      value: 
+      objectReference: {fileID: 880718362}
+    - target: {fileID: 4774647335010187474, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemDescriptionValue
+      value: Restores health to full, stabilizing critical wounds in one use. Reliable,
+        efficient, and spent after activation.
       objectReference: {fileID: 0}
     - target: {fileID: 4825617583685081468, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
@@ -2336,10 +2417,51 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 103.99997
       objectReference: {fileID: 0}
+    - target: {fileID: 5876251255766658533, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemText
+      value: 
+      objectReference: {fileID: 131782480}
+    - target: {fileID: 5876251255766658533, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemTextValue
+      value: Silencer
+      objectReference: {fileID: 0}
+    - target: {fileID: 5876251255766658533, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemDescription
+      value: 
+      objectReference: {fileID: 880718362}
+    - target: {fileID: 5876251255766658533, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemDescriptionValue
+      value: "Dampens the gun\u2019s sound and flash for quieter kills. Limited durability.."
+      objectReference: {fileID: 0}
     - target: {fileID: 6089789894970454967, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -173
+      objectReference: {fileID: 0}
+    - target: {fileID: 6130424160958154203, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemText
+      value: 
+      objectReference: {fileID: 131782480}
+    - target: {fileID: 6130424160958154203, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemTextValue
+      value: Bandage
+      objectReference: {fileID: 0}
+    - target: {fileID: 6130424160958154203, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemDescription
+      value: 
+      objectReference: {fileID: 880718362}
+    - target: {fileID: 6130424160958154203, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: itemDescriptionValue
+      value: A fast, minimal wrap to stop bleeding and keep you upright. Not enough
+        for serious damage
       objectReference: {fileID: 0}
     - target: {fileID: 6400419449438302892, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
