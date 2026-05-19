@@ -66,35 +66,25 @@ public class AlienZombieBrain : UniversalEnemyAi, IDamageable
                 break;
 
             case AlienZombieState.Chase:
-
-                PlayWalkAnimation();
-                MoveAgent(WalkSpeed);
-                attackInProgress = false;
-                if (!agent.hasPath || agent.destination != player.position)
-                    agent.SetDestination(player.position);
+                if (!attackInProgress) {
+                    PlayWalkAnimation();
+                    MoveAgent(WalkSpeed);
+                    attackInProgress = false;
+                    if (!agent.hasPath || agent.destination != player.position)
+                        agent.SetDestination(player.position);
+                }
+                
 
 
                
                 break;
 
             case AlienZombieState.Attack:
+                attackInProgress = true;
+                anim.SetBool("Walk", false);
+                PlayAttackAnimation();
                 StopAgent();
-                if (!attackInProgress)
-                {
-                    anim.SetBool("Walk", false);
-                    attackInProgress = true;
-                    PlayAttackAnimation();
-                    attackTimer = 0f;
-                }
-
-                attackTimer += Time.deltaTime;
-                if (attackTimer >= attackCooldown)
-                {
-                    attackInProgress = false;
-                    PlayJumpScare();
-
-                    //appy damage to player yeta
-                }
+                PlayJumpScare();
                 break;
  
         }
