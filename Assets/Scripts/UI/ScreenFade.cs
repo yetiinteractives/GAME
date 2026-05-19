@@ -34,6 +34,9 @@ public class ScreenFade : MonoBehaviour
     }
     public void Start()
     {
+        Color color = blackimage.color;
+        color.a = 0f;
+        blackimage.color = color;
         StartFade();
     }
 }
