@@ -33,6 +33,7 @@ public class AutoSave : MonoBehaviour
 
     private void Save()
     {
+        if(SaveManager.Instance != null)
         SaveManager.Instance.SaveGame();
         if (autoSaveIcon != null)
             StartCoroutine(AutoSaveIconAnimation());

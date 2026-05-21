@@ -26,8 +26,13 @@ public class CrossHairVisiliblity : MonoBehaviour
         Sniper.OnSniperStatusUpdate += HandleSniperStatusUpdate;
         PauseMenuHandler.OnPauseMenuToggled += HandlePauseMenuToggled;
         InventoryHandler.OnInventoryToggled += HandleInventoryToggled;
-        LetterManager.Instance.OnLetterOpened += HandleLetterOpened;
-        LetterManager.Instance.OnLetterClosed += HandleLetterClosed;
+
+        if(LetterManager.Instance != null)
+        {
+            LetterManager.Instance.OnLetterOpened += HandleLetterOpened;
+            LetterManager.Instance.OnLetterClosed += HandleLetterClosed;
+        }
+       
 
     }
 
