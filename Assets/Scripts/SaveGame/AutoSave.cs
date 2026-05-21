@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,6 +7,11 @@ public class AutoSave : MonoBehaviour
     [SerializeField] private Image autoSaveIcon;
     [SerializeField] private float fadeDuration = 2f;
 
+    private void Start()
+    {
+        autoSaveIcon.gameObject.SetActive(false);
+
+    }
     private void OnEnable()
     {
         LevelManager.Instance.OnTriggerFired += OnTriggerFired;
@@ -30,5 +36,14 @@ public class AutoSave : MonoBehaviour
     private void Save()
     {
         SaveManager.Instance.SaveGame();
+        if (autoSaveIcon != null)
+            StartCoroutine(AutoSaveIconAnimation());
+
+    }
+    IEnumerator AutoSaveIconAnimation()
+    {
+        autoSaveIcon.gameObject.SetActive(true);
+        yield return new WaitForSeconds(fadeDuration);
+        autoSaveIcon.gameObject.SetActive(false);
     }
 }
