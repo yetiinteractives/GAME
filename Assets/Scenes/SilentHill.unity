@@ -3213,7 +3213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InvisibleTrigger
   requiredTag: Player
-  triggerId: 2
+  triggerId: 3
   oneShot: 1
 --- !u!65 &1065661637
 BoxCollider:
@@ -4202,7 +4202,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InvisibleTrigger
   requiredTag: Player
-  triggerId: 3
+  triggerId: 4
   oneShot: 1
 --- !u!65 &1683741090
 BoxCollider:
@@ -5129,7 +5129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InvisibleTrigger
   requiredTag: Player
-  triggerId: 1
+  triggerId: 2
   oneShot: 1
 --- !u!65 &2011192800
 BoxCollider:
@@ -7724,6 +7724,8 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 793813011}
+  - {fileID: 1640193585}
+  - {fileID: 1588872310}
   - {fileID: 105851039}
   - {fileID: 585202205}
   - {fileID: 2074915713}
@@ -7736,11 +7738,9 @@ SceneRoots:
   - {fileID: 1758358192}
   - {fileID: 2036853120}
   - {fileID: 946013687}
-  - {fileID: 1588872310}
   - {fileID: 1659633061}
   - {fileID: 961960387}
   - {fileID: 1964265314}
-  - {fileID: 1640193585}
   - {fileID: 97758642}
   - {fileID: 74595201}
   - {fileID: 1567116736}

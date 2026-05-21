@@ -46,7 +46,6 @@ public class InteractionObjects : MonoBehaviour, IInteractable
     {
         if (isBusy) return;
 
-        // Later you can check keys, conditions, etc.
         if (!TryInteract()) return;
 
         ExecuteInteraction();
@@ -54,7 +53,6 @@ public class InteractionObjects : MonoBehaviour, IInteractable
 
     private bool TryInteract()
     {
-        // Placeholder for future key/level checks
         return true;
     }
 
