@@ -1,15 +1,16 @@
-using UnityEngine;
+// LetterManager.cs — updated for Cinemachine 3 / Unity 6
 using System.Collections;
-using Unity.VisualScripting;
-using Unity.Cinemachine;
-
+using UnityEngine;
+using Unity.Cinemachine; // ← Cinemachine 3 namespace (not "Cinemachine")
 
 public class LetterManager : MonoBehaviour
 {
     public static LetterManager Instance;
+
     [Header("Camera")]
-    public CinemachineVirtualCamera LetterVCam;
+    public CinemachineCamera letterVCam; // ← CinemachineCamera, not CinemachineVirtualCamera
     public float zoomDuration = 0.8f;
+
     [Header("UI")]
     public LetterUIController letterUI;
 
@@ -17,46 +18,46 @@ public class LetterManager : MonoBehaviour
     public GameObject playerInput;
 
     private LetterData currentLetter;
+
     void Awake() => Instance = this;
+
     public void OpenLetter(LetterData data, Transform focusPoint)
     {
         currentLetter = data;
         StartCoroutine(OpenSequence(focusPoint));
-
     }
+
     IEnumerator OpenSequence(Transform focusPoint)
     {
         playerInput.SetActive(false);
-        LetterVCam.Follow = focusPoint;
-        LetterVCam.Priority = 20;
+
+        // Position the VCam at the focus point
+        letterVCam.transform.position = focusPoint.position;
+        letterVCam.transform.rotation = focusPoint.rotation;
+
+        // Set look target and enable it
+        letterVCam.LookAt = focusPoint;
+        letterVCam.gameObject.SetActive(true); // ← Cinemachine 3: enable/disable GO instead of priority
+
         yield return new WaitForSeconds(zoomDuration);
 
         letterUI.ShowLetter(currentLetter);
     }
+
     public void CloseLetter()
     {
         StartCoroutine(CloseSequence());
-
     }
+
     IEnumerator CloseSequence()
     {
         letterUI.HideLetter();
-        LetterVCam.Priority = 0;
+
+        letterVCam.gameObject.SetActive(false); // ← hand control back to main cam
+
         yield return new WaitForSeconds(zoomDuration);
 
         playerInput.SetActive(true);
         currentLetter = null;
-    }
-
-
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

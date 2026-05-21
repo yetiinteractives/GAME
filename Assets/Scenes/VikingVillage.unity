@@ -54328,6 +54328,7 @@ GameObject:
   m_Component:
   - component: {fileID: 868750220}
   - component: {fileID: 868750219}
+  - component: {fileID: 868750221}
   m_Layer: 0
   m_Name: LetterVCam
   m_TagString: Untagged
@@ -54386,13 +54387,26 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 868750218}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.44559816, y: 0.3701564, z: -0.1994593, w: 0.79034334}
-  m_LocalPosition: {x: 1307.0132, y: 66.62369, z: 18364.957}
+  m_LocalRotation: {x: 0.15206629, y: -0.0000000010996083, z: 1.6918088e-10, w: 0.9883703}
+  m_LocalPosition: {x: 1321.2458, y: 0.48484164, z: 18428.707}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &868750221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 868750218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e8b78ac948f05a46a6d8339a503172b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineHardLookAt
+  LookAtOffset: {x: 0, y: 0, z: 0}
 --- !u!1001 &869270354
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -59888,6 +59902,11 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.026413487
       objectReference: {fileID: 0}
+    - target: {fileID: 4296014918345147251, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: DefaultBlend.Time
+      value: 0.8
+      objectReference: {fileID: 0}
     - target: {fileID: 4319279315325350352, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -62903,7 +62922,7 @@ Transform:
   m_GameObject: {fileID: 997829779}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.037, y: -0.031, z: 0}
+  m_LocalPosition: {x: -0.529, y: 0.025, z: -0.006}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
