@@ -30,6 +30,8 @@ public class LetterManager : MonoBehaviour
     IEnumerator OpenSequence(Transform focusPoint)
     {
         playerInput.SetActive(false);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
 
         // Position the VCam at the focus point
         letterVCam.transform.position = focusPoint.position;
@@ -46,6 +48,7 @@ public class LetterManager : MonoBehaviour
 
     public void CloseLetter()
     {
+        
         StartCoroutine(CloseSequence());
     }
 
@@ -54,10 +57,13 @@ public class LetterManager : MonoBehaviour
         letterUI.HideLetter();
 
         letterVCam.gameObject.SetActive(false); // ← hand control back to main cam
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
         yield return new WaitForSeconds(zoomDuration);
 
         playerInput.SetActive(true);
         currentLetter = null;
     }
+
 }
