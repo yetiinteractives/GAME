@@ -1,7 +1,8 @@
 // LetterManager.cs — updated for Cinemachine 3 / Unity 6
 using System.Collections;
 using UnityEngine;
-using Unity.Cinemachine; // ← Cinemachine 3 namespace (not "Cinemachine")
+using Unity.Cinemachine;
+using System; // ← Cinemachine 3 namespace (not "Cinemachine")
 
 public class LetterManager : MonoBehaviour
 {
@@ -19,12 +20,18 @@ public class LetterManager : MonoBehaviour
 
     private LetterData currentLetter;
 
+    public event Action OnLetterOpened;
+    public event Action OnLetterClosed;
+
+
+
     void Awake() => Instance = this;
 
     public void OpenLetter(LetterData data, Transform focusPoint)
     {
         currentLetter = data;
         StartCoroutine(OpenSequence(focusPoint));
+        OnLetterOpened?.Invoke();
     }
 
     IEnumerator OpenSequence(Transform focusPoint)
@@ -50,6 +57,7 @@ public class LetterManager : MonoBehaviour
     {
         
         StartCoroutine(CloseSequence());
+        OnLetterClosed?.Invoke();
     }
 
     IEnumerator CloseSequence()

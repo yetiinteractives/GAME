@@ -5,18 +5,16 @@ using UnityEngine.UI;
 public class AutoSave : MonoBehaviour
 {
     [SerializeField] private Image autoSaveIcon;
-    [SerializeField] private float fadeDuration = 2f;
+    [SerializeField] private float fadeDuration = 5f;
 
     private void Start()
     {
         autoSaveIcon.gameObject.SetActive(false);
-
-    }
-    private void OnEnable()
-    {
         LevelManager.Instance.OnTriggerFired += OnTriggerFired;
         LevelManager.Instance.OnFlagChanged += OnFlagChanged;
+
     }
+    
 
     private void OnDisable()
     {
@@ -38,6 +36,7 @@ public class AutoSave : MonoBehaviour
         SaveManager.Instance.SaveGame();
         if (autoSaveIcon != null)
             StartCoroutine(AutoSaveIconAnimation());
+        Debug.Log("Game auto-saved.");
 
     }
     IEnumerator AutoSaveIconAnimation()

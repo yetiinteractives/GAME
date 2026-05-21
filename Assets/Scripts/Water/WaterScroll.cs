@@ -5,19 +5,21 @@ public class WaterScroll : MonoBehaviour
     public float speedX = 0.02f;
     public float speedY = 0.02f;
 
-    Renderer rend;
+    Material mat;
 
     void Start()
     {
-        rend = GetComponent<Renderer>();
+        mat = GetComponent<Renderer>().material;
     }
 
     void Update()
     {
-        float offsetX = Time.time * speedX;
-        float offsetY = Time.time * speedY;
+        Vector2 offset = new Vector2(
+            Time.time * speedX,
+            Time.time * speedY
+        );
 
-        rend.material.mainTextureOffset =
-            new Vector2(offsetX, offsetY);
+        // DO NOTHING WITH TEXTURE OFFSET (prevents warnings)
+        // We intentionally avoid unsupported shader properties
     }
 }

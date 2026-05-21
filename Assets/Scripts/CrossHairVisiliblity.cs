@@ -13,6 +13,7 @@ public class CrossHairVisiliblity : MonoBehaviour
     bool isScoped = false;
     bool isPauseMenuOn = false;
     bool isInventoryOn = false;
+    bool isLetterOpen = false;
 
     int currentWeaponIndex = 1;
 
@@ -25,7 +26,19 @@ public class CrossHairVisiliblity : MonoBehaviour
         Sniper.OnSniperStatusUpdate += HandleSniperStatusUpdate;
         PauseMenuHandler.OnPauseMenuToggled += HandlePauseMenuToggled;
         InventoryHandler.OnInventoryToggled += HandleInventoryToggled;
+        LetterManager.Instance.OnLetterOpened += HandleLetterOpened;
+        LetterManager.Instance.OnLetterClosed += HandleLetterClosed;
 
+    }
+
+    private void HandleLetterClosed()
+    {
+        isLetterOpen = false;
+    }   
+
+    private void HandleLetterOpened()
+    {
+        isLetterOpen = true;
     }
 
     private void HandleInventoryToggled(bool isOn)
@@ -72,7 +85,7 @@ public class CrossHairVisiliblity : MonoBehaviour
 
 
 
-        if (!isWeaponSwtichUIActive && !isPauseMenuOn &&!isInventoryOn)
+        if (!isWeaponSwtichUIActive && !isPauseMenuOn &&!isInventoryOn && !isLetterOpen)
         {
             //to hide cursor 
             Cursor.lockState = CursorLockMode.Locked;
