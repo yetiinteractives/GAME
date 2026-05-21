@@ -19,7 +19,7 @@ public class LetterInteractable : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
-            HUDManager.Instance?.ShowPrompt("Press F to Read");
+            //press f to read
 
         }
     }
@@ -28,7 +28,8 @@ public class LetterInteractable : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            HUDManger.Instance?.HidePrompt();
+            //hide prompt
+
         }
     }
 
