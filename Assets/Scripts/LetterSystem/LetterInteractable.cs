@@ -17,18 +17,30 @@ public class LetterInteractable : MonoBehaviour, ILevelEntity, IInteractable
 
     public string Guid => guid;
 
-#if UNITY_EDITOR
-    [ContextMenu("Generate GUID")]
-    private void GenerateGuid()
-    {
-        guid = System.Guid.NewGuid().ToString();
-        UnityEditor.EditorUtility.SetDirty(this);
-    }
-#endif
+    
+    private bool isReadingThisLetter = false;
 
     private void Awake()
     {
         FindFirstObjectByType<LevelRegistry>().Register(this);
+    }
+
+    private void OnEnable()
+    {
+        if (LetterManager.Instance != null)
+        {
+            LetterManager.Instance.OnLetterOpened += OnAnyLetterOpened;
+            LetterManager.Instance.OnLetterClosed += OnAnyLetterClosed;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (LetterManager.Instance != null)
+        {
+            LetterManager.Instance.OnLetterOpened -= OnAnyLetterOpened;
+            LetterManager.Instance.OnLetterClosed -= OnAnyLetterClosed;
+        }
     }
 
     private void Start()
@@ -59,21 +71,46 @@ public class LetterInteractable : MonoBehaviour, ILevelEntity, IInteractable
 
     public void Interact()
     {
+        
+        isReadingThisLetter = true;
+
+        // Hide while reading
+        HideInteractableIcon();
+        HideInteractionPrompt();
+
         Transform focus = cameraFocusPoint != null ? cameraFocusPoint : transform;
         LetterManager.Instance.OpenLetter(letterData, focus);
 
-        // Persist 
+        // Persistence mark 
         if (LevelManager.Instance != null)
             LevelManager.Instance.MarkEntityOpened(guid);
 
         
+    }
+
+    private void OnAnyLetterOpened()
+    {
+        
+        HideInteractableIcon();
+        HideInteractionPrompt();
+    }
+
+    private void OnAnyLetterClosed()
+    {
+        
+        if (!isReadingThisLetter) return;
+        isReadingThisLetter = false;
+
+        
         if (destroyAfterRead)
         {
-            HideInteractableIcon();
-            HideInteractionPrompt();
             Destroy(gameObject);
+            return;
         }
+
         
+        ShowInteractableIcon();
+        ShowInteractionPrompt();
     }
 
     public void LoadState()
@@ -82,7 +119,6 @@ public class LetterInteractable : MonoBehaviour, ILevelEntity, IInteractable
 
         bool wasOpened = LevelManager.Instance.IsEntityOpened(guid);
 
-        
         if (destroyAfterRead && wasOpened)
             Destroy(gameObject);
     }
