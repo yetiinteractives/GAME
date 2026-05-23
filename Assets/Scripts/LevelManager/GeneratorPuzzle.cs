@@ -130,6 +130,8 @@ public class GeneratorPuzzle : MonoBehaviour, ILevelEntity, IInteractable
         Animator anim = GetComponentInChildren<Animator>();
         if (anim != null)
             anim.SetTrigger("StartGenerator");
+
+        AutoSave.Instance.TrySave();
     }
 
     public void LoadState()

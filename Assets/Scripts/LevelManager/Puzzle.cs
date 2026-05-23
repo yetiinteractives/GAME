@@ -90,6 +90,8 @@ public class Puzzle : MonoBehaviour, ILevelEntity, IInteractable
 
         LevelManager.Instance.SetPuzzleInserted(guid, insertedState);
         ApplyInsertedVisuals();
+        
+        AutoSave.Instance.TrySave();
 
         // Check if all inserted
         for (int i = 0; i < insertedState.Length; i++)
@@ -112,6 +114,8 @@ public class Puzzle : MonoBehaviour, ILevelEntity, IInteractable
 
 
         StartCoroutine(DoorOpenDelay());
+
+        AutoSave.Instance.TrySave();
     }
 
     IEnumerator DoorOpenDelay()

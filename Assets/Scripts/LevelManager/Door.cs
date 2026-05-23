@@ -134,6 +134,7 @@ public class Door : MonoBehaviour, ILevelEntity, IInteractable
             anim.SetTrigger("OpenDoor");
         if (openSound != null)
             AudioSource.PlayClipAtPoint(openSound, transform.position);
+        AutoSave.Instance.TrySave();
     }
 
     public void LoadState()
