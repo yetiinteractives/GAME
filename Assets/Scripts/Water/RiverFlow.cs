@@ -15,7 +15,7 @@ public class RiverFlow : MonoBehaviour
     void Update()
     {
         float offset = Time.time * speed;
-        rend.material.mainTextureOffset = new Vector2(0, offset);
+       
         
     }
 }
