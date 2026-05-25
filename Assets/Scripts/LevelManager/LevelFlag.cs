@@ -17,6 +17,7 @@ public enum LevelFlag
     HasFuelCan,
     IsFuelCanFull,
 
-    HasBridgePlanks
+    HasBridgePlanks,
+    HasHousingRoomKey
 
 }
