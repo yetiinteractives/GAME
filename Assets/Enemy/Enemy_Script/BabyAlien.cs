@@ -243,4 +243,13 @@ public class BabyAlien : UniversalEnemyAi, IDamageable
         if (attackHitBox != null)
             attackHitBox.enabled = false;
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (attackHitBox == null || !attackHitBox.enabled) return;
+        if (!other.CompareTag("Player")) return;
+
+        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+            playerHealth.TakeDamage(attackDamage);
+    }
 }
