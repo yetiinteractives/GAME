@@ -232,4 +232,15 @@ public class BabyAlien : UniversalEnemyAi, IDamageable
     public void ApplyDeathForce(Collider hitCollider, Vector3 hitPoint, Vector3 impulse)
     {
     }
+    public void CreateHitBox()
+    {
+        if (attackHitBox != null)
+            attackHitBox.enabled = true;
+    }
+
+    public void DestroyHitBox()
+    {
+        if (attackHitBox != null)
+            attackHitBox.enabled = false;
+    }
 }
