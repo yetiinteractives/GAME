@@ -114,6 +114,7 @@ MonoBehaviour:
   lootIconSprite: {fileID: 0}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   fullColor: {r: 1, g: 0.45, b: 0.45, a: 1}
+  lootSound: {fileID: 8300000, guid: 160037103268ddc44b2586f272508f10, type: 3}
 --- !u!65 &9054861943243803312
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -147,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c656c2239d13af44a8111061d7b7d99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PersistentSceneEntity
-  guid: 
+  guid: 6965c431-0eee-4574-9faa-375171bac02d
 --- !u!1001 &9085657092179459429
 PrefabInstance:
   m_ObjectHideFlags: 0

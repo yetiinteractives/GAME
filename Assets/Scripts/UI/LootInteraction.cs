@@ -19,10 +19,15 @@ public class LootInteraction : MonoBehaviour, IInteractable
     private bool isFullForThisLoot;
     private bool isRemoved;
     private PersistentSceneEntity persistentEntity;
+    private AudioSource audioSource;
+    [SerializeField] private AudioClip lootSound;
 
     private void Awake()
     {
         persistentEntity = GetComponent<PersistentSceneEntity>();
+
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
     }
 
     private void Start()
@@ -87,6 +92,10 @@ public class LootInteraction : MonoBehaviour, IInteractable
         enabled = false;
         HideInteractableIcon();
         HideInteractionPrompt();
+
+        if(lootSound!= null)
+            audioSource.PlayOneShot(lootSound);
+        audioSource.PlayOneShot(lootSound);
 
         if (persistentEntity != null)
             persistentEntity.MarkRemoved();
