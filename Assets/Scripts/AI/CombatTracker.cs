@@ -16,11 +16,7 @@ public class CombatTracker : MonoBehaviour
         if (enemy != null)
             combatEnemies.Add(enemy);
     }
-    public void RegisterCombat(EnemyCombatState enemy)
-    {
-        if (enemy != null)
-            combatEnemies.Add(enemy);
-    }
+   
 
     public void UnregisterCombat(EnemyCombatState enemy)
     {

@@ -14,6 +14,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 {
     // ──────────── Vision ────────────
 
+    public EnemyCombatState enemyCombatState;
     [Header("Vision")]
     public float fieldOfView = 120f;
     public float eyeHeight = 1.6f;
@@ -404,6 +405,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         switch (newState)
         {
             case ZombieState.Idle:
+                enemyCombatState.SetCombatState(false);
                 if (idleType == IdleType.Patrol)
                 {
                     isPatrolWaiting = false;
@@ -420,6 +422,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
                 break;
 
             case ZombieState.Investigate:
+                enemyCombatState.SetCombatState(false);
                 investigateTimer = 0f;
                 MoveAgent(GetInvestigateSpeed() * speedMultiplier);
                 PlayWalkAnimation();
@@ -427,6 +430,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
                 break;
 
             case ZombieState.Chase:
+                enemyCombatState.SetCombatState(true);
                 hasInvestigateTarget = false;
                 MoveAgent(walkSpeed * speedMultiplier);
                 PlayWalkAnimation();
@@ -434,6 +438,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
                 break;
 
             case ZombieState.Attack:
+                enemyCombatState.SetCombatState(true);
                 hasInvestigateTarget = false;
                 StopAgent();
                 if (anim != null) anim.SetBool("Walk", false);
