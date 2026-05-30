@@ -3,6 +3,7 @@ using UnityEngine.AI;
 
 public class BabyAlien : UniversalEnemyAi, IDamageable
 {
+    public EnemyCombatState enemyCombatState;
     public enum BAState
     {
         IdleWalk,
@@ -81,12 +82,14 @@ public class BabyAlien : UniversalEnemyAi, IDamageable
         switch (State)
         {
             case BAState.IdleWalk:
+                enemyCombatState.SetCombatState(false);
                 HandlePatrol();
                 attackInProgress = false;
                 jumpInProgress = false;
                 break;
 
             case BAState.Chase:
+                enemyCombatState.SetCombatState(true);
                 HandleChase();
                 attackInProgress = false;
                 break;
@@ -96,6 +99,7 @@ public class BabyAlien : UniversalEnemyAi, IDamageable
                 break;
 
             case BAState.Attack:
+                enemyCombatState.SetCombatState(true);
                 HandleAttack();
                 break;
         }

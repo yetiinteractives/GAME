@@ -113,6 +113,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6620837868272994515}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -1246949689971916168}
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: 7a73a8ecc961e9c469f537ccc3774a5b,
         type: 3}
       insertIndex: -1
@@ -684,6 +688,7 @@ MonoBehaviour:
   maxhealth: 30
   currentHealth: 0
   player: {fileID: 0}
+  enemyCombatState: {fileID: -1246949689971916168}
   fieldOfView: 120
   eyeHeight: 1.6
   visionMask:
@@ -786,6 +791,18 @@ MonoBehaviour:
   maxDistance: 20
   globalCooldown: 0.15
   maxRandomDelay: 0.1
+--- !u!114 &-1246949689971916168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1150035064311611439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bba4d4fd7b7a742a454d2d67eba502, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatState
 --- !u!1 &2932354504639952723 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3135921509060577837, guid: 7a73a8ecc961e9c469f537ccc3774a5b,

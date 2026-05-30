@@ -1,23 +1,35 @@
 using UnityEngine;
 using System.Collections;
-using Unity.VisualScripting;
+
 public class MusicManager : MonoBehaviour
 {
     public static MusicManager Instance { get; private set; }
-    [Header("Autdio field")]
+
+    [Header("Audio Sources")]
     [SerializeField] private AudioSource normalSource;
     [SerializeField] private AudioSource combatSource;
 
-    [Header("Music clip")]
+    [Header("Music Clips")]
     [SerializeField] private AudioClip normalClip;
     [SerializeField] private AudioClip combatClip;
 
-    [SerializeField]
-    private float fadeSpeed = 1.5f;
+    [Header("Transition Settings")]
+    [SerializeField] private float fadeSpeed = 0.5f;
+    [SerializeField] private float combatExitDelay = 5f;
+
     private Coroutine fadeRoutine;
+    private Coroutine exitDelayRoutine;
+
+    private bool isCombatMusicActive;
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
     }
 
@@ -34,38 +46,88 @@ public class MusicManager : MonoBehaviour
 
         normalSource.Play();
         combatSource.Play();
-    }
 
+        isCombatMusicActive = false;
+    }
 
     private void Update()
     {
-        bool combat = CombatTracker.Instance != null && CombatTracker.Instance.IsInCombat;
+        bool combat =
+            CombatTracker.Instance != null &&
+            CombatTracker.Instance.IsInCombat;
 
-        if (combat && combatSource.volume < 1f)
-            FadeTo(combatSource, normalSource);
-        else if (!combat && normalSource.volume < 1f)
-            FadeTo(normalSource, combatSource);
+        if (combat)
+        {
+            // Cancel delayed return to normal music
+            if (exitDelayRoutine != null)
+            {
+                StopCoroutine(exitDelayRoutine);
+                exitDelayRoutine = null;
+            }
+
+            // Switch to combat music only once
+            if (!isCombatMusicActive)
+            {
+                isCombatMusicActive = true;
+                FadeTo(combatSource, normalSource);
+            }
+        }
+        else
+        {
+            // Start delayed return only once
+            if (isCombatMusicActive && exitDelayRoutine == null)
+            {
+                exitDelayRoutine = StartCoroutine(ReturnToNormalAfterDelay());
+            }
+        }
+    }
+
+    private IEnumerator ReturnToNormalAfterDelay()
+    {
+        yield return new WaitForSeconds(combatExitDelay);
+
+        isCombatMusicActive = false;
+
+        FadeTo(normalSource, combatSource);
+
+        exitDelayRoutine = null;
     }
 
     private void FadeTo(AudioSource targetOn, AudioSource targetOff)
     {
         if (fadeRoutine != null)
+        {
             StopCoroutine(fadeRoutine);
+        }
 
         fadeRoutine = StartCoroutine(FadeRoutine(targetOn, targetOff));
     }
 
-    private IEnumerator FadeRoutine(AudioSource on, AudioSource off)
+    private IEnumerator FadeRoutine(AudioSource fadeIn, AudioSource fadeOut)
     {
-        while (Mathf.Abs(on.volume - 1f) > 0.01f || Mathf.Abs(off.volume - 0f) > 0.01f)
+        while (
+            Mathf.Abs(fadeIn.volume - 1f) > 0.01f ||
+            Mathf.Abs(fadeOut.volume - 0f) > 0.01f
+        )
         {
-            on.volume = Mathf.MoveTowards(on.volume, 1f, fadeSpeed * Time.deltaTime);
-            off.volume = Mathf.MoveTowards(off.volume, 0f, fadeSpeed * Time.deltaTime);
+            fadeIn.volume = Mathf.MoveTowards(
+                fadeIn.volume,
+                1f,
+                fadeSpeed * Time.deltaTime
+            );
+
+            fadeOut.volume = Mathf.MoveTowards(
+                fadeOut.volume,
+                0f,
+                fadeSpeed * Time.deltaTime
+            );
+
             yield return null;
         }
 
-        on.volume = 1f;
-        off.volume = 0f;
+        fadeIn.volume = 1f;
+        fadeOut.volume = 0f;
+
+        fadeRoutine = null;
     }
 }
-

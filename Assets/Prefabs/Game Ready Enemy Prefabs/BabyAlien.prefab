@@ -1204,7 +1204,8 @@ GameObject:
   - component: {fileID: 6549926829126358334}
   - component: {fileID: 6902312174881363152}
   - component: {fileID: 736717327490774429}
-  m_Layer: 0
+  - component: {fileID: -5936030339046691645}
+  m_Layer: 13
   m_Name: BabyAlien
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1266,6 +1267,7 @@ MonoBehaviour:
   maxhealth: 50
   currentHealth: 0
   player: {fileID: 0}
+  enemyCombatState: {fileID: 0}
   State: 0
   patrolRadius: 10
   patrolPointTolerance: 0.5
@@ -1344,6 +1346,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.3, y: 0.3, z: 0.5}
   m_Center: {x: 0, y: 0.35, z: 0.4}
+--- !u!114 &-5936030339046691645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8888171142780544404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bba4d4fd7b7a742a454d2d67eba502, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatState
 --- !u!1 &8948980262587226133
 GameObject:
   m_ObjectHideFlags: 0
