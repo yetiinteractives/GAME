@@ -42,6 +42,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         currentHealth = Mathf.Clamp(currentHealth - amount, 0f, maxHealth);
         PlayerStateManager.Instance?.SetHealth(currentHealth);
+        CinemachineShake.Instance.Shake(20,.2f);
 
         // Health bar updates instantly
         healthBar.fillAmount = currentHealth / maxHealth;
