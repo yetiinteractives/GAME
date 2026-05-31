@@ -26,17 +26,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 3df2f2a0247a617419fa2fb1d7458481,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 453.82352
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3df2f2a0247a617419fa2fb1d7458481,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.000003392158
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3df2f2a0247a617419fa2fb1d7458481,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 445.59375
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3df2f2a0247a617419fa2fb1d7458481,
         type: 3}
@@ -91,7 +91,7 @@ PrefabInstance:
     - target: {fileID: -3133498875991405556, guid: 3df2f2a0247a617419fa2fb1d7458481,
         type: 3}
       propertyPath: m_Layer
-      value: 17
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: -3133498875991405556, guid: 3df2f2a0247a617419fa2fb1d7458481,
         type: 3}
@@ -111,7 +111,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 3df2f2a0247a617419fa2fb1d7458481,
         type: 3}
       propertyPath: m_Layer
-      value: 17
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 3df2f2a0247a617419fa2fb1d7458481,
         type: 3}
@@ -121,22 +121,22 @@ PrefabInstance:
     - target: {fileID: 2108629213487684686, guid: 3df2f2a0247a617419fa2fb1d7458481,
         type: 3}
       propertyPath: m_Layer
-      value: 17
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2283624838374563145, guid: 3df2f2a0247a617419fa2fb1d7458481,
         type: 3}
       propertyPath: m_Layer
-      value: 17
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3396913584297481876, guid: 3df2f2a0247a617419fa2fb1d7458481,
         type: 3}
       propertyPath: m_Layer
-      value: 17
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5524835700677203236, guid: 3df2f2a0247a617419fa2fb1d7458481,
         type: 3}
       propertyPath: m_Layer
-      value: 17
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7656107787233967424, guid: 3df2f2a0247a617419fa2fb1d7458481,
         type: 3}
@@ -163,6 +163,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1126779868774208302}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3df2f2a0247a617419fa2fb1d7458481,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 902347018208743048}
   m_SourcePrefab: {fileID: 100100000, guid: 3df2f2a0247a617419fa2fb1d7458481, type: 3}
 --- !u!4 &1641037274865262638 stripped
 Transform:
@@ -247,6 +251,19 @@ MonoBehaviour:
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   fullColor: {r: 1, g: 0.45, b: 0.45, a: 1}
   lootSound: {fileID: 8300000, guid: 160037103268ddc44b2586f272508f10, type: 3}
+--- !u!114 &902347018208743048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129624385541421716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c656c2239d13af44a8111061d7b7d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentSceneEntity
+  guid: 
 --- !u!1001 &5732909821622846995
 PrefabInstance:
   m_ObjectHideFlags: 0

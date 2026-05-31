@@ -1203,8 +1203,10 @@ GameObject:
   - component: {fileID: 1709478595305595266}
   - component: {fileID: 6549926829126358334}
   - component: {fileID: 6902312174881363152}
-  - component: {fileID: 736717327490774429}
   - component: {fileID: -5936030339046691645}
+  - component: {fileID: 1439036605094947121}
+  - component: {fileID: 7329147644189080832}
+  - component: {fileID: 1896060982976559167}
   m_Layer: 13
   m_Name: BabyAlien
   m_TagString: Untagged
@@ -1279,7 +1281,7 @@ MonoBehaviour:
   attackRange: 2
   attackDamage: 10
   attackCooldown: 1.2
-  attackHitBox: {fileID: 736717327490774429}
+  attackHitBox: {fileID: 0}
 --- !u!195 &6549926829126358334
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1325,8 +1327,33 @@ CapsuleCollider:
   m_Height: 0.4
   m_Direction: 1
   m_Center: {x: 0, y: 0.25, z: 0}
---- !u!65 &736717327490774429
-BoxCollider:
+--- !u!114 &-5936030339046691645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8888171142780544404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bba4d4fd7b7a742a454d2d67eba502, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatState
+--- !u!114 &1439036605094947121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8888171142780544404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c656c2239d13af44a8111061d7b7d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentSceneEntity
+  guid: 
+--- !u!135 &7329147644189080832
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1340,13 +1367,13 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.3, y: 0.3, z: 0.5}
-  m_Center: {x: 0, y: 0.35, z: 0.4}
---- !u!114 &-5936030339046691645
+  m_Radius: 0.22711182
+  m_Center: {x: 0.0060424656, y: 0.22859102, z: 0}
+--- !u!114 &1896060982976559167
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1355,9 +1382,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8888171142780544404}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4bba4d4fd7b7a742a454d2d67eba502, type: 3}
+  m_Script: {fileID: 11500000, guid: fe2e41c83163c2441b63fe2f01297a76, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatState
+  m_EditorClassIdentifier: Assembly-CSharp::Surface
+  surfaceType: 4
 --- !u!1 &8948980262587226133
 GameObject:
   m_ObjectHideFlags: 0

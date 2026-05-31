@@ -6,5 +6,6 @@ public enum TriggerID
     SecondZombieGirlCS,
     
     BossEntrance,
-    HelicopterArrives
+    ChurchEntry,
+    ChurchExit,
 }

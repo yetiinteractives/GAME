@@ -157,6 +157,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: -5804140916608588601}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a89f2a25cb825fc4dadcb8ac47070807,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3997076511519140243}
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: a89f2a25cb825fc4dadcb8ac47070807,
         type: 3}
       insertIndex: -1
@@ -781,6 +785,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4bba4d4fd7b7a742a454d2d67eba502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatState
+--- !u!114 &3997076511519140243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732987924406497947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c656c2239d13af44a8111061d7b7d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentSceneEntity
+  guid: 
 --- !u!1 &2002032659566137792 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1082271958561512970, guid: a89f2a25cb825fc4dadcb8ac47070807,
