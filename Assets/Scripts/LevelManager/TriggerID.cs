@@ -10,4 +10,6 @@ public enum TriggerID
     ChurchExit,
     HousingComplexEntry,
     HousingComplexExit,
+    MansionBEntry,
+    MansionAEntry,
 }
