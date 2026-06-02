@@ -8,4 +8,6 @@ public enum TriggerID
     BossEntrance,
     ChurchEntry,
     ChurchExit,
+    HousingComplexEntry,
+    HousingComplexExit,
 }
