@@ -12,4 +12,5 @@ public enum TriggerID
     HousingComplexExit,
     MansionBEntry,
     MansionAEntry,
+    BridgeEntrance,
 }

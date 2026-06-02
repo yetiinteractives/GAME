@@ -4336,20 +4336,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Patrol_ZombieGirl
       objectReference: {fileID: 0}
+    - target: {fileID: 6906753830086614669, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: guid
+      value: 9aed5991-0b40-4fc9-89e2-f110b9148e5d
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
+      objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8466,6 +8476,11 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.0044553475
       objectReference: {fileID: 0}
+    - target: {fileID: 1744035224964168246, guid: 8c3e97159e1cec2418d901e446907733,
+        type: 3}
+      propertyPath: lookRadius
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 1808937668871093349, guid: 8c3e97159e1cec2418d901e446907733,
         type: 3}
       propertyPath: m_LocalScale.y
@@ -9334,8 +9349,18 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4471458397417874222, guid: 8c3e97159e1cec2418d901e446907733,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 690633316}
   m_SourcePrefab: {fileID: 100100000, guid: 8c3e97159e1cec2418d901e446907733, type: 3}
+--- !u!1 &151243321 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4471458397417874222, guid: 8c3e97159e1cec2418d901e446907733,
+    type: 3}
+  m_PrefabInstance: {fileID: 151243320}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &156107799
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12434,6 +12459,11 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.0044553475
       objectReference: {fileID: 0}
+    - target: {fileID: 1744035224964168246, guid: 8c3e97159e1cec2418d901e446907733,
+        type: 3}
+      propertyPath: lookRadius
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 1808937668871093349, guid: 8c3e97159e1cec2418d901e446907733,
         type: 3}
       propertyPath: m_LocalScale.y
@@ -13297,8 +13327,18 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4471458397417874222, guid: 8c3e97159e1cec2418d901e446907733,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1982557759}
   m_SourcePrefab: {fileID: 100100000, guid: 8c3e97159e1cec2418d901e446907733, type: 3}
+--- !u!1 &208640760 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4471458397417874222, guid: 8c3e97159e1cec2418d901e446907733,
+    type: 3}
+  m_PrefabInstance: {fileID: 208640759}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &210678167
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15762,25 +15802,35 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3997076511519140243, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
+        type: 3}
+      propertyPath: guid
+      value: 607f233f-42c8-41a6-ada2-52da7503bc13
+      objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
         type: 3}
       propertyPath: lookRadius
-      value: 10
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4522232316934981528, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -18218,6 +18268,38 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1 &293769364
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 293769365}
+  m_Layer: 0
+  m_Name: Trigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &293769365
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 293769364}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 740, y: 134, z: 19094}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1063322304}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &295558385
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18412,25 +18494,35 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6906753830086614669, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: guid
+      value: 98609f45-e52d-465b-83f4-e0988d011e44
+      objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: lookRadius
-      value: 10
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -23498,6 +23590,11 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.0014935854
       objectReference: {fileID: 0}
+    - target: {fileID: 1439036605094947121, guid: 33f7718a9717a7a40be451d58d753c5b,
+        type: 3}
+      propertyPath: guid
+      value: 27c7d03e-092d-4328-b1f1-1a519952a9b7
+      objectReference: {fileID: 0}
     - target: {fileID: 1746240003896232821, guid: 33f7718a9717a7a40be451d58d753c5b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -25667,25 +25764,35 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6906753830086614669, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: guid
+      value: cf65842d-def3-42c2-8354-83acb454630a
+      objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: lookRadius
-      value: 10
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -25814,20 +25921,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: Patrol_Cop_Zombie 1 (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 3917456858984863698, guid: 3e622bc7f09a864408696a8a21c642dd,
+        type: 3}
+      propertyPath: guid
+      value: 7aabf13e-1db0-4616-bc96-62d203f7c940
+      objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -38350,6 +38462,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1587853753}
     m_Modifications:
+    - target: {fileID: 3022023550781467273, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
+        type: 3}
+      propertyPath: guid
+      value: fd2534d6-b640-4761-8b54-5ca790611433
+      objectReference: {fileID: 0}
     - target: {fileID: 4033429749111655727, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: m_Name
@@ -38413,22 +38530,27 @@ PrefabInstance:
     - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: lookRadius
-      value: 8
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -40299,6 +40421,11 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.0044553475
       objectReference: {fileID: 0}
+    - target: {fileID: 1744035224964168246, guid: 8c3e97159e1cec2418d901e446907733,
+        type: 3}
+      propertyPath: lookRadius
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 1808937668871093349, guid: 8c3e97159e1cec2418d901e446907733,
         type: 3}
       propertyPath: m_LocalScale.y
@@ -41167,8 +41294,18 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4471458397417874222, guid: 8c3e97159e1cec2418d901e446907733,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1082446512}
   m_SourcePrefab: {fileID: 100100000, guid: 8c3e97159e1cec2418d901e446907733, type: 3}
+--- !u!1 &661961324 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4471458397417874222, guid: 8c3e97159e1cec2418d901e446907733,
+    type: 3}
+  m_PrefabInstance: {fileID: 661961323}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &663992021 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4509382226077508, guid: 3dbf7e32b433b4b4f9ca4247821b0872,
@@ -43279,20 +43416,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Patrol_ZombieGirl (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 6906753830086614669, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: guid
+      value: 9afd9f7f-4908-4b6d-8f33-2f670d897293
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
+      objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -43317,6 +43464,19 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 151243320}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &690633316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 151243321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c656c2239d13af44a8111061d7b7d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentSceneEntity
+  guid: 45275e2d-d013-445d-9345-a4d3c2f071a1
 --- !u!1 &691505744
 GameObject:
   m_ObjectHideFlags: 0
@@ -44292,6 +44452,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 698031464}
+  - component: {fileID: 698031465}
   m_Layer: 0
   m_Name: PrePlaced_Enemy (1)
   m_TagString: Untagged
@@ -44315,6 +44476,21 @@ Transform:
   - {fileID: 2116674896}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 155.556, z: 0}
+--- !u!114 &698031465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 698031463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4391533f6f35714e9cb8438672848e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArmyActivator
+  armyRoot: {fileID: 2116674895}
+  requiredFlags: 
+  requiredTriggers: 0b000000
 --- !u!1001 &700035317
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -60278,6 +60454,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2116653867}
     m_Modifications:
+    - target: {fileID: 1439036605094947121, guid: 33f7718a9717a7a40be451d58d753c5b,
+        type: 3}
+      propertyPath: guid
+      value: 7a8900ec-8c10-4d79-af95-a0dc8e7b6675
+      objectReference: {fileID: 0}
     - target: {fileID: 5148646049189293618, guid: 33f7718a9717a7a40be451d58d753c5b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -61875,6 +62056,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2116653867}
     m_Modifications:
+    - target: {fileID: 1439036605094947121, guid: 33f7718a9717a7a40be451d58d753c5b,
+        type: 3}
+      propertyPath: guid
+      value: 61ac5d06-b8d4-44e6-a2e6-5456689e1d91
+      objectReference: {fileID: 0}
     - target: {fileID: 5148646049189293618, guid: 33f7718a9717a7a40be451d58d753c5b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -64261,25 +64447,35 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6906753830086614669, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: guid
+      value: a3da5cc4-236a-4e28-8b63-b2774e04f767
+      objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: lookRadius
-      value: 10
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -65416,6 +65612,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1587853753}
     m_Modifications:
+    - target: {fileID: 3022023550781467273, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
+        type: 3}
+      propertyPath: guid
+      value: 8e2cb82a-8a7e-4bcf-a22d-24e857e94d29
+      objectReference: {fileID: 0}
     - target: {fileID: 4033429749111655727, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: m_Name
@@ -65479,22 +65680,27 @@ PrefabInstance:
     - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: lookRadius
-      value: 10
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -69092,6 +69298,11 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.0014935854
       objectReference: {fileID: 0}
+    - target: {fileID: 1439036605094947121, guid: 33f7718a9717a7a40be451d58d753c5b,
+        type: 3}
+      propertyPath: guid
+      value: 4ddca515-1189-4fb2-b4d6-ac71d86291d9
+      objectReference: {fileID: 0}
     - target: {fileID: 1746240003896232821, guid: 33f7718a9717a7a40be451d58d753c5b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -70347,6 +70558,11 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.0044553475
       objectReference: {fileID: 0}
+    - target: {fileID: 1744035224964168246, guid: 8c3e97159e1cec2418d901e446907733,
+        type: 3}
+      propertyPath: lookRadius
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 1808937668871093349, guid: 8c3e97159e1cec2418d901e446907733,
         type: 3}
       propertyPath: m_LocalScale.y
@@ -71210,8 +71426,18 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4471458397417874222, guid: 8c3e97159e1cec2418d901e446907733,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1910214043}
   m_SourcePrefab: {fileID: 100100000, guid: 8c3e97159e1cec2418d901e446907733, type: 3}
+--- !u!1 &951043736 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4471458397417874222, guid: 8c3e97159e1cec2418d901e446907733,
+    type: 3}
+  m_PrefabInstance: {fileID: 951043735}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &952090303
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -77241,6 +77467,11 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.0014935854
       objectReference: {fileID: 0}
+    - target: {fileID: 1439036605094947121, guid: 33f7718a9717a7a40be451d58d753c5b,
+        type: 3}
+      propertyPath: guid
+      value: 3bb62aa7-02a2-42e0-a6c3-d032763055f1
+      objectReference: {fileID: 0}
     - target: {fileID: 1709478595305595266, guid: 33f7718a9717a7a40be451d58d753c5b,
         type: 3}
       propertyPath: enemyCombatState
@@ -80962,6 +81193,84 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1062875530}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1063322303
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1063322304}
+  - component: {fileID: 1063322307}
+  - component: {fileID: 1063322306}
+  - component: {fileID: 1063322305}
+  m_Layer: 0
+  m_Name: BridgeTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1063322304
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1063322303}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.092312254, z: -0, w: 0.9957301}
+  m_LocalPosition: {x: 591.7053, y: -136.96, z: -626.9531}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 293769365}
+  m_LocalEulerAnglesHint: {x: 0, y: 10.593, z: 0}
+--- !u!114 &1063322305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1063322303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f4ac99b17d3e834da3e4f3fa36b5122, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InvisibleTrigger
+  requiredTag: Player
+  triggerId: 11
+  oneShot: 1
+--- !u!65 &1063322306
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1063322303}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 7, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!33 &1063322307
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1063322303}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1001 &1067089899
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -81786,6 +82095,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1587853753}
     m_Modifications:
+    - target: {fileID: 3022023550781467273, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
+        type: 3}
+      propertyPath: guid
+      value: 214e44cf-9087-4b5d-b4d9-b0f9c91f5030
+      objectReference: {fileID: 0}
     - target: {fileID: 4033429749111655727, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: m_Name
@@ -81849,22 +82163,27 @@ PrefabInstance:
     - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: lookRadius
-      value: 10
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -81958,6 +82277,19 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 661961323}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1082446512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 661961324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c656c2239d13af44a8111061d7b7d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentSceneEntity
+  guid: d982a56a-e82a-48ec-913b-b77764805a4c
 --- !u!1001 &1082512791
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -84518,6 +84850,11 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.0044553475
       objectReference: {fileID: 0}
+    - target: {fileID: 1744035224964168246, guid: 8c3e97159e1cec2418d901e446907733,
+        type: 3}
+      propertyPath: lookRadius
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 1808937668871093349, guid: 8c3e97159e1cec2418d901e446907733,
         type: 3}
       propertyPath: m_LocalScale.y
@@ -85386,8 +85723,18 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4471458397417874222, guid: 8c3e97159e1cec2418d901e446907733,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1439532619}
   m_SourcePrefab: {fileID: 100100000, guid: 8c3e97159e1cec2418d901e446907733, type: 3}
+--- !u!1 &1144920405 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4471458397417874222, guid: 8c3e97159e1cec2418d901e446907733,
+    type: 3}
+  m_PrefabInstance: {fileID: 1144920404}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1150629225 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4079391813584830, guid: c1c88308ebb5d2541a282905b854ee4c,
@@ -86773,6 +87120,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.0014935854
+      objectReference: {fileID: 0}
+    - target: {fileID: 1439036605094947121, guid: 33f7718a9717a7a40be451d58d753c5b,
+        type: 3}
+      propertyPath: guid
+      value: 40e78505-fe0b-4596-948d-c34b3cbfbe45
+      objectReference: {fileID: 0}
+    - target: {fileID: 1709478595305595266, guid: 33f7718a9717a7a40be451d58d753c5b,
+        type: 3}
+      propertyPath: lookRadius
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1709478595305595266, guid: 33f7718a9717a7a40be451d58d753c5b,
         type: 3}
@@ -88430,20 +88787,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Patrol_ZombieGirl (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 6906753830086614669, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: guid
+      value: 2f81dbdd-6470-4388-b7f8-b413acc4664a
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
+      objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -88727,20 +89094,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: Idle_Cop_Zombie (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3997076511519140243, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
+        type: 3}
+      propertyPath: guid
+      value: 2a42771f-03f2-44cc-b847-7698fab1010d
+      objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -88879,20 +89251,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Patrol_ZombieGirl (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 6906753830086614669, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: guid
+      value: d2100d49-5f76-40ed-83cf-22e5142bd7d0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
+      objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -95140,25 +95522,35 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3917456858984863698, guid: 3e622bc7f09a864408696a8a21c642dd,
+        type: 3}
+      propertyPath: guid
+      value: 921c4826-55c5-4cfd-bac6-646bb2eb68a7
+      objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: lookRadius
-      value: 8
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -101929,6 +102321,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2116653867}
     m_Modifications:
+    - target: {fileID: 3022023550781467273, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
+        type: 3}
+      propertyPath: guid
+      value: 71653bd1-1b15-458e-b7d6-fdf1a6ecc127
+      objectReference: {fileID: 0}
     - target: {fileID: 4033429749111655727, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: m_Name
@@ -101986,18 +102383,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
+      propertyPath: fieldOfView
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
+        type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 5138983928287152002, guid: 0f4e26582fad23342bbc4c5ae44c8ad6,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -103980,25 +104382,35 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6906753830086614669, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: guid
+      value: 35a263c6-de2b-4ef7-a47a-759d61d71d50
+      objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: lookRadius
-      value: 10
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -104469,6 +104881,19 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1144920404}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1439532619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1144920405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c656c2239d13af44a8111061d7b7d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentSceneEntity
+  guid: 04dee2b7-90d1-4649-a41e-54ec964e4c1e
 --- !u!1 &1440005181
 GameObject:
   m_ObjectHideFlags: 0
@@ -106655,25 +107080,35 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6906753830086614669, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: guid
+      value: ecaa5eba-e7bf-49ae-938e-ef9cc1e2a8d2
+      objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: lookRadius
-      value: 10
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -112186,20 +112621,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Patrol_ZombieGirl (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 6906753830086614669, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: guid
+      value: 977e51bb-b20c-4284-ab31-133723865de7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
+      objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -112790,10 +113235,20 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3917456858984863698, guid: 3e622bc7f09a864408696a8a21c642dd,
+        type: 3}
+      propertyPath: guid
+      value: 9fae5aab-bd03-4c27-9917-4236e6ca35be
+      objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: lookRadius
-      value: 10
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
@@ -112803,17 +113258,17 @@ PrefabInstance:
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -113807,20 +114262,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Patrol_ZombieGirl (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 6906753830086614669, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: guid
+      value: 81155281-7e4e-4bc1-aa4d-2b8001f3c712
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
+      objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -114038,20 +114503,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Idle_Cop_Zombie (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 3997076511519140243, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
+        type: 3}
+      propertyPath: guid
+      value: 5336cc38-25de-4351-9830-c22a74590d84
+      objectReference: {fileID: 0}
+    - target: {fileID: 4522232316934981528, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
+      objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -119685,25 +120160,35 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3917456858984863698, guid: 3e622bc7f09a864408696a8a21c642dd,
+        type: 3}
+      propertyPath: guid
+      value: b423b83d-3725-404e-896e-5f50d146f8bf
+      objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: lookRadius
-      value: 8
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -127249,6 +127734,19 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 951043735}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1910214043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 951043736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c656c2239d13af44a8111061d7b7d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentSceneEntity
+  guid: 74c7c631-a755-4427-b31e-4f7395293b98
 --- !u!1001 &1910239323
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -127386,6 +127884,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.0014935854
+      objectReference: {fileID: 0}
+    - target: {fileID: 1439036605094947121, guid: 33f7718a9717a7a40be451d58d753c5b,
+        type: 3}
+      propertyPath: guid
+      value: 4c0e3cc4-5fe1-4e2b-a721-454de5291a7f
       objectReference: {fileID: 0}
     - target: {fileID: 1746240003896232821, guid: 33f7718a9717a7a40be451d58d753c5b,
         type: 3}
@@ -131628,6 +132131,19 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 208640759}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1982557759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 208640760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c656c2239d13af44a8111061d7b7d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentSceneEntity
+  guid: 84e74671-a2a3-44b4-b827-d5bde0263b8e
 --- !u!1001 &1983391390
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -132735,25 +133251,35 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6906753830086614669, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: guid
+      value: fb0af287-cc51-4680-9d09-3572c88ef2f7
+      objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: lookRadius
-      value: 10
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -133388,25 +133914,35 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6906753830086614669, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: guid
+      value: bcde72ad-c9c4-44ae-86b9-d75118f8be87
+      objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: lookRadius
-      value: 10
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 7132328713939693085, guid: 597f08996151be647889fb229641085a,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -137201,25 +137737,35 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3917456858984863698, guid: 3e622bc7f09a864408696a8a21c642dd,
+        type: 3}
+      propertyPath: guid
+      value: d3f04b2d-dbf8-4e80-8506-35ce17dd1369
+      objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: lookRadius
-      value: 10
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 3e622bc7f09a864408696a8a21c642dd,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -137497,25 +138043,35 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3997076511519140243, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
+        type: 3}
+      propertyPath: guid
+      value: 853d9385-93bb-4a90-9569-7b8655625172
+      objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
         type: 3}
       propertyPath: lookRadius
-      value: 8
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4522232316934981528, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
         type: 3}
       propertyPath: gunshotHearingRange
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
         type: 3}
       propertyPath: explosionHearingRange
-      value: 12
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 4522232316934981528, guid: 2cbb1857bcd2a3d40a63b3060aecf32b,
         type: 3}
       propertyPath: distractionHearingRange
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -138470,7 +139026,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2116653867
 Transform:
   m_ObjectHideFlags: 0
@@ -138513,7 +139069,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2116674896
 Transform:
   m_ObjectHideFlags: 0
@@ -139676,6 +140232,7 @@ SceneRoots:
   - {fileID: 664854137}
   - {fileID: 642170795}
   - {fileID: 2495020810941483511}
+  - {fileID: 293769365}
   - {fileID: 1376007730}
   - {fileID: 1235550270}
   - {fileID: 1716695688}
