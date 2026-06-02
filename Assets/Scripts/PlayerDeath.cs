@@ -67,11 +67,13 @@ public class PlayerDeath : MonoBehaviour
 
     private void Respawn()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1f;
-        playerController.enabled = true;
-        playerInput.enabled = true;
+
         GameInput.Instance.OnPlayerRespawn();
+
+        SaveManager.Instance.ContinueGameFromMainMenu();
+
+        Time.timeScale = 1f;
 
     }
 
