@@ -13,6 +13,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
     bool larvaSpawned = false;
     private int attackIndex = 0;
     private bool isAttacking = false;
+    
 
     private EnemySoundController soundController;
 
@@ -68,7 +69,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
            else
             state = BossState.Attack;
         }
-        else if (dist <= lookRadius*lookRadius)
+        else if (dist <= lookRadius*lookRadius && !attackInProgress)
             state = BossState.Chase;
         else
             state = BossState.Idle;
@@ -85,6 +86,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
         {
             case BossState.Idle:
             if(isDead) break;
+
                 agent.isStopped = true;
                 PlayIdleAnimation();
                 if (soundController != null) soundController.PlayIdleSound();
@@ -93,8 +95,10 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
 
             case BossState.Chase:
             if(isDead) break;
+
                 agent.isStopped = false;
                 agent.speed = WalkSpeed;
+
                 if (!agent.hasPath || agent.destination != player.position)
                     agent.SetDestination(player.position);
 
@@ -108,7 +112,10 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
             case BossState.Attack:
             if (isDead) break;
 
-            agent.isStopped = true;
+                agent.isStopped = true;
+                agent.speed = 0;
+            attackInProgress = true;
+            
 
              if (!isAttacking)
               {
@@ -120,6 +127,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
                case BossState.SpawnLarva:
                   if (isDead) break;
 
+                   attackInProgress = true;
                    agent.isStopped = true;
 
                     if (!larvaSpawned)
@@ -134,9 +142,11 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
 
             case BossState.Roar:
             if(isDead) break;
+
+                attackInProgress = true;
                 agent.isStopped = true;
+                agent.speed = 0;
                 PlayRageAnimation();
-                attackInProgress = false;
                 break;
         }
     }
@@ -172,6 +182,8 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
 
     IEnumerator AttackCycle()
     {
+        agent.isStopped = true;
+        agent.speed = 0;
         isAttacking = true;
         if (soundController != null) soundController.PlayAttackSound();
             switch (attackIndex)
@@ -191,6 +203,11 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
         case 3:
             anim.SetTrigger("Roar");
             break;
+            
+        case 4:
+             anim.SetTrigger("RightSmashForward");
+             break;
+
     }
 
     attackIndex = (attackIndex + 1) % 4;
@@ -265,6 +282,10 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
     {
         DestroyAttack1HitBox();
         DestroyAttack2HitBox();
+    }
+    public void AgentWalk()
+    {
+        attackInProgress = false;
     }
 
 
