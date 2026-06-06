@@ -69,7 +69,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
            else
             state = BossState.Attack;
         }
-        else if (dist <= lookRadius*lookRadius && !attackInProgress)
+        else if (dist <= lookRadius * lookRadius && !isAttacking)
             state = BossState.Chase;
         else
             state = BossState.Idle;
@@ -113,8 +113,10 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
             if (isDead) break;
 
                 agent.isStopped = true;
+                agent.velocity = Vector3.zero;  // kill residual momentum
+                agent.ResetPath();              // clear the chase destination
                 agent.speed = 0;
-            attackInProgress = true;
+                attackInProgress = true;
             
 
              if (!isAttacking)
@@ -128,9 +130,12 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
                   if (isDead) break;
 
                    attackInProgress = true;
-                   agent.isStopped = true;
+                agent.isStopped = true;
+                agent.velocity = Vector3.zero;  // kill residual momentum
+                agent.ResetPath();              // clear the chase destination
+                agent.speed = 0;
 
-                    if (!larvaSpawned)
+                if (!larvaSpawned)
               {
                       larvaSpawned = true;
                       StartCoroutine(SpawnLarvaRoutine());
@@ -145,6 +150,8 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
 
                 attackInProgress = true;
                 agent.isStopped = true;
+                agent.velocity = Vector3.zero;  // kill residual momentum
+                agent.ResetPath();              // clear the chase destination
                 agent.speed = 0;
                 PlayRageAnimation();
                 break;
@@ -210,7 +217,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
 
     }
 
-    attackIndex = (attackIndex + 1) % 4;
+    attackIndex = (attackIndex + 1) % 5;
 
     yield return new WaitForSeconds(attackCooldown);
 
