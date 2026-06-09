@@ -69,7 +69,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
            else
             state = BossState.Attack;
         }
-        else if (dist <= lookRadius * lookRadius && !isAttacking)
+        else if (dist <= lookRadius * lookRadius && !attackInProgress && !isAttacking )
             state = BossState.Chase;
         else
             state = BossState.Idle;
@@ -90,38 +90,36 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
                 agent.isStopped = true;
                 PlayIdleAnimation();
                 if (soundController != null) soundController.PlayIdleSound();
-                attackInProgress = false; // reset attack when leaving attack range
+               
                 break;
 
             case BossState.Chase:
             if(isDead) break;
 
-                agent.isStopped = false;
-                agent.speed = WalkSpeed;
+                
 
                 if (!agent.hasPath || agent.destination != player.position)
                     agent.SetDestination(player.position);
 
-               
+                agent.isStopped = false;
+                agent.speed = WalkSpeed;
                 PlayWalkAnimation();
                 if (soundController != null) soundController.PlayChaseSound();
                 
-                attackInProgress = false;
+                
                 break;
 
             case BossState.Attack:
             if (isDead) break;
 
-                agent.isStopped = true;
-                agent.velocity = Vector3.zero;  // kill residual momentum
-                agent.ResetPath();              // clear the chase destination
-                agent.speed = 0;
-                attackInProgress = true;
-            
-
              if (!isAttacking)
               {
-                larvaSpawned = false;
+                    agent.isStopped = true;
+                    agent.velocity = Vector3.zero;  // kill residual momentum
+                    agent.ResetPath();              // clear the chase destination
+                    agent.speed = 0;
+                    attackInProgress = true;
+                    larvaSpawned = false;
                StartCoroutine(AttackCycle());
               }
                 break;
@@ -129,15 +127,16 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
                case BossState.SpawnLarva:
                   if (isDead) break;
 
-                   attackInProgress = true;
-                agent.isStopped = true;
-                agent.velocity = Vector3.zero;  // kill residual momentum
-                agent.ResetPath();              // clear the chase destination
-                agent.speed = 0;
+                
 
                 if (!larvaSpawned)
               {
-                      larvaSpawned = true;
+                    attackInProgress = true;
+                    agent.isStopped = true;
+                    agent.velocity = Vector3.zero;  // kill residual momentum
+                    agent.ResetPath();              // clear the chase destination
+                    agent.speed = 0;
+                    larvaSpawned = true;
                       StartCoroutine(SpawnLarvaRoutine());
               }
                       break;
@@ -145,7 +144,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
 
         
 
-            case BossState.Roar:
+           /* case BossState.Roar:
             if(isDead) break;
 
                 attackInProgress = true;
@@ -155,6 +154,7 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
                 agent.speed = 0;
                 PlayRageAnimation();
                 break;
+           */
         }
     }
     
@@ -203,21 +203,19 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
             PlayAttack2Animation();
             break;
 
-        case 2:
-            anim.SetTrigger("Spit");
-            break;
+        
 
-        case 3:
+        case 2:
             anim.SetTrigger("Roar");
             break;
             
-        case 4:
+        case 3:
              anim.SetTrigger("RightSmashForward");
              break;
 
     }
 
-    attackIndex = (attackIndex + 1) % 5;
+    attackIndex = (attackIndex + 1) % 4;
 
     yield return new WaitForSeconds(attackCooldown);
 

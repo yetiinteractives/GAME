@@ -2207,17 +2207,17 @@ PrefabInstance:
     - target: {fileID: 2195877369005427879, guid: 9f547c76a5f7400408a230e40b7f93a1,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -19.603905
+      value: -19.64
       objectReference: {fileID: 0}
     - target: {fileID: 2195877369005427879, guid: 9f547c76a5f7400408a230e40b7f93a1,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.3162313
+      value: 0.13
       objectReference: {fileID: 0}
     - target: {fileID: 2195877369005427879, guid: 9f547c76a5f7400408a230e40b7f93a1,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -34.622475
+      value: -34.53
       objectReference: {fileID: 0}
     - target: {fileID: 2195877369005427879, guid: 9f547c76a5f7400408a230e40b7f93a1,
         type: 3}
@@ -3181,7 +3181,7 @@ MonoBehaviour:
   attackRange: 10
   attackDamage: 10
   attackCooldown: 2
-  playerTOOCloseRange: 8
+  playerTOOCloseRange: 4
   larva: {fileID: 2484535308614885599}
   larvaSpawnPoint: {fileID: 925279635}
   attack1HitBox: {fileID: 1063343285}
@@ -3216,7 +3216,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 947816603}
   serializedVersion: 5
-  m_Mass: 1
+  m_Mass: 1000
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -4327,6 +4327,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 590057797893369684, guid: d7fcb52adb3a8cd40bb748351e3613c4,
+        type: 3}
+      propertyPath: maxHealth
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 1241365776001426378, guid: d7fcb52adb3a8cd40bb748351e3613c4,
         type: 3}
