@@ -22,6 +22,7 @@ public class AITickManager : MonoBehaviour
     [SerializeField] private float tickInterval = 0.2f;
 
     private readonly List<ITickableAI> agents = new List<ITickableAI>(128);
+    private readonly HashSet<ITickableAI> agentSet = new HashSet<ITickableAI>();
     private int cursor;
 
     private void Awake()
@@ -39,12 +40,14 @@ public class AITickManager : MonoBehaviour
 
     public void Register(ITickableAI agent)
     {
-        if (agent != null && !agents.Contains(agent))
+        if (agent != null && agentSet.Add(agent))
             agents.Add(agent);
     }
 
     public void Unregister(ITickableAI agent)
     {
+        if (agent == null || !agentSet.Remove(agent)) return;
+
         int index = agents.IndexOf(agent);
         if (index < 0) return;
 

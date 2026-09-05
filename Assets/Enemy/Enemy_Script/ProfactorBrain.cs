@@ -62,13 +62,15 @@ public class ProfactorBrain: UniversalEnemyAi, IDamageable
         if (player == null) return;
         float dist = distanceToPlayer;
 
-         if (dist <= attackRange*attackRange){
-           if((currentHealth==maxhealth* 0.5f && !larvaSpawned ) ||dist <= playerTOOCloseRange*playerTOOCloseRange){
-           state = BossState.SpawnLarva;
-           }
-           else
-            state = BossState.Attack;
-        }
+         if (dist <= attackRange * attackRange)
+         {
+             if ((currentHealth <= maxhealth * 0.5f && !larvaSpawned) || dist <= playerTOOCloseRange * playerTOOCloseRange)
+             {
+                 state = BossState.SpawnLarva;
+             }
+             else
+                 state = BossState.Attack;
+         }
         else if (dist <= lookRadius * lookRadius && !attackInProgress && !isAttacking )
             state = BossState.Chase;
         else

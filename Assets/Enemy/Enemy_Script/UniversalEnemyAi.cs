@@ -37,11 +37,12 @@ public abstract class UniversalEnemyAi : MonoBehaviour
 
         if(player == null)
         {
-            player = GameObject.FindGameObjectWithTag("Player").transform;
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+                player = playerObj.transform;
         }
 
         persistentEntity = GetComponent<PersistentSceneEntity>();
-
     }
 
     protected virtual void Start()
@@ -87,7 +88,6 @@ public abstract class UniversalEnemyAi : MonoBehaviour
             persistentEntity.MarkRemoved(false); 
 
         Destroy(gameObject, deathDecayTime);
-        Destroy(gameObject, deathDecayTime);
     }
 
     protected virtual void HandleDeathVisuals()
@@ -99,56 +99,96 @@ public abstract class UniversalEnemyAi : MonoBehaviour
     protected abstract void HandleAI();
 
     protected float distanceToPlayer =>
-        (player.position - transform.position).sqrMagnitude;
+        player != null ? (player.position - transform.position).sqrMagnitude : float.MaxValue;
+
+    // -------- Cached Animator Parameter Hashes --------
+    protected static readonly int AnimGetOutOfGround = Animator.StringToHash("GetOutOfGround");
+    protected static readonly int AnimIdle = Animator.StringToHash("Idle");
+    protected static readonly int AnimWalk = Animator.StringToHash("Walk");
+    protected static readonly int AnimCharge = Animator.StringToHash("Charge");
+    protected static readonly int AnimAttack1 = Animator.StringToHash("Attack1");
+    protected static readonly int AnimAttack2 = Animator.StringToHash("Attack2");
+    protected static readonly int AnimRoar = Animator.StringToHash("Roar");
+    protected static readonly int AnimGetHitBack = Animator.StringToHash("GetHitBack");
+    protected static readonly int AnimKnockback = Animator.StringToHash("Knockback");
+    protected static readonly int AnimDeath = Animator.StringToHash("Death");
 
     // -------- Animation Controls --------
 
-    protected void PlayStartAnimation() =>
-        anim.SetTrigger("GetOutOfGround");
+    protected void PlayStartAnimation()
+    {
+        if (anim != null) anim.SetTrigger(AnimGetOutOfGround);
+    }
 
     protected void PlayIdleAnimation()
     {
-        anim.SetBool("Idle", true);
-        anim.SetBool("Walk", false);
+        if (anim != null)
+        {
+            anim.SetBool(AnimIdle, true);
+            anim.SetBool(AnimWalk, false);
+        }
     }
 
     protected void PlayWalkAnimation()
     {
-        anim.SetBool("Walk", true);
-        anim.SetBool("Idle", false);
+        if (anim != null)
+        {
+            anim.SetBool(AnimWalk, true);
+            anim.SetBool(AnimIdle, false);
+        }
     }
 
     protected void PlayChargeAnimation()
     {
-        anim.SetBool("Idle", false);
-        anim.SetBool("Walk", false);
-        anim.SetBool("Charge", true);
+        if (anim != null)
+        {
+            anim.SetBool(AnimIdle, false);
+            anim.SetBool(AnimWalk, false);
+            anim.SetBool(AnimCharge, true);
+        }
     }
 
-    protected void PlayAttackAnimation() =>
-        anim.SetTrigger("Attack1");
+    protected void PlayAttackAnimation()
+    {
+        if (anim != null) anim.SetTrigger(AnimAttack1);
+    }
 
-    protected void PlayAttack2Animation() =>
-        anim.SetTrigger("Attack2");
+    protected void PlayAttack2Animation()
+    {
+        if (anim != null) anim.SetTrigger(AnimAttack2);
+    }
 
-    protected void PlayRageAnimation() =>
-        anim.SetTrigger("Roar");
+    protected void PlayRageAnimation()
+    {
+        if (anim != null) anim.SetTrigger(AnimRoar);
+    }
 
-    protected void PlayHitAnimation() =>
-        anim.SetTrigger("GetHitBack");
+    protected void PlayHitAnimation()
+    {
+        if (anim != null) anim.SetTrigger(AnimGetHitBack);
+    }
 
-    protected void PlayDieAnimation() =>
-        anim.SetTrigger("Death");
+    protected void PlayKnockbackAnimation()
+    {
+        if (anim != null) anim.SetTrigger(AnimKnockback);
+    }
 
-    private void OnEnable()
+    protected void PlayDieAnimation()
+    {
+        if (anim != null) anim.SetTrigger(AnimDeath);
+    }
+
+    protected virtual void OnEnable()
     {
         PlayerHealth.OnPlayerDie += HandlePlayerDeath;
     }
-    private void OnDisable()
+
+    protected virtual void OnDisable()
     {
         PlayerHealth.OnPlayerDie -= HandlePlayerDeath;
     }
-    private void HandlePlayerDeath()
+
+    protected virtual void HandlePlayerDeath()
     {
         // Stop all enemy actions when player dies
         if (agent != null && agent.isActiveAndEnabled && agent.isOnNavMesh)
@@ -158,5 +198,4 @@ public abstract class UniversalEnemyAi : MonoBehaviour
         }
         PlayIdleAnimation();
     }
-
 }

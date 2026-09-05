@@ -80,20 +80,33 @@ public class AlienZombieBrain : UniversalEnemyAi, IDamageable
                 break;
 
             case AlienZombieState.Attack:
-                attackInProgress = true;
-                anim.SetBool("Walk", false);
-                PlayAttackAnimation();
-                StopAgent();
-                PlayJumpScare();
+                if (!attackInProgress)
+                {
+                    attackInProgress = true;
+                    attackTimer = 0f;
+                    if (anim != null) anim.SetBool(AnimWalk, false);
+                    PlayAttackAnimation();
+                    StopAgent();
+                    PlayJumpScare();
+                }
+                else
+                {
+                    attackTimer += Time.deltaTime;
+                    if (attackTimer >= attackCooldown)
+                    {
+                        attackInProgress = false;
+                    }
+                }
                 break;
- 
+
         }
 
     }
 
     private void PlayJumpScare()
     {
-        director.Play();
+        if (director != null)
+            director.Play();
     }
 
     private void FacePlayer()

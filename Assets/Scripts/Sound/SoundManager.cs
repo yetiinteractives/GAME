@@ -12,6 +12,7 @@ public class SoundManager : MonoBehaviour
 
     private readonly List<ISoundListener> listeners = new List<ISoundListener>(64);
     private readonly List<MonoBehaviour> listenerBehaviours = new List<MonoBehaviour>(64);
+    private readonly HashSet<ISoundListener> listenerSet = new HashSet<ISoundListener>();
 
     private void Awake()
     {
@@ -30,7 +31,7 @@ public class SoundManager : MonoBehaviour
     public void Register(ISoundListener listener)
     {
         if (listener == null) return;
-        if (!listeners.Contains(listener))
+        if (listenerSet.Add(listener))
         {
             listeners.Add(listener);
             listenerBehaviours.Add(listener as MonoBehaviour);
@@ -40,6 +41,8 @@ public class SoundManager : MonoBehaviour
     /// <summary>Unregister a listener. Call from OnDisable.</summary>
     public void Unregister(ISoundListener listener)
     {
+        if (listener == null || !listenerSet.Remove(listener)) return;
+
         int index = listeners.IndexOf(listener);
         if (index >= 0)
         {

@@ -120,7 +120,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
     // ──────────── State ────────────
 
-    public enum ZombieState { Idle, Investigate, Chase, Attack }
+    public enum ZombieState { Idle, Investigate, Chase, Attack, Search }
     public ZombieState state;
 
     private bool attackInProgress;
@@ -132,6 +132,33 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
     private SoundType investigateSoundType;
     private float investigateTimer;
     private bool hasInvestigateTarget;
+
+    // Search bookkeeping (Lost Sight Behavior)
+    [Header("Search Behavior (Lost Sight)")]
+    [Tooltip("How long the zombie searches the player's last known location before giving up.")]
+    [SerializeField] private float searchDuration = 3.5f;
+    [SerializeField] private float searchArrivalThreshold = 1.5f;
+    private Vector3 lastKnownPlayerPosition;
+    private float searchTimer;
+    private float searchArrivalThresholdSqr;
+    private bool hasSearchTarget;
+
+    // Hit reaction
+    [Header("Hit Reaction")]
+    [Tooltip("Minimum damage from a single attack to trigger stagger animation.")]
+    [SerializeField] private float minDamageForStagger = 15f;
+    [Tooltip("Cooldown between hit staggers to prevent stunlock.")]
+    [SerializeField] private float hitStaggerCooldown = 1.0f;
+    private float lastStaggerTime = -999f;
+
+    // Pack / Horde Alerting
+    [Header("Pack / Horde Alerting")]
+    [Tooltip("Radius within which nearby zombies hear this zombie's combat roar.")]
+    [SerializeField] private float hordeAlertRadius = 12f;
+
+    // Repath Optimization
+    private Vector3 lastChaseDestination;
+    private const float REPATH_THRESHOLD_SQR = 0.5625f; // (0.75m)^2
 
     // Patrol bookkeeping
     private Vector3 patrolCenterPoint;
@@ -195,6 +222,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         lookRadiusSqr = lookRadius * lookRadius;
         attackRangeSqr = attackRange * attackRange;
         arrivalThresholdSqr = investigateArrivalThreshold * investigateArrivalThreshold;
+        searchArrivalThresholdSqr = searchArrivalThreshold * searchArrivalThreshold;
 
         patrolRadiusSqr = patrolRadius * patrolRadius;
         patrolArrivalSqr = patrolArrivalThreshold * patrolArrivalThreshold;
@@ -253,15 +281,16 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         }
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         TryRegisterWithManagers();
-        PlayerHealth.OnPlayerDie += HandlePlayerDeath;
     }
 
-
-    private void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
+
         if (SoundManager.Instance != null)
             SoundManager.Instance.Unregister(this);
 
@@ -269,20 +298,15 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
             AITickManager.Instance.Unregister(this);
 
         registeredWithTickManager = false;
-
-        PlayerHealth.OnPlayerDie -= HandlePlayerDeath;
     }
 
-    private void HandlePlayerDeath()
+    protected override void HandlePlayerDeath()
     {
-        // Stop all AI activity on player death
+        base.HandlePlayerDeath();
         state = ZombieState.Idle;
-        StopAgent();
-        if (anim != null) anim.SetBool("Walk", false);
         canSeePlayer = false;
         hasInvestigateTarget = false;
-        
-        canSeePlayer = false;
+        hasSearchTarget = false;
     }
 
     /// <summary>
@@ -355,13 +379,21 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
         float sqrDist = (player.position - transform.position).sqrMagnitude;
 
-        // Priority: Attack > Chase > Investigate > Idle
+        if (canSeePlayer)
+        {
+            lastKnownPlayerPosition = player.position;
+            hasSearchTarget = true;
+        }
+
+        // Priority: Attack > Chase > Search > Investigate > Idle
         ZombieState newState;
 
-        if (sqrDist <= attackRangeSqr)
+        if (sqrDist <= attackRangeSqr && canSeePlayer)
             newState = ZombieState.Attack;
         else if (canSeePlayer)
             newState = ZombieState.Chase;
+        else if ((state == ZombieState.Chase || state == ZombieState.Search) && hasSearchTarget)
+            newState = ZombieState.Search;
         else if (hasInvestigateTarget)
             newState = ZombieState.Investigate;
         else
@@ -370,15 +402,43 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         // Apply state change (setup happens once on transition)
         if (newState != state)
         {
-            state = newState;
-            OnStateEnter(newState);
+            TransitionToState(newState);
         }
 
-        // Refresh NavMesh destinations for moving states
+        // Refresh NavMesh destinations for moving states with repath distance gating
         if (state == ZombieState.Chase)
-            agent.SetDestination(GetOffsetDestination(player.position));
-        else if (state == ZombieState.Investigate)
-            agent.SetDestination(investigateTarget);
+        {
+            Vector3 dest = GetOffsetDestination(player.position);
+            if (!agent.hasPath || (dest - lastChaseDestination).sqrMagnitude >= REPATH_THRESHOLD_SQR)
+            {
+                agent.SetDestination(dest);
+                lastChaseDestination = dest;
+            }
+        }
+        else if (state == ZombieState.Search && hasSearchTarget)
+        {
+            if (!agent.hasPath || (lastKnownPlayerPosition - agent.destination).sqrMagnitude >= REPATH_THRESHOLD_SQR)
+            {
+                agent.SetDestination(lastKnownPlayerPosition);
+            }
+        }
+        else if (state == ZombieState.Investigate && hasInvestigateTarget)
+        {
+            if (!agent.hasPath || (investigateTarget - agent.destination).sqrMagnitude >= 0.25f)
+            {
+                agent.SetDestination(investigateTarget);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Safely transition to a new AI state and trigger its OnStateEnter setup.
+    /// </summary>
+    private void TransitionToState(ZombieState newState)
+    {
+        if (state == newState) return;
+        state = newState;
+        OnStateEnter(newState);
     }
 
     /// <summary>
@@ -406,6 +466,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         {
             case ZombieState.Idle:
                 enemyCombatState.SetCombatState(false);
+                hasSearchTarget = false;
                 if (idleType == IdleType.Patrol)
                 {
                     isPatrolWaiting = false;
@@ -429,9 +490,29 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
                 if (soundController != null) soundController.PlayInvestigateSound();
                 break;
 
+            case ZombieState.Search:
+                enemyCombatState.SetCombatState(true);
+                searchTimer = 0f;
+                MoveAgent(walkSpeed * speedMultiplier);
+                PlayWalkAnimation();
+                if (soundController != null) soundController.PlayInvestigateSound();
+                break;
+
             case ZombieState.Chase:
+                // Alert nearby pack members if entering combat from non-combat
+                if (hordeAlertRadius > 0f && SoundManager.Instance != null && state != ZombieState.Chase)
+                {
+                    SoundManager.Instance.EmitSound(new SoundStimulus(
+                        transform.position,
+                        SoundType.Distraction,
+                        hordeAlertRadius,
+                        gameObject
+                    ));
+                }
+
                 enemyCombatState.SetCombatState(true);
                 hasInvestigateTarget = false;
+                hasSearchTarget = true;
                 MoveAgent(walkSpeed * speedMultiplier);
                 PlayWalkAnimation();
                 if (soundController != null) soundController.PlayChaseSound();
@@ -441,7 +522,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
                 enemyCombatState.SetCombatState(true);
                 hasInvestigateTarget = false;
                 StopAgent();
-                if (anim != null) anim.SetBool("Walk", false);
+                if (anim != null) anim.SetBool(AnimWalk, false);
                 break;
         }
     }
@@ -462,6 +543,10 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
             case ZombieState.Attack:
                 FacePlayer();
                 UpdateAttack();
+                break;
+
+            case ZombieState.Search:
+                UpdateSearch();
                 break;
 
             case ZombieState.Investigate:
@@ -502,6 +587,25 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
             attackInProgress = false;
     }
 
+    private void UpdateSearch()
+    {
+        float sqrToTarget = (transform.position - lastKnownPlayerPosition).sqrMagnitude;
+
+        if (sqrToTarget <= searchArrivalThresholdSqr)
+        {
+            // Arrived at last known spot — pause and scan around
+            StopAgent();
+            PlayIdleAnimation();
+
+            searchTimer += Time.deltaTime;
+            if (searchTimer >= searchDuration)
+            {
+                hasSearchTarget = false;
+                TransitionToState(ZombieState.Idle);
+            }
+        }
+    }
+
     private void UpdateInvestigate()
     {
         float sqrToTarget = (transform.position - investigateTarget).sqrMagnitude;
@@ -516,8 +620,7 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
             if (investigateTimer >= investigateLingerTime)
             {
                 hasInvestigateTarget = false;
-                state = ZombieState.Idle;
-                PlayIdleAnimation();
+                TransitionToState(ZombieState.Idle);
             }
         }
     }
@@ -610,13 +713,20 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         if (sqrDistance > lookRadiusSqr)
             return false;
 
-        float distance = Mathf.Sqrt(sqrDistance);
-        direction /= distance;
-
-        if (Vector3.Dot(transform.forward, direction) < minDot)
+        // Fast early rejection for targets behind the zombie without sqrt
+        float dot = Vector3.Dot(transform.forward, direction);
+        if (dot <= 0f && minDot >= 0f)
             return false;
 
-        if (Physics.Raycast(origin, direction, out RaycastHit hit, lookRadius, visionMask, QueryTriggerInteraction.Ignore))
+        float distance = Mathf.Sqrt(sqrDistance);
+        if (distance < 0.001f) return true;
+
+        if ((dot / distance) < minDot)
+            return false;
+
+        direction /= distance;
+
+        if (Physics.Raycast(origin, direction, out RaycastHit hit, distance, visionMask, QueryTriggerInteraction.Ignore))
             return hit.transform == player || hit.transform.IsChildOf(player);
 
         return false;
@@ -755,7 +865,21 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
         if (soundController != null) soundController.PlayHurtSound();
 
         if (currentHealth <= 0)
+        {
             Die();
+            return;
+        }
+
+        // Damage reaction: stagger / knockback
+        if (damage >= minDamageForStagger && Time.time - lastStaggerTime >= hitStaggerCooldown && !attackInProgress)
+        {
+            lastStaggerTime = Time.time;
+            PlayKnockbackAnimation();
+            if (agent != null && agent.isActiveAndEnabled && agent.isOnNavMesh)
+            {
+                agent.velocity *= 0.3f; // momentary physical stumbling deceleration
+            }
+        }
     }
 
     // ════════════════════════════════════════════════
@@ -825,14 +949,22 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
 
     /// <summary>
     /// Death visuals pipeline — order matters:
-    /// 1) Disable animator (stop animation-driven bone movement)
-    /// 2) Disable main nav collider
-    /// 3) Enable ragdoll (bodies become non-kinematic)
-    /// 4) Apply queued grenade explosion force (Point B pipeline)
-    /// 5) Apply queued bullet death impulse (existing pipeline)
+    /// 1) Record momentum from agent
+    /// 2) Disable animator (stop animation-driven bone movement)
+    /// 3) Disable main nav collider
+    /// 4) Enable ragdoll (bodies become non-kinematic)
+    /// 5) Transfer forward momentum to ragdoll rigidbodies
+    /// 6) Apply queued grenade explosion force (Point B pipeline)
+    /// 7) Apply queued bullet death impulse (existing pipeline)
     /// </summary>
     protected override void HandleDeathVisuals()
     {
+        Vector3 deathMomentum = Vector3.zero;
+        if (agent != null && agent.isActiveAndEnabled)
+        {
+            deathMomentum = agent.velocity;
+        }
+
         if (anim != null)
             anim.enabled = false;
 
@@ -840,6 +972,21 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
             mainCollider.enabled = false;
 
         EnableRagdoll();
+
+        // Transfer forward movement momentum to ragdoll bodies for natural tumbling
+        if (deathMomentum.sqrMagnitude > 0.05f)
+        {
+            for (int i = 0; i < ragdollHandlers.Length; i++)
+            {
+                var handler = ragdollHandlers[i];
+                if (handler == null) continue;
+
+                Rigidbody rb = handler.Rigidbody;
+                if (rb == null || rb.isKinematic) continue;
+
+                rb.linearVelocity = deathMomentum;
+            }
+        }
 
         // Grenade blast — applied right after ragdoll activation
         ApplyQueuedExplosionForce();
@@ -995,6 +1142,13 @@ public class ZombieBrain : UniversalEnemyAi, IDamageable, ISoundListener, ITicka
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(investigateTarget, 0.5f);
             Gizmos.DrawLine(transform.position, investigateTarget);
+        }
+
+        if (hasSearchTarget)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(lastKnownPlayerPosition, 0.5f);
+            Gizmos.DrawLine(transform.position, lastKnownPlayerPosition);
         }
 
         if (idleType == IdleType.Patrol)
